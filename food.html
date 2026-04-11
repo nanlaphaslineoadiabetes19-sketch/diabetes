@@ -1,76 +1,211 @@
 <!DOCTYPE html>
 <html lang="th">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>อาหาร</title>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+    <title>การรับประทานอาหารสำหรับผู้ป่วยเบาหวาน</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-      body {
-        margin: 0;
-        padding: 20px;
-        background-color: #f0f2f5;
-        font-family: 'Sarabun', sans-serif;
-        display: flex;
-        justify-content: center;
-        min-height: 100vh;
-      }
-      .main-wrapper {
-        max-width: 500px;
-        width: 100%;
-        background: white;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        border-radius: 20px;
-        padding: 30px 20px;
-        text-align: center;
-        align-self: flex-start;
-      }
-      h1 { color: #333; font-size: 28px; margin-bottom: 30px; font-weight: 700; }
-      .menu-item {
-        background-color: #eaffee;
-        margin-bottom: 15px;
-        border-radius: 8px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-      }
-      .menu-header {
-        padding: 20px;
-        font-size: 22px;
-        font-weight: 700;
-        color: #2c3e50;
-        cursor: pointer;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .menu-header:hover { background-color: #d4f7db; }
+        :root {
+            --primary-food: #e67e22; /* สีส้มอาหาร */
+            --secondary-food: #d35400;
+            --bg-light: #fdfaf8;
+            --text-dark: #2c3e50;
+            --shadow: rgba(230, 126, 34, 0.15);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #fff5e6 0%, #f4f7f6 100%);
+            font-family: 'Sarabun', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* เพื่อให้เลื่อนลงมาได้สวยๆ */
+            min-height: 100vh;
+        }
+
+        /* ปุ่มกลับหน้าหลักแบบ Fixed (ลอยค้าง) */
+        .nav-bar-fixed {
+            position: fixed !important;
+            top: 20px !important;
+            left: 20px !important;
+            z-index: 99999 !important;
+        }
+
+        .btn-back {
+            padding: 10px 22px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #555;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+        }
+
+        .btn-back:hover {
+            background-color: white;
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
+        }
+
+        .main-wrapper {
+            max-width: 500px;
+            width: 90%;
+            background: rgba(255, 255, 255, 0.98);
+            box-shadow: 0 20px 50px var(--shadow);
+            border-radius: 30px;
+            padding: 60px 25px 40px;
+            text-align: center;
+            margin: 80px 0 40px; /* เว้นด้านบนให้ปุ่มลอยไม่ทับ */
+            backdrop-filter: blur(10px);
+        }
+
+        .icon-header {
+            font-size: 55px;
+            margin-bottom: 20px;
+        }
+
+        h1 { 
+            color: var(--text-dark); 
+            font-size: 26px; 
+            margin-bottom: 15px; 
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        h2 {
+            color: #7f8c8d;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            padding: 0 10px;
+        }
+
+        .menu-container {
+            display: grid;
+            gap: 16px;
+        }
+
+        .menu-item {
+            background-color: white;
+            border: 1px solid #f9ebe0;
+            border-radius: 20px;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-food);
+            box-shadow: 0 12px 25px var(--shadow);
+        }
+
+        .menu-header {
+            padding: 22px 25px;
+            font-size: 19px;
+            font-weight: 700;
+            color: var(--text-dark);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .menu-item:hover .menu-header {
+            background-color: #fff9f4;
+            color: var(--secondary-food);
+        }
+
+        .arrow-circle {
+            width: 32px;
+            height: 32px;
+            background: #fff4e6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            transition: all 0.3s;
+            color: var(--primary-food);
+        }
+
+        .menu-item:hover .arrow-circle {
+            background: var(--primary-food);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        footer {
+            margin-top: 40px;
+            font-size: 12px;
+            color: #bdc3c7;
+            letter-spacing: 0.5px;
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
+
+    <div class="nav-bar-fixed">
+        <button class="btn-back" onclick="goBackMain()">
+            ⬅ กลับหน้าหลัก
+        </button>
+    </div>
+
     <div class="main-wrapper">
-      <h1>การรับประทานอาหารสำหรับผู้ป่วยเบาหวาน</h1>
-      <h2>คาร์โบไฮเดรตมีผลโดยตรงต่อระดับน้ำตาลในเลือด การกำหนดปริมาณในแต่ละมื้อและการนับคาร์โบไฮเดรต จึงเป็นแนวทางสำคัญในการดูแลตนเองของผู้ป่วยเบาหวาน</h2>
-      <div class="menu-item">
-        <div class="menu-header" onclick="goTo('food_carbs')">ความรู้เกี่ยวกับคาร์บ <span>➜</span></div>
-      </div>
-      <div class="menu-item">
-        <div class="menu-header" onclick="goTo('food_carbs_cal')">คำนวณค่าคาร์บที่เหมาะสมในแต่ละวัน <span>➜</span></div>
-      </div>
-      <div class="menu-item">
-        <div class="menu-header" onclick="goTo('food_carbs_amount')">ปริมาณคาร์บในอาหาร <span>➜</span></div>
-      </div>
-      <div class="menu-item">
-        <div class="menu-header" onclick="goTo('food_carbs_healthy')">จานอาหารสุขภาพ <span>➜</span></div>
-      </div>
+        <div class="icon-header">🥗</div>
+        <h1>การรับประทานอาหารสำหรับผู้ป่วยเบาหวาน</h1>
+        <h2>คาร์โบไฮเดรตมีผลโดยตรงต่อระดับน้ำตาลในเลือด การกำหนดปริมาณในแต่ละมื้อและการนับคาร์โบไฮเดรต จึงเป็นแนวทางสำคัญในการดูแลตนเองของผู้ป่วยเบาหวาน</h2>
+        
+        <div class="menu-container">
+            <div class="menu-item">
+                <div class="menu-header" onclick="goTo('food_carbs')">
+                    ความรู้เกี่ยวกับคาร์บ <span class="arrow-circle">➜</span>
+                </div>
+            </div>
+            
+            <div class="menu-item">
+                <div class="menu-header" onclick="goTo('food_carbs_cal')">
+                    คำนวณค่าคาร์บที่เหมาะสมในแต่ละวัน <span class="arrow-circle">➜</span>
+                </div>
+            </div>
+            
+            <div class="menu-item">
+                <div class="menu-header" onclick="goTo('food_carbs_amount')">
+                    ปริมาณคาร์บในอาหาร <span class="arrow-circle">➜</span>
+                </div>
+            </div>
+            
+            <div class="menu-item">
+                <div class="menu-header" onclick="goTo('food_carbs_healthy')">
+                    จานอาหารสุขภาพ <span class="arrow-circle">➜</span>
+                </div>
+            </div>
+        </div>
+
+        <footer>&copy; 2026 ระบบดูแลเบาหวานด้วยตนเอง</footer>
     </div>
 
     <script>
-      function goTo(pageName) {
-        // ระบุพาธของ Repository คุณ
-        var baseUrl = 'https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes';
-        // เปลี่ยนวิธีเขียน: ให้วิ่งไปที่ชื่อไฟล์ .html ตรงๆ
-        window.location.href = baseUrl + '/' + pageName + '.html';
-      }
+        function goTo(pageName) {
+            var baseUrl = 'https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes';
+            window.location.href = baseUrl + '/' + pageName + '.html';
+        }
+
+        function goBackMain() {
+            var baseUrl = 'https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes';
+            window.location.href = baseUrl + '/diabetes.html';
+        }
     </script>
-  </body>
+</body>
 </html>
