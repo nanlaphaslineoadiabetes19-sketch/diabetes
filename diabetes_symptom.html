@@ -8,7 +8,7 @@
     <style>
       body {
         margin: 0;
-        padding: 20px 0;
+        padding: 20px 0; /* ระยะเว้นขอบบน-ล่างของหน้า */
         background-color: #f0f2f5;
         font-family: 'Sarabun', sans-serif;
         display: flex;
@@ -26,7 +26,6 @@
 
       .nav-bar {
         width: 100%;
-        max-width: 600px;
         margin-bottom: 15px;
       }
 
@@ -42,24 +41,34 @@
         display: flex;
         align-items: center;
         gap: 8px;
+        transition: background 0.3s;
       }
 
+      .btn-back:hover {
+        background-color: #5a6268;
+      }
+
+      /* แผ่นหลักแผ่นเดียวที่รวมทุกภาพไว้ข้างใน */
       .main-wrapper {
         width: 100%;
         background: white;
+        /* มีเงาและขอบโค้งรอบแผ่นใหญ่แผ่นเดียว */
         box-shadow: 0 10px 40px rgba(0,0,0,0.15);
         border-radius: 12px;
-        overflow: hidden;
+        overflow: hidden; /* ช่วยตัดขอบภาพที่มุมโค้ง */
         display: flex;
         flex-direction: column;
-        margin-bottom: 20px; /* ระยะห่างระหว่างภาพ */
+        /* ลบ margin-bottom ออกเพื่อให้ภาพติดกัน */
+        margin-bottom: 20px;
       }
 
       img {
         width: 100%;
         height: auto;
-        display: block;
+        display: block; /* สำคัญ: ป้องกันช่องว่างใต้ภาพ */
         margin: 0;
+        padding: 0;
+        border: none; /* ป้องกันเส้นขอบ */
       }
     </style>
   </head>
@@ -74,18 +83,14 @@
 
       <div class="main-wrapper">
         <img src="https://lh3.googleusercontent.com/d/1tsgfVYIGcePGMfw-1F6w8X732IAwDKit" alt="อาการเบาหวาน 1">
-      </div>
-      <div class="main-wrapper">
         <img src="https://lh3.googleusercontent.com/d/1Q62HYPvYyu39fos2T2NOaU-yoFK9_hdr" alt="อาการเบาหวาน 2">
-      </div>
-      <div class="main-wrapper">
         <img src="https://lh3.googleusercontent.com/d/1BbiXsmFlr2cKbJYRuaSE14AKvIaqS3Yi" alt="อาการเบาหวาน 3">
-      </div>
+        </div>
     </div>
 
     <script>
       function goBack() {
-        // พาผู้ใช้กลับไปที่หน้าหลัก diabetes.html ใน GitHub
+        // กลับไปที่หน้าหลักบน GitHub
         var currentPath = window.location.pathname;
         var directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
         location.href = directoryPath + '/diabetes.html';
