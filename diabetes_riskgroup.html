@@ -1,59 +1,92 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
   <head>
-    <base target="_top">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>กลุ่มเสี่ยงโรคเบาหวาน</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
     <style>
       body {
         margin: 0;
-        padding: 40px 0; /* เว้นระยะบนล่าง */
+        padding: 20px 0;
         background-color: #f0f2f5;
+        font-family: 'Sarabun', sans-serif;
         display: flex;
-        justify-content: center;
+        flex-direction: column;
+        align-items: center;
         min-height: 100vh;
       }
 
-      /* คอนเทนเนอร์หลักที่รวมภาพทั้งหมดไว้ข้างใน */
+      .container {
+        width: 100%;
+        max-width: 600px;
+        padding: 0 15px;
+        box-sizing: border-box;
+      }
+
+      .nav-bar {
+        width: 100%;
+        max-width: 600px;
+        margin-bottom: 15px;
+      }
+
+      .btn-back {
+        padding: 10px 20px;
+        background-color: #6c757d;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        font-family: 'Sarabun', sans-serif;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
       .main-wrapper {
-        max-width: 600px; /* ปรับความกว้างตามความเหมาะสม */
         width: 100%;
         background: white;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.15); /* เงารอบแผ่นใหญ่ */
-        border-radius: 12px; /* มุมโค้งมนเฉพาะที่ขอบนอกสุด */
-        overflow: hidden; /* ช่วยให้ภาพที่มุมไม่ล้นขอบโค้ง */
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        border-radius: 12px;
+        overflow: hidden;
         display: flex;
         flex-direction: column;
+        margin-bottom: 20px;
       }
 
       img {
         width: 100%;
         height: auto;
-        display: block; /* สำคัญมาก: ป้องกันไม่ให้เกิดช่องว่างเล็กๆ ใต้ภาพ */
+        display: block;
         margin: 0;
-        padding: 0;
       }
     </style>
   </head>
   <body>
-    
-    <div class="container">
 
-      <div style="padding: 15px;">
-        <button onclick="location.href='https://script.google.com/macros/s/AKfycbwvKi_gkXdi2HqeJnY6LdEz_eg12zxgtOfGDKHLPVuiydBHef2Dm2TW4zCEX8sqSPEk3g/exec?page=diabetes'" 
-                style="padding: 10px 20px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer; font-family: 'Sarabun', sans-serif;">
+    <div class="container">
+      <div class="nav-bar">
+        <button class="btn-back" onclick="goBack()">
           ⬅ กลับหน้าหลัก
         </button>
       </div>
 
-      <!-- ภาพที่ 1 -->
       <div class="main-wrapper">
-        <img src="https://lh3.googleusercontent.com/d/1LmkU5oH2_D1Sx59QFTCjPeF0hJrq0USd" alt="Image 1">
+        <img src="https://lh3.googleusercontent.com/d/1LmkU5oH2_D1Sx59QFTCjPeF0hJrq0USd" alt="กลุ่มเสี่ยง 1">
       </div>
-      <!-- ภาพที่ 2 -->
       <div class="main-wrapper">
-        <img src="https://lh3.googleusercontent.com/d/17Ycr6ZWz6ctKF_G-I8jckaNDOUS2d-XG" alt="Image 1">
+        <img src="https://lh3.googleusercontent.com/d/17Ycr6ZWz6ctKF_G-I8jckaNDOUS2d-XG" alt="กลุ่มเสี่ยง 2">
       </div>
-
     </div>
 
+    <script>
+      function goBack() {
+        // กลับไปที่หน้าหลักบน GitHub
+        var currentPath = window.location.pathname;
+        var directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+        location.href = directoryPath + '/diabetes.html';
+      }
+    </script>
   </body>
 </html>
