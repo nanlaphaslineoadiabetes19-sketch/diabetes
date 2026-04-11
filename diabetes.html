@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ความรู้เกี่ยวกับโรคเบาหวาน</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        background-color: #f0f2f5;
+        font-family: 'Sarabun', sans-serif;
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      .main-wrapper {
+        max-width: 500px;
+        width: 100%;
+        background: white;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border-radius: 20px;
+        padding: 30px 20px;
+        text-align: center;
+        align-self: flex-start;
+      }
+      h1 { color: #333; font-size: 28px; margin-bottom: 30px; font-weight: 700; }
+      .menu-item {
+        background-color: #eaffee;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+      .menu-header {
+        padding: 20px;
+        font-size: 22px;
+        font-weight: 700;
+        color: #2c3e50;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .menu-header:hover { background-color: #d4f7db; }
+    </style>
+  </head>
+  <body>
+    <div class="main-wrapper">
+      <h1>ความรู้เกี่ยวกับโรคเบาหวาน</h1>
+      <div class="menu-item">
+        <div class="menu-header" onclick="goTo('diabetes_meaning')">ความหมาย <span>➜</span></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-header" onclick="goTo('diabetes_symptom')">อาการของโรคเบาหวาน <span>➜</span></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-header" onclick="goTo('diabetes_riskgroup')">กลุ่มเสี่ยง <span>➜</span></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-header" onclick="goTo('diabetes_complications')">ภาวะแทรกซ้อน <span>➜</span></div>
+      </div>
+    </div>
+
+    <script>
+      function goTo(pageName) {
+        var v = new Date().getTime();
+        // ลิงก์ตรงจากภาพ image_27b080.jpg
+        var baseUrl = 'https://script.google.com/macros/s/AKfycbwvKi_gkXdi2HqeJnY6LdEz_eg12zxgtOfGDKHLPVuiydBHef2Dm2TW4zCEX8sqSPEk3g/exec';
+        window.location.href = baseUrl + '?page=' + pageName + '&v=' + v;
+      }
+    </script>
+  </body>
+</html>
