@@ -49,23 +49,30 @@
         box-shadow: 0 10px 40px rgba(0,0,0,0.15);
         border-radius: 12px;
         overflow: hidden;
+        
+        /* ท่าไม้ตาย: ใช้ Flexbox จัดรูปเรียงต่อกัน */
         display: flex;
         flex-direction: column;
-        line-height: 0; /* ป้องกันช่องว่างระหว่างบรรทัดรูป */
-        font-size: 0;   /* ป้องกันช่องว่างจาก White space */
+        line-height: 0;
+        font-size: 0;
       }
 
       img {
-        width: 100%;
+        width: 100.2%; /* ขยายออกนิดเดียวเพื่อป้องกันขอบขาวด้านข้าง */
         height: auto;
         display: block;
+        margin: 0;
         padding: 0;
         border: none;
+        outline: none;
+        
+        /* ให้รูปตัวล่างขยับขึ้นไปทับตัวบน 2px เพื่อปิดช่องว่าง */
+        margin-top: -2px; 
       }
 
-      /* รูปที่ 2 เป็นต้นไป ให้ขยับขึ้นมาทับรูปก่อนหน้า 1px เพื่อปิดรอยต่อสีขาว */
-      img + img {
-        margin-top: -1px;
+      /* รูปแรกสุดไม่ต้องขยับขึ้น */
+      img:first-child {
+        margin-top: 0;
       }
     </style>
   </head>
@@ -78,7 +85,9 @@
         </button>
       </div>
 
-      <div class="main-wrapper"><img src="https://lh3.googleusercontent.com/d/1MmTF4IYia8cJ7ZGzXC4l2FhjJfrWZ73X" alt="ภาวะแทรกซ้อน 1"><img src="https://lh3.googleusercontent.com/d/1dtWlQGhpFHKAtg6JewWY2GaMuJx3yoy3" alt="ภาวะแทรกซ้อน 2"></div>
+      <div class="main-wrapper">
+        <img src="https://lh3.googleusercontent.com/d/1MmTF4IYia8cJ7ZGzXC4l2FhjJfrWZ73X" alt="1"><img src="https://lh3.googleusercontent.com/d/1dtWlQGhpFHKAtg6JewWY2GaMuJx3yoy3" alt="2">
+      </div>
     </div>
 
     <script>
