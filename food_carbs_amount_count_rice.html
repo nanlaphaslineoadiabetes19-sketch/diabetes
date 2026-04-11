@@ -86,7 +86,7 @@
     <body>
     <div class="nav-bar">
       <button class="btn-back" onclick="goBack()">
-        ⬅ กลับหน้าหลัก
+        ⬅ ย้อนกลับ
       </button>
     </div>
 
@@ -104,7 +104,7 @@
       function goBack() {
         var currentPath = window.location.pathname;
         var directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
-        location.href = directoryPath + '/food.html';
+        location.href = directoryPath + '/food_carbs_amount_count.html';
       }
     </script>
   </body>
