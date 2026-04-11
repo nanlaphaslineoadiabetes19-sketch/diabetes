@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>อาหาร</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        margin: 0;
+        padding: 20px;
+        background-color: #f0f2f5;
+        font-family: 'Sarabun', sans-serif;
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+      }
+      .main-wrapper {
+        max-width: 500px;
+        width: 100%;
+        background: white;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        border-radius: 20px;
+        padding: 30px 20px;
+        text-align: center;
+        align-self: flex-start;
+      }
+      h1 { color: #333; font-size: 28px; margin-bottom: 30px; font-weight: 700; }
+      .menu-item {
+        background-color: #eaffee;
+        margin-bottom: 15px;
+        border-radius: 8px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+      }
+      .menu-header {
+        padding: 20px;
+        font-size: 22px;
+        font-weight: 700;
+        color: #2c3e50;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .menu-header:hover { background-color: #d4f7db; }
+    </style>
+  </head>
+  <body>
+    <div class="main-wrapper">
+      <h1>การรับประทานอาหารสำหรับผู้ป่วยเบาหวาน<br>คาร์โบไฮเดรตมีผลโดยตรงต่อระดับน้ำตาลในเลือด การกำหนดปริมาณในแต่ละมื้อและการนับคาร์โบไฮเดรต จึงเป็นแนวทางสำคัญในการดูแลตนเองของผู้ป่วยเบาหวาน</h1>
+      <div class="menu-item">
+        <div class="menu-header" onclick="goTo('food_carbs')">ความรู้เกี่ยวกับคาร์บ <span>➜</span></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-header" onclick="goTo('food_carbs_cal')">คำนวณค่าคาร์บที่เหมาะสมในแต่ละวัน <span>➜</span></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-header" onclick="goTo('food_carbs_amount')">ปริมาณคาร์บในอาหาร <span>➜</span></div>
+      </div>
+      <div class="menu-item">
+        <div class="menu-header" onclick="goTo('food_carbs_healthy')">จานอาหารสุขภาพ <span>➜</span></div>
+      </div>
+    </div>
+
+    <script>
+      function goTo(pageName) {
+        // ระบุพาธของ Repository คุณ
+        var baseUrl = 'https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes';
+        // เปลี่ยนวิธีเขียน: ให้วิ่งไปที่ชื่อไฟล์ .html ตรงๆ
+        window.location.href = baseUrl + '/' + pageName + '.html';
+      }
+    </script>
+  </body>
+</html>
