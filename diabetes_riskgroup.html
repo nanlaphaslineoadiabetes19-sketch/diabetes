@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>กลุ่มเสี่ยงโรคเบาหวาน</title>
+    <title>ความรู้เบาหวาน</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
     <style>
       body {
@@ -14,7 +14,6 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-        min-height: 100vh;
       }
 
       .container {
@@ -24,10 +23,7 @@
         box-sizing: border-box;
       }
 
-      .nav-bar {
-        width: 100%;
-        margin-bottom: 15px;
-      }
+      .nav-bar { width: 100%; margin-bottom: 15px; }
 
       .btn-back {
         padding: 10px 20px;
@@ -37,7 +33,6 @@
         border-radius: 8px;
         cursor: pointer;
         font-family: 'Sarabun', sans-serif;
-        font-size: 16px;
         display: flex;
         align-items: center;
         gap: 8px;
@@ -49,24 +44,31 @@
         box-shadow: 0 10px 40px rgba(0,0,0,0.15);
         border-radius: 12px;
         overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        line-height: 0;
+        
+        /* เทคนิคใหม่: ปิดช่องว่างด้วยการคุมบรรทัด */
+        line-height: 0; 
         font-size: 0;
+        letter-spacing: 0;
+        word-spacing: 0;
       }
 
       img {
-        width: 100.2%; /* ขยายเผื่อไว้นิดเดียวเพื่อปิดขอบขาวด้านข้าง */
+        width: 100%;
         height: auto;
-        display: block;
+        display: block; /* บังคับลบช่องว่างด้านล่าง */
         margin: 0;
         padding: 0;
         border: none;
+        
+        /* บังคับเกยกันแบบหนักๆ เพื่อความชัวร์ */
+        margin-top: -3px; 
+        
+        /* ป้องกันเส้นขอบแปลกๆ ในบางเบราว์เซอร์ */
+        image-rendering: -webkit-optimize-contrast; 
       }
 
-      /* บังคับรูปที่ 2 เป็นต้นไปให้ดึงตัวขึ้นไปทับรูปบน 2px */
-      img + img {
-        margin-top: -2px;
+      img:first-child {
+        margin-top: 0; /* รูปแรกไม่ต้องดึงขึ้น */
       }
     </style>
   </head>
@@ -74,13 +76,11 @@
 
     <div class="container">
       <div class="nav-bar">
-        <button class="btn-back" onclick="goBack()">
-          ⬅ กลับหน้าหลัก
-        </button>
+        <button class="btn-back" onclick="goBack()">⬅ กลับหน้าหลัก</button>
       </div>
 
       <div class="main-wrapper">
-        <img src="https://lh3.googleusercontent.com/d/1LmkU5oH2_D1Sx59QFTCjPeF0hJrq0USd" alt="กลุ่มเสี่ยง 1"><img src="https://lh3.googleusercontent.com/d/17Ycr6ZWz6ctKF_G-I8jckaNDOUS2d-XG" alt="กลุ่มเสี่ยง 2">
+        <img src="URL_รูปที่_1"><img src="URL_รูปที่_2">
       </div>
     </div>
 
