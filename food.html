@@ -62,7 +62,7 @@
             background: rgba(255, 255, 255, 0.98);
             box-shadow: 0 20px 50px var(--shadow);
             border-radius: 0 0 30px 30px; /* มนเฉพาะด้านล่างเพื่อให้ด้านบนชิดขอบ */
-            padding: 50px 25px 40px;
+            padding: 15px 25px 40px; /* ปรับ padding ตัวแรกให้เหลือน้อย เพื่อให้เนื้อหาดันขึ้นบนสุด */
             text-align: center;
             margin: 0; /* ขยับขึ้นบนสุด */
             box-sizing: border-box;
@@ -71,8 +71,10 @@
 
         .icon-header {
             font-size: 75px;
-            margin-bottom: 10px;
-            margin-top: 5px; /* เว้นระยะจากขอบบนนิดเดียวเพื่อให้ไอคอนดูสวย */
+            margin-bottom: 5px; /* ลดระยะห่างลงเพื่อให้ข้อความขยับตามขึ้นมา */
+            margin-top: 0; /* บังคับให้หัวข้อชิดไอคอนขึ้นไปอีก */
+            line-height: 1;
+            display: block;
         }
 
         h1 { 
