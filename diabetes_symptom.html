@@ -25,27 +25,31 @@
       }
 
       .nav-bar {
-        width: 100%;
-        margin-bottom: 15px;
+        position: fixed; /* ทำให้ลอยอยู่กับที่ */
+        top: 20px;       /* ระยะห่างจากขอบบน */
+        left: 20px;      /* ระยะห่างจากขอบซ้าย */
+        z-index: 1000;   /* มั่นใจว่าปุ่มจะลอยทับอยู่บนรูปภาพเสมอ */
       }
 
       .btn-back {
         padding: 10px 20px;
-        background-color: #6c757d;
+        background-color: rgba(108, 117, 125, 0.9); /* เพิ่มความโปร่งแสงนิดหน่อยให้ดูทันสมัย */
         color: white;
         border: none;
-        border-radius: 8px;
+        border-radius: 50px; /* ปรับให้ปุ่มมนขึ้นเหมือนแคปซูล จะดูสวยกว่าเวลาลอยอยู่ */
         cursor: pointer;
         font-family: 'Sarabun', sans-serif;
         font-size: 16px;
         display: flex;
         align-items: center;
         gap: 8px;
-        transition: background 0.3s;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.2); /* เพิ่มเงาให้ปุ่มลอยเด่นขึ้นมา */
+        transition: all 0.3s;
       }
 
       .btn-back:hover {
         background-color: #5a6268;
+        transform: scale(1.05); /* เวลาเอาเมาส์วางหรือกด ปุ่มจะขยายใหญ่นิดหน่อย */
       }
 
       .main-wrapper {
