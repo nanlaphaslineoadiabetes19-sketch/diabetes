@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="th">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ความรู้เกี่ยวกับคาร์บ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+      body {
+        margin: 0;
+        padding: 20px 0;
+        background-color: #f0f2f5;
+        font-family: 'Sarabun', sans-serif;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .container {
+        width: 100%;
+        max-width: 600px;
+        padding: 0 15px;
+        box-sizing: border-box;
+      }
+
+      /* ปรับ Nav Bar ให้ลอยค้าง (Fixed) */
+      .nav-bar {
+        position: fixed;    /* บังคับให้ลอยค้าง */
+        top: 20px;          /* ห่างจากขอบบน 20px */
+        left: 20px;         /* ห่างจากขอบซ้าย 20px */
+        z-index: 9999;      /* อยู่ชั้นบนสุดเสมอ ไม่โดนรูปทับ */
+        width: auto;
+      }
+
+      .btn-back {
+        padding: 10px 20px;
+        background-color: rgba(108, 117, 125, 0.85); /* สีเทาเข้มโปร่งแสงนิดๆ */
+        color: white;
+        border: none;
+        border-radius: 50px; /* ทรงแคปซูล */
+        cursor: pointer;
+        font-family: 'Sarabun', sans-serif;
+        font-size: 16px;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* ใส่เงาให้ดูมีมิติ */
+        backdrop-filter: blur(5px); /* ทำให้ฉากหลังปุ่มเบลอ ดูหรูขึ้น */
+        transition: all 0.3s ease;
+      }
+
+      .btn-back:hover {
+        background-color: #495057;
+        transform: scale(1.05);
+      }
+
+      .main-wrapper {
+        width: 100%;
+        background: white;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+        border-radius: 12px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 20px;
+        /* เทคนิค 1: ลบ whitespace ระหว่างภาพ */
+        font-size: 0; 
+      }
+
+      img {
+        width: 100%;
+        height: auto;
+        /* เทคนิค 2: บังคับให้ภาพเป็นแผ่นเดียว */
+        display: block; 
+        margin: 0;
+        padding: 0;
+        border: none;
+        /* เทคนิค 3: ให้ภาพเรียงตัวสนิท */
+        vertical-align: bottom; 
+      }
+    </style>
+  </head>
+  <body>
+
+    <body>
+    <div class="nav-bar">
+      <button class="btn-back" onclick="goBack()">
+        ⬅ กลับหน้าหลัก
+      </button>
+    </div>
+
+    <div class="container">
+      <div class="main-wrapper">
+        <img src="https://lh3.googleusercontent.com/d/1Pz5Ozd9Fv-9__xfxCedeSMbBDlzMAP5r">
+        <img src="https://lh3.googleusercontent.com/d/17pGXz8SuGOkkKqi3H35p2ciE0LLeU5l8">
+        <img src="https://lh3.googleusercontent.com/d/1Yg_KRJGtE5r4hiurYx7OpbXAqN4VedYU">
+        <img src="https://lh3.googleusercontent.com/d/1eksVwRh1U2W1WzfWd-mx0_HAU5hxJSEV">
+        <img src="https://lh3.googleusercontent.com/d/1tBeyFpLgBQ7bJ0GP3eOboyDPoR8bLekU">
+      </div>
+    </div>
+
+    <script>
+      function goBack() {
+        var currentPath = window.location.pathname;
+        var directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+        location.href = directoryPath + '/food.html';
+      }
+    </script>
+  </body>
+</html>
