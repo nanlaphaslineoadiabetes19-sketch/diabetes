@@ -8,7 +8,7 @@
     <style>
       body {
         margin: 0;
-        padding: 20px 0; /* ระยะเว้นขอบบน-ล่างของหน้า */
+        padding: 20px 0;
         background-color: #f0f2f5;
         font-family: 'Sarabun', sans-serif;
         display: flex;
@@ -48,27 +48,29 @@
         background-color: #5a6268;
       }
 
-      /* แผ่นหลักแผ่นเดียวที่รวมทุกภาพไว้ข้างใน */
       .main-wrapper {
         width: 100%;
         background: white;
-        /* มีเงาและขอบโค้งรอบแผ่นใหญ่แผ่นเดียว */
         box-shadow: 0 10px 40px rgba(0,0,0,0.15);
         border-radius: 12px;
-        overflow: hidden; /* ช่วยตัดขอบภาพที่มุมโค้ง */
+        overflow: hidden;
         display: flex;
         flex-direction: column;
-        /* ลบ margin-bottom ออกเพื่อให้ภาพติดกัน */
         margin-bottom: 20px;
+        /* เทคนิค 1: ลบ whitespace ระหว่างภาพ */
+        font-size: 0; 
       }
 
       img {
         width: 100%;
         height: auto;
-        display: block; /* สำคัญ: ป้องกันช่องว่างใต้ภาพ */
+        /* เทคนิค 2: บังคับให้ภาพเป็นแผ่นเดียว */
+        display: block; 
         margin: 0;
         padding: 0;
-        border: none; /* ป้องกันเส้นขอบ */
+        border: none;
+        /* เทคนิค 3: ให้ภาพเรียงตัวสนิท */
+        vertical-align: bottom; 
       }
     </style>
   </head>
@@ -82,15 +84,12 @@
       </div>
 
       <div class="main-wrapper">
-        <img src="https://lh3.googleusercontent.com/d/1tsgfVYIGcePGMfw-1F6w8X732IAwDKit" alt="อาการเบาหวาน 1">
-        <img src="https://lh3.googleusercontent.com/d/1Q62HYPvYyu39fos2T2NOaU-yoFK9_hdr" alt="อาการเบาหวาน 2">
-        <img src="https://lh3.googleusercontent.com/d/1BbiXsmFlr2cKbJYRuaSE14AKvIaqS3Yi" alt="อาการเบาหวาน 3">
-        </div>
+        <img src="https://lh3.googleusercontent.com/d/1tsgfVYIGcePGMfw-1F6w8X732IAwDKit" alt="อาการเบาหวาน 1"><img src="https://lh3.googleusercontent.com/d/1Q62HYPvYyu39fos2T2NOaU-yoFK9_hdr" alt="อาการเบาหวาน 2"><img src="https://lh3.googleusercontent.com/d/1BbiXsmFlr2cKbJYRuaSE14AKvIaqS3Yi" alt="อาการเบาหวาน 3">
+      </div>
     </div>
 
     <script>
       function goBack() {
-        // กลับไปที่หน้าหลักบน GitHub
         var currentPath = window.location.pathname;
         var directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
         location.href = directoryPath + '/diabetes.html';
