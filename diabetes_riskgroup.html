@@ -23,19 +23,35 @@
         box-sizing: border-box;
       }
 
-      .nav-bar { width: 100%; margin-bottom: 15px; }
+      /* ปรับ Nav Bar ให้ลอยค้าง (Fixed) */
+      .nav-bar {
+        position: fixed;    /* บังคับให้ลอยค้าง */
+        top: 20px;          /* ห่างจากขอบบน 20px */
+        left: 20px;         /* ห่างจากขอบซ้าย 20px */
+        z-index: 9999;      /* อยู่ชั้นบนสุดเสมอ ไม่โดนรูปทับ */
+        width: auto;
+      }
 
       .btn-back {
         padding: 10px 20px;
-        background-color: #6c757d;
+        background-color: rgba(108, 117, 125, 0.85); /* สีเทาเข้มโปร่งแสงนิดๆ */
         color: white;
         border: none;
-        border-radius: 8px;
+        border-radius: 50px; /* ทรงแคปซูล */
         cursor: pointer;
         font-family: 'Sarabun', sans-serif;
+        font-size: 16px;
         display: flex;
         align-items: center;
         gap: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* ใส่เงาให้ดูมีมิติ */
+        backdrop-filter: blur(5px); /* ทำให้ฉากหลังปุ่มเบลอ ดูหรูขึ้น */
+        transition: all 0.3s ease;
+      }
+
+      .btn-back:hover {
+        background-color: #495057;
+        transform: scale(1.05);
       }
 
       .main-wrapper {
@@ -73,14 +89,16 @@
     </style>
   </head>
   <body>
-
+    <div class="nav-bar">
+      <button class="btn-back" onclick="goBack()">
+        ⬅ กลับหน้าหลัก
+      </button>
+    </div>
+    
     <div class="container">
-      <div class="nav-bar">
-        <button class="btn-back" onclick="goBack()">⬅ กลับหน้าหลัก</button>
-      </div>
-
       <div class="main-wrapper">
-        <img src="URL_รูปที่_1"><img src="URL_รูปที่_2">
+        <img src="https://lh3.googleusercontent.com/d/1LmkU5oH2_D1Sx59QFTCjPeF0hJrq0USd">
+        <img src="https://lh3.googleusercontent.com/d/17Ycr6ZWz6ctKF_G-I8jckaNDOUS2d-XG">
       </div>
     </div>
 
