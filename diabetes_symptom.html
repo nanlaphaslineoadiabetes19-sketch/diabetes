@@ -24,32 +24,35 @@
         box-sizing: border-box;
       }
 
+      /* ปรับ Nav Bar ให้ลอยค้าง (Fixed) */
       .nav-bar {
-        position: fixed; /* ทำให้ลอยอยู่กับที่ */
-        top: 20px;       /* ระยะห่างจากขอบบน */
-        left: 20px;      /* ระยะห่างจากขอบซ้าย */
-        z-index: 1000;   /* มั่นใจว่าปุ่มจะลอยทับอยู่บนรูปภาพเสมอ */
+        position: fixed;    /* บังคับให้ลอยค้าง */
+        top: 20px;          /* ห่างจากขอบบน 20px */
+        left: 20px;         /* ห่างจากขอบซ้าย 20px */
+        z-index: 9999;      /* อยู่ชั้นบนสุดเสมอ ไม่โดนรูปทับ */
+        width: auto;
       }
 
       .btn-back {
         padding: 10px 20px;
-        background-color: rgba(108, 117, 125, 0.9); /* เพิ่มความโปร่งแสงนิดหน่อยให้ดูทันสมัย */
+        background-color: rgba(108, 117, 125, 0.85); /* สีเทาเข้มโปร่งแสงนิดๆ */
         color: white;
         border: none;
-        border-radius: 50px; /* ปรับให้ปุ่มมนขึ้นเหมือนแคปซูล จะดูสวยกว่าเวลาลอยอยู่ */
+        border-radius: 50px; /* ทรงแคปซูล */
         cursor: pointer;
         font-family: 'Sarabun', sans-serif;
         font-size: 16px;
         display: flex;
         align-items: center;
         gap: 8px;
-        box-shadow: 0 4px 10px rgba(0,0,0,0.2); /* เพิ่มเงาให้ปุ่มลอยเด่นขึ้นมา */
-        transition: all 0.3s;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* ใส่เงาให้ดูมีมิติ */
+        backdrop-filter: blur(5px); /* ทำให้ฉากหลังปุ่มเบลอ ดูหรูขึ้น */
+        transition: all 0.3s ease;
       }
 
       .btn-back:hover {
-        background-color: #5a6268;
-        transform: scale(1.05); /* เวลาเอาเมาส์วางหรือกด ปุ่มจะขยายใหญ่นิดหน่อย */
+        background-color: #495057;
+        transform: scale(1.05);
       }
 
       .main-wrapper {
@@ -80,13 +83,14 @@
   </head>
   <body>
 
-    <div class="container">
-      <div class="nav-bar">
-        <button class="btn-back" onclick="goBack()">
-          ⬅ กลับหน้าหลัก
-        </button>
-      </div>
+    <body>
+    <div class="nav-bar">
+      <button class="btn-back" onclick="goBack()">
+        ⬅ กลับหน้าหลัก
+      </button>
+    </div>
 
+    <div class="container">
       <div class="main-wrapper">
         <img src="https://lh3.googleusercontent.com/d/1tsgfVYIGcePGMfw-1F6w8X732IAwDKit" alt="อาการเบาหวาน 1"><img src="https://lh3.googleusercontent.com/d/1Q62HYPvYyu39fos2T2NOaU-yoFK9_hdr" alt="อาการเบาหวาน 2"><img src="https://lh3.googleusercontent.com/d/1BbiXsmFlr2cKbJYRuaSE14AKvIaqS3Yi" alt="อาการเบาหวาน 3">
       </div>
