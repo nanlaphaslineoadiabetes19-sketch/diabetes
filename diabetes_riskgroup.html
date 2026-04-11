@@ -8,19 +8,18 @@
     <style>
       body {
         margin: 0;
-        padding: 20px 0;
+        padding: 0; /* ลบ padding ออกเพื่อไม่ให้ดันปุ่ม */
         background-color: #f0f2f5;
         font-family: 'Sarabun', sans-serif;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
+        /* ไม่ต้องใช้ display: flex; */
       }
-
+      
       .container {
         width: 100%;
         max-width: 600px;
-        padding: 0 15px;
+        padding: 80px 15px 20px 15px; /* เพิ่ม padding-top เป็น 80px เพื่อหลบปุ่มที่ลอยอยู่ */
         box-sizing: border-box;
+        margin: 0 auto; /* จัดกึ่งกลางหน้าจอแทนการใช้ flex */
       }
 
       /* ปรับ Nav Bar ให้ลอยค้าง (Fixed) */
