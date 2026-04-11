@@ -21,21 +21,21 @@
             font-family: 'Sarabun', sans-serif;
             display: flex;
             justify-content: center;
-            align-items: flex-start; /* เพื่อให้เลื่อนลงมาได้สวยๆ */
+            align-items: flex-start; /* ชิดบน */
             min-height: 100vh;
         }
 
         /* ปุ่มกลับหน้าหลักแบบ Fixed (ลอยค้าง) */
         .nav-bar-fixed {
             position: fixed !important;
-            top: 20px !important;
-            left: 20px !important;
+            top: 15px !important;
+            left: 15px !important;
             z-index: 99999 !important;
         }
 
         .btn-back {
             padding: 10px 22px;
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: rgba(255, 255, 255, 0.8);
             color: #555;
             border: 1px solid #ddd;
             border-radius: 50px;
@@ -54,24 +54,25 @@
         .btn-back:hover {
             background-color: white;
             transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.15);
         }
 
         .main-wrapper {
             max-width: 500px;
-            width: 90%;
+            width: 100%; /* ปรับให้เต็มจอในมือถือเพื่อความสวยงาม */
             background: rgba(255, 255, 255, 0.98);
             box-shadow: 0 20px 50px var(--shadow);
-            border-radius: 30px;
-            padding: 60px 25px 40px;
+            border-radius: 0 0 30px 30px; /* มนเฉพาะด้านล่างเพื่อให้ด้านบนชิดขอบ */
+            padding: 50px 25px 40px;
             text-align: center;
-            margin: 80px 0 40px; /* เว้นด้านบนให้ปุ่มลอยไม่ทับ */
-            backdrop-filter: blur(10px);
+            margin: 0; /* ขยับขึ้นบนสุด */
+            box-sizing: border-box;
+            min-height: 100vh; /* ให้สีขาวลากยาวลงมาจนสุดหน้าจอ */
         }
 
         .icon-header {
             font-size: 55px;
             margin-bottom: 20px;
+            margin-top: 10px; /* เว้นระยะจากขอบบนนิดเดียวเพื่อให้ไอคอนดูสวย */
         }
 
         h1 { 
@@ -155,6 +156,12 @@
     </style>
 </head>
 <body>
+
+    <div class="nav-bar-fixed">
+        <button class="btn-back" onclick="goBackMain()">
+            ⬅ กลับหน้าหลัก
+        </button>
+    </div>
 
     <div class="main-wrapper">
         <div class="icon-header">🥗</div>
