@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ภาวะแทรกซ้อนโรคเบาหวาน</title>
+    <title>ภาวะแทรกซ้อนกับโรคเบาหวาน</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
     <style>
       body {
@@ -13,18 +13,18 @@
         font-family: 'Sarabun', sans-serif;
       }
 
-      /* แก้ชื่อคลาสให้ตรงกับ HTML และบังคับลอย */
+      /* 1. ชื่อ Class ต้องตรงกับใน HTML ด้านล่าง */
       .nav-bar-fixed {
-        position: fixed !important; /* บังคับให้ลอยค้างหน้าจอ */
+        position: fixed !important;
         top: 20px !important;
         left: 20px !important;
-        z-index: 99999 !important; /* อยู่ชั้นบนสุดเสมอ */
+        z-index: 999999 !important; /* ค่าสูงมากเพื่อให้ลอยทับทุกอย่าง */
         width: auto;
       }
 
       .btn-back {
-        padding: 10px 20px;
-        background-color: rgba(108, 117, 125, 0.9);
+        padding: 12px 24px;
+        background-color: #6c757d; /* ใช้สีเข้มเพื่อให้เห็นชัดตอนทดสอบ */
         color: white;
         border: none;
         border-radius: 50px;
@@ -35,8 +35,8 @@
         align-items: center;
         gap: 8px;
         box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-        backdrop-filter: blur(5px);
         transition: all 0.3s ease;
+        text-decoration: none;
       }
 
       .btn-back:hover {
@@ -47,7 +47,8 @@
       .container {
         width: 100%;
         max-width: 600px;
-        padding: 80px 15px 40px 15px; /* เว้นด้านบนไว้หลบปุ่ม */
+        /* 2. ดันเนื้อหาลงมา 80px เพื่อไม่ให้ภาพแรกโดนปุ่มทับ */
+        padding: 80px 15px 40px 15px;
         box-sizing: border-box;
         margin: 0 auto;
       }
@@ -58,20 +59,21 @@
         box-shadow: 0 10px 40px rgba(0,0,0,0.15);
         border-radius: 12px;
         overflow: hidden;
-        display: flex;
-        flex-direction: column;
         line-height: 0;
         font-size: 0;
+        display: flex;
+        flex-direction: column;
       }
 
       img {
-        width: 100%; 
+        width: 100%;
         height: auto;
         display: block;
         margin: 0;
         padding: 0;
         border: none;
-        margin-top: -2px; /* ปิดรอยต่อระหว่างภาพ */
+        /* 3. ให้ภาพเกยกันเล็กน้อยเพื่อปิดรอยต่อ */
+        margin-top: -2px;
       }
 
       img:first-child {
