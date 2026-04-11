@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <style>
+      body {
+        margin: 0;
+        padding: 40px 0; /* เว้นระยะบนล่าง */
+        background-color: #f0f2f5;
+        display: flex;
+        justify-content: center;
+        min-height: 100vh;
+      }
+
+      /* คอนเทนเนอร์หลักที่รวมภาพทั้งหมดไว้ข้างใน */
+      .main-wrapper {
+        max-width: 600px; /* ปรับความกว้างตามความเหมาะสม */
+        width: 100%;
+        background: white;
+        box-shadow: 0 10px 40px rgba(0,0,0,0.15); /* เงารอบแผ่นใหญ่ */
+        border-radius: 12px; /* มุมโค้งมนเฉพาะที่ขอบนอกสุด */
+        overflow: hidden; /* ช่วยให้ภาพที่มุมไม่ล้นขอบโค้ง */
+        display: flex;
+        flex-direction: column;
+      }
+
+      img {
+        width: 100%;
+        height: auto;
+        display: block; /* สำคัญมาก: ป้องกันไม่ให้เกิดช่องว่างเล็กๆ ใต้ภาพ */
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+  </head>
+  <body>
+    
+    <div class="container">
+
+      <div style="padding: 15px;">
+        <button onclick="location.href='https://script.google.com/macros/s/AKfycbwvKi_gkXdi2HqeJnY6LdEz_eg12zxgtOfGDKHLPVuiydBHef2Dm2TW4zCEX8sqSPEk3g/exec?page=diabetes'" 
+                style="padding: 10px 20px; background-color: #6c757d; color: white; border: none; border-radius: 5px; cursor: pointer; font-family: 'Sarabun', sans-serif;">
+          ⬅ กลับหน้าหลัก
+        </button>
+      </div>
+
+      <!-- ภาพที่ 1 -->
+      <div class="main-wrapper">
+        <img src="https://lh3.googleusercontent.com/d/1LmkU5oH2_D1Sx59QFTCjPeF0hJrq0USd" alt="Image 1">
+      </div>
+      <!-- ภาพที่ 2 -->
+      <div class="main-wrapper">
+        <img src="https://lh3.googleusercontent.com/d/17Ycr6ZWz6ctKF_G-I8jckaNDOUS2d-XG" alt="Image 1">
+      </div>
+
+    </div>
+
+  </body>
+</html>
