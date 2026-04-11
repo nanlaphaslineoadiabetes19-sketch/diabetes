@@ -8,39 +8,50 @@
     <style>
       body {
         margin: 0;
-        padding: 20px 0;
+        padding: 0;
         background-color: #f0f2f5;
         font-family: 'Sarabun', sans-serif;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        min-height: 100vh;
+        /* ถอด Flex ออกเพื่อให้ปุ่ม Fixed ทำงานได้สมบูรณ์ */
       }
 
-      .container {
-        width: 100%;
-        max-width: 600px;
-        padding: 0 15px;
-        box-sizing: border-box;
-      }
-
+      /* ปรับ Nav Bar ให้ลอยค้าง (Fixed) */
       .nav-bar {
-        width: 100%;
-        margin-bottom: 15px;
+        position: fixed;
+        top: 20px;
+        left: 20px;
+        z-index: 9999;
+        width: auto;
       }
 
       .btn-back {
         padding: 10px 20px;
-        background-color: #6c757d;
+        background-color: rgba(108, 117, 125, 0.85);
         color: white;
         border: none;
-        border-radius: 8px;
+        border-radius: 50px; /* ทรงแคปซูล */
         cursor: pointer;
         font-family: 'Sarabun', sans-serif;
         font-size: 16px;
         display: flex;
         align-items: center;
         gap: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+        backdrop-filter: blur(5px);
+        transition: all 0.3s ease;
+      }
+
+      .btn-back:hover {
+        background-color: #495057;
+        transform: scale(1.05);
+      }
+
+      .container {
+        width: 100%;
+        max-width: 600px;
+        /* เพิ่ม padding-top เพื่อหลบปุ่มที่ลอยอยู่ ไม่ให้ทับเนื้อหาภาพด้านบน */
+        padding: 80px 15px 40px 15px;
+        box-sizing: border-box;
+        margin: 0 auto; /* จัดกึ่งกลางหน้าจอ */
       }
 
       .main-wrapper {
@@ -49,8 +60,6 @@
         box-shadow: 0 10px 40px rgba(0,0,0,0.15);
         border-radius: 12px;
         overflow: hidden;
-        
-        /* ท่าไม้ตาย: ใช้ Flexbox จัดรูปเรียงต่อกัน */
         display: flex;
         flex-direction: column;
         line-height: 0;
@@ -58,19 +67,17 @@
       }
 
       img {
-        width: 100.2%; /* ขยายออกนิดเดียวเพื่อป้องกันขอบขาวด้านข้าง */
+        width: 100.2%; 
         height: auto;
         display: block;
         margin: 0;
         padding: 0;
         border: none;
         outline: none;
-        
-        /* ให้รูปตัวล่างขยับขึ้นไปทับตัวบน 2px เพื่อปิดช่องว่าง */
+        /* ให้รูปตัวล่างขยับขึ้นไปทับตัวบน เพื่อปิดช่องว่างรอยต่อ */
         margin-top: -2px; 
       }
 
-      /* รูปแรกสุดไม่ต้องขยับขึ้น */
       img:first-child {
         margin-top: 0;
       }
@@ -78,15 +85,15 @@
   </head>
   <body>
 
-    <div class="container">
-      <div class="nav-bar">
-        <button class="btn-back" onclick="goBack()">
-          ⬅ กลับหน้าหลัก
-        </button>
-      </div>
+    <div class="nav-bar">
+      <button class="btn-back" onclick="goBack()">
+        ⬅ กลับหน้าหลัก
+      </button>
+    </div>
 
+    <div class="container">
       <div class="main-wrapper">
-        <img src="https://lh3.googleusercontent.com/d/1MmTF4IYia8cJ7ZGzXC4l2FhjJfrWZ73X" alt="1"><img src="https://lh3.googleusercontent.com/d/1dtWlQGhpFHKAtg6JewWY2GaMuJx3yoy3" alt="2">
+        <img src="https://lh3.googleusercontent.com/d/1MmTF4IYia8cJ7ZGzXC4l2FhjJfrWZ73X" alt="ภาวะแทรกซ้อน 1"><img src="https://lh3.googleusercontent.com/d/1dtWlQGhpFHKAtg6JewWY2GaMuJx3yoy3" alt="ภาวะแทรกซ้อน 2">
       </div>
     </div>
 
