@@ -11,24 +11,23 @@
         padding: 0;
         background-color: #f0f2f5;
         font-family: 'Sarabun', sans-serif;
-        /* ถอด Flex ออกเพื่อให้ปุ่ม Fixed ทำงานได้สมบูรณ์ */
       }
 
-      /* ปรับ Nav Bar ให้ลอยค้าง (Fixed) */
-      .nav-bar {
-        position: fixed;
-        top: 20px;
-        left: 20px;
-        z-index: 9999;
+      /* แก้ชื่อคลาสให้ตรงกับ HTML และบังคับลอย */
+      .nav-bar-fixed {
+        position: fixed !important; /* บังคับให้ลอยค้างหน้าจอ */
+        top: 20px !important;
+        left: 20px !important;
+        z-index: 99999 !important; /* อยู่ชั้นบนสุดเสมอ */
         width: auto;
       }
 
       .btn-back {
         padding: 10px 20px;
-        background-color: rgba(108, 117, 125, 0.85);
+        background-color: rgba(108, 117, 125, 0.9);
         color: white;
         border: none;
-        border-radius: 50px; /* ทรงแคปซูล */
+        border-radius: 50px;
         cursor: pointer;
         font-family: 'Sarabun', sans-serif;
         font-size: 16px;
@@ -48,10 +47,9 @@
       .container {
         width: 100%;
         max-width: 600px;
-        /* เพิ่ม padding-top เพื่อหลบปุ่มที่ลอยอยู่ ไม่ให้ทับเนื้อหาภาพด้านบน */
-        padding: 80px 15px 40px 15px;
+        padding: 80px 15px 40px 15px; /* เว้นด้านบนไว้หลบปุ่ม */
         box-sizing: border-box;
-        margin: 0 auto; /* จัดกึ่งกลางหน้าจอ */
+        margin: 0 auto;
       }
 
       .main-wrapper {
@@ -67,15 +65,13 @@
       }
 
       img {
-        width: 100.2%; 
+        width: 100%; 
         height: auto;
         display: block;
         margin: 0;
         padding: 0;
         border: none;
-        outline: none;
-        /* ให้รูปตัวล่างขยับขึ้นไปทับตัวบน เพื่อปิดช่องว่างรอยต่อ */
-        margin-top: -2px; 
+        margin-top: -2px; /* ปิดรอยต่อระหว่างภาพ */
       }
 
       img:first-child {
@@ -84,6 +80,7 @@
     </style>
   </head>
   <body>
+
     <div class="nav-bar-fixed">
       <button class="btn-back" onclick="goBack()">
         ⬅ กลับหน้าหลัก
@@ -92,7 +89,7 @@
 
     <div class="container">
       <div class="main-wrapper">
-        <img src="https://lh3.googleusercontent.com/d/1MmTF4IYia8cJ7ZGzXC4l2FhjJfrWZ73X" alt="ภาวะแทรกซ้อน 1"><img src="https://lh3.googleusercontent.com/d/1dtWlQGhpFHKAtg6JewWY2GaMuJx3yoy3" alt="ภาวะแทรกซ้อน 2">
+        <img src="https://lh3.googleusercontent.com/d/1MmTF4IYia8cJ7ZGzXC4l2FhjJfrWZ73X" alt="1"><img src="https://lh3.googleusercontent.com/d/1dtWlQGhpFHKAtg6JewWY2GaMuJx3yoy3" alt="2">
       </div>
     </div>
 
