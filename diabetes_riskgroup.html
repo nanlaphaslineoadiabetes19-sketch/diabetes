@@ -26,7 +26,6 @@
 
       .nav-bar {
         width: 100%;
-        max-width: 600px;
         margin-bottom: 15px;
       }
 
@@ -52,14 +51,22 @@
         overflow: hidden;
         display: flex;
         flex-direction: column;
-        margin-bottom: 20px;
+        line-height: 0;
+        font-size: 0;
       }
 
       img {
-        width: 100%;
+        width: 100.2%; /* ขยายเผื่อไว้นิดเดียวเพื่อปิดขอบขาวด้านข้าง */
         height: auto;
         display: block;
         margin: 0;
+        padding: 0;
+        border: none;
+      }
+
+      /* บังคับรูปที่ 2 เป็นต้นไปให้ดึงตัวขึ้นไปทับรูปบน 2px */
+      img + img {
+        margin-top: -2px;
       }
     </style>
   </head>
@@ -73,16 +80,12 @@
       </div>
 
       <div class="main-wrapper">
-        <img src="https://lh3.googleusercontent.com/d/1LmkU5oH2_D1Sx59QFTCjPeF0hJrq0USd" alt="กลุ่มเสี่ยง 1">
-      </div>
-      <div class="main-wrapper">
-        <img src="https://lh3.googleusercontent.com/d/17Ycr6ZWz6ctKF_G-I8jckaNDOUS2d-XG" alt="กลุ่มเสี่ยง 2">
+        <img src="https://lh3.googleusercontent.com/d/1LmkU5oH2_D1Sx59QFTCjPeF0hJrq0USd" alt="กลุ่มเสี่ยง 1"><img src="https://lh3.googleusercontent.com/d/17Ycr6ZWz6ctKF_G-I8jckaNDOUS2d-XG" alt="กลุ่มเสี่ยง 2">
       </div>
     </div>
 
     <script>
       function goBack() {
-        // กลับไปที่หน้าหลักบน GitHub
         var currentPath = window.location.pathname;
         var directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
         location.href = directoryPath + '/diabetes.html';
