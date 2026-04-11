@@ -1,75 +1,167 @@
 <!DOCTYPE html>
 <html lang="th">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ความรู้เกี่ยวกับโรคเบาหวาน</title>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-      body {
-        margin: 0;
-        padding: 20px;
-        background-color: #f0f2f5;
-        font-family: 'Sarabun', sans-serif;
-        display: flex;
-        justify-content: center;
-        min-height: 100vh;
-      }
-      .main-wrapper {
-        max-width: 500px;
-        width: 100%;
-        background: white;
-        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
-        border-radius: 20px;
-        padding: 30px 20px;
-        text-align: center;
-        align-self: flex-start;
-      }
-      h1 { color: #333; font-size: 28px; margin-bottom: 30px; font-weight: 700; }
-      .menu-item {
-        background-color: #eaffee;
-        margin-bottom: 15px;
-        border-radius: 8px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-      }
-      .menu-header {
-        padding: 20px;
-        font-size: 22px;
-        font-weight: 700;
-        color: #2c3e50;
-        cursor: pointer;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .menu-header:hover { background-color: #d4f7db; }
+        :root {
+            --primary-color: #27ae60;
+            --secondary-color: #2ecc71;
+            --bg-color: #f4f7f6;
+            --text-dark: #2c3e50;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #e0f2f1 0%, #f4f7f6 100%);
+            font-family: 'Sarabun', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .main-wrapper {
+            max-width: 450px;
+            width: 90%;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+            border-radius: 24px;
+            padding: 40px 25px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .header-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--primary-color);
+            border-radius: 20px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 40px;
+            box-shadow: 0 10px 20px rgba(39, 174, 96, 0.3);
+        }
+
+        h1 { 
+            color: var(--text-dark); 
+            font-size: 24px; 
+            margin-bottom: 35px; 
+            font-weight: 700;
+            line-height: 1.4;
+        }
+
+        .menu-container {
+            display: grid;
+            gap: 16px;
+        }
+
+        .menu-item {
+            background-color: white;
+            border: 1px solid #edf2f0;
+            border-radius: 16px;
+            overflow: hidden;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 18px 24px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+        }
+
+        .menu-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 20px rgba(0,0,0,0.06);
+            border-color: var(--secondary-color);
+        }
+
+        .menu-item:active {
+            transform: scale(0.98);
+        }
+
+        .menu-icon {
+            font-size: 24px;
+            margin-right: 15px;
+            background: #f0faf4;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+
+        .menu-text {
+            flex-grow: 1;
+            text-align: left;
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        .arrow {
+            color: #bdc3c7;
+            transition: transform 0.3s;
+        }
+
+        .menu-item:hover .arrow {
+            color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        footer {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #95a5a6;
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
+
     <div class="main-wrapper">
-      <h1>ความรู้เกี่ยวกับโรคเบาหวาน</h1>
-      <div class="menu-item">
-        <div class="menu-header" onclick="goTo('diabetes_meaning')">ความหมาย <span>➜</span></div>
-      </div>
-      <div class="menu-item">
-        <div class="menu-header" onclick="goTo('diabetes_symptom')">อาการของโรคเบาหวาน <span>➜</span></div>
-      </div>
-      <div class="menu-item">
-        <div class="menu-header" onclick="goTo('diabetes_riskgroup')">กลุ่มเสี่ยง <span>➜</span></div>
-      </div>
-      <div class="menu-item">
-        <div class="menu-header" onclick="goTo('diabetes_complications')">ภาวะแทรกซ้อนกับโรคเบาหวาน <span>➜</span></div>
-      </div>
+        <div class="header-icon">🩺</div>
+        <h1>ศูนย์ความรู้ดิจิทัล<br>เรื่องโรคเบาหวาน</h1>
+        
+        <div class="menu-container">
+            <div class="menu-item" onclick="goTo('diabetes_meaning')">
+                <div class="menu-icon">📖</div>
+                <div class="menu-text">ความหมายของโรค</div>
+                <div class="arrow">➜</div>
+            </div>
+
+            <div class="menu-item" onclick="goTo('diabetes_symptom')">
+                <div class="menu-icon">⚠️</div>
+                <div class="menu-text">อาการที่ต้องระวัง</div>
+                <div class="arrow">➜</div>
+            </div>
+
+            <div class="menu-item" onclick="goTo('diabetes_riskgroup')">
+                <div class="menu-icon">👥</div>
+                <div class="menu-text">ใครคือกลุ่มเสี่ยง?</div>
+                <div class="arrow">➜</div>
+            </div>
+
+            <div class="menu-item" onclick="goTo('diabetes_complications')">
+                <div class="menu-icon">🏥</div>
+                <div class="menu-text">ภาวะแทรกซ้อน</div>
+                <div class="arrow">➜</div>
+            </div>
+        </div>
+
+        <footer>&copy; 2026 ระบบคัดกรองความเสี่ยงเบาหวาน</footer>
     </div>
 
     <script>
-      function goTo(pageName) {
-        // ระบุพาธของ Repository คุณ
-        var baseUrl = 'https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes';
-        // เปลี่ยนวิธีเขียน: ให้วิ่งไปที่ชื่อไฟล์ .html ตรงๆ
-        window.location.href = baseUrl + '/' + pageName + '.html';
-      }
+        function goTo(pageName) {
+            // ใช้พาธแบบ Relative เพื่อให้ทำงานได้ทั้งบน Local และ GitHub Pages
+            window.location.href = pageName + '.html';
+        }
     </script>
-  </body>
+</body>
 </html>
