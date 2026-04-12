@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>คำนวณคาร์บ - นับคาร์บ ลดโรค NCDs</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&family=Kanit:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <style>
+        :root {
+            --primary-orange: #e67e22;
+            --primary-green: #27ae60;
+            --bg-cream: #fffaf0;
+            --text-dark: #2c3e50;
+            --card-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f6;
+            font-family: 'Sarabun', sans-serif;
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
+        /* Nav Bar Fixed */
+        .nav-bar {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 9999;
+        }
+
+        .btn-back {
+            padding: 10px 22px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #444;
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 50px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            backdrop-filter: blur(10px);
+            transition: 0.3s;
+            text-decoration: none;
+        }
+
+        .btn-back:hover {
+            background-color: white;
+            transform: scale(1.05);
+            color: var(--primary-orange);
+        }
+
+        .container-main {
+            width: 100%;
+            max-width: 550px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: var(--card-shadow);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .hero-banner {
+            background-color: var(--primary-green);
+            background-image: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);
+            color: white;
+            text-align: center;
+            padding: 50px 20px;
+            border-radius: 0 0 40px 40px;
+        }
+
+        .logo-area img {
+            max-width: 120px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.2));
+        }
+
+        .hero-banner h1 {
+            font-family: 'Kanit', sans-serif;
+            font-weight: 600;
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .hero-banner p {
+            font-weight: 300;
+            opacity: 0.9;
+            font-size: 0.9rem;
+            margin-top: 5px;
+        }
+
+        .form-section {
+            padding: 30px 25px;
+        }
+
+        .section-title {
+            color: var(--primary-orange);
+            font-family: 'Kanit', sans-serif;
+            font-weight: 600;
+            border-left: 5px solid var(--primary-orange);
+            padding-left: 10px;
+            margin-bottom: 25px;
+        }
+
+        .gender-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .gender-box {
+            flex: 1;
+            border: 2px solid #eee;
+            border-radius: 15px;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.3s;
+            background: #fff;
+        }
+
+        .gender-box.active {
+            border-color: var(--primary-orange);
+            background: #fff5e6;
+            color: var(--primary-orange);
+            font-weight: 700;
+        }
+
+        input[type="radio"] { display: none; }
+
+        .glass-input {
+            border: 2px solid #f0f0f0;
+            border-radius: 12px;
+            padding: 12px;
+            font-size: 1rem;
+            transition: 0.3s;
+        }
+
+        .glass-input:focus {
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 4px rgba(39, 174, 96, 0.1);
+        }
+
+        .form-label {
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        .btn-calculate {
+            background: var(--primary-orange);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            padding: 18px;
+            font-weight: 700;
+            width: 100%;
+            font-size: 1.2rem;
+            margin-top: 25px;
+            box-shadow: 0 8px 20px rgba(230, 126, 34, 0.3);
+            transition: 0.3s;
+            font-family: 'Kanit', sans-serif;
+        }
+
+        .btn-calculate:hover {
+            transform: translateY(-3px);
+            background: #d35400;
+            box-shadow: 0 12px 25px rgba(230, 126, 34, 0.4);
+        }
+
+        .result-section {
+            background: var(--bg-cream);
+            border-radius: 25px;
+            padding: 30px 20px;
+            margin-top: 35px;
+            border: 2px dashed var(--primary-green);
+            display: none;
+        }
+
+        .res-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .res-title { color: #666; font-size: 0.95rem; }
+        .res-data { font-weight: 700; font-size: 1.1rem; color: var(--primary-green); }
+        .highlight-res { color: var(--primary-orange); font-size: 1.5rem; }
+
+        footer {
+            margin-top: auto;
+            padding: 40px 20px;
+            text-align: center;
+            background: #fff;
+        }
+
+        .footer-logos img {
+            height: 40px;
+            margin: 0 10px;
+        }
+
+        .copyright {
+            font-size: 12px;
+            color: #bdc3c7;
+            margin-top: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <nav class="nav-bar">
+        <a href="food.html" class="btn-back">
+            <span>⬅</span> กลับหน้าหลัก
+        </a>
+    </nav>
+
+    <div class="container-main">
+        <div class="hero-banner">
+            <div class="logo-area">
+                <i class="bi bi-calculator" style="font-size: 3rem;"></i>
+            </div>
+            <h1>นับคาร์บ ลดโรค NCDs</h1>
+            <p>วางแผนการกินคาร์โบไฮเดรตให้พอดีในแต่ละวัน</p>
+        </div>
+
+        <div class="form-section">
+            <h5 class="section-title">ใส่ข้อมูลเพื่อคำนวณคาร์บ</h5>
+            
+            <form id="healthForm">
+                <div class="gender-selector">
+                    <label class="gender-box active" id="label-m">
+                        <input type="radio" name="gender" value="male" checked onchange="updateGenderUI()">
+                        <i class="bi bi-gender-male"></i> ชาย
+                    </label>
+                    <label class="gender-box" id="label-f">
+                        <input type="radio" name="gender" value="female" onchange="updateGenderUI()">
+                        <i class="bi bi-gender-female"></i> หญิง
+                    </label>
+                </div>
+
+                <div class="row g-3">
+                    <div class="col-6">
+                        <label class="form-label">น้ำหนัก (กก.)</label>
+                        <input type="number" id="weight" class="form-control glass-input" placeholder="60" required step="0.1">
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">ส่วนสูง (ซม.)</label>
+                        <input type="number" id="height" class="form-control glass-input" placeholder="170" required>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">อายุ (ปี)</label>
+                        <input type="number" id="age" class="form-control glass-input" placeholder="30" required>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label">รอบเอว (ซม./นิ้ว)</label>
+                        <input type="number" id="waist" class="form-control glass-input" placeholder="80">
+                    </div>
+                </div>
+
+                <div class="mt-4">
+                    <label class="form-label">ระดับกิจกรรมทางกาย</label>
+                    <select class="form-select glass-input" id="activity">
+                        <option value="1.2">ไม่ออกกำลังกาย, นั่งทำงานอยู่กับที่</option>
+                        <option value="1.375">ออกกำลังกายเล็กน้อย 1-3 วัน/สัปดาห์</option>
+                        <option value="1.55">ออกกำลังกายปานกลาง 4-5 วัน/สัปดาห์</option>
+                        <option value="1.725">ออกกำลังกายหนัก 6-7 วัน/สัปดาห์</option>
+                        <option value="1.9">ออกกำลังกายหนักมาก 2 ครั้ง/วัน, นักกีฬา</option>
+                    </select>
+                </div>
+
+                <button type="button" onclick="calculateCarbs()" class="btn-calculate">
+                    <i class="bi bi-check-circle me-2"></i> คำนวณ
+                </button>
+            </form>
+
+            <div id="results" class="result-section">
+                <h5 class="text-center fw-bold mb-4" style="color: var(--primary-green);">
+                    <i class="bi bi-pie-chart-fill me-2"></i>ผลลัพธ์การวิเคราะห์
+                </h5>
+                <div class="res-card">
+                    <span class="res-title">ดัชนีมวลกาย (BMI)</span>
+                    <span class="res-data" id="r-bmi">-</span>
+                </div>
+                <div class="res-card">
+                    <span class="res-title">ค่ารอบเอวที่ระบุ</span>
+                    <span class="res-data" id="r-waist">-</span>
+                </div>
+                <div class="res-card">
+                    <span class="res-title">พลังงานที่ควรได้รับ (TDEE)</span>
+                    <span class="res-data"><span id="r-tdee">-</span> kcal/วัน</span>
+                </div>
+                <div class="res-card">
+                    <span class="res-title">ปริมาณคาร์โบไฮเดรตที่แนะนำ</span>
+                    <span class="res-data"><span id="r-carb-g">-</span> กรัม/วัน</span>
+                </div>
+                <div class="res-card border-0">
+                    <div class="w-100 text-center mt-3 p-3" style="background: #fff; border-radius: 15px; border: 1px solid #eee;">
+                        <span class="res-title d-block mb-2">ปริมาณคาร์บต่อวันที่ต้องการควบคุม</span>
+                        <span class="highlight-res fw-bold"><span id="r-carb-u">-</span> คาร์บ/วัน</span>
+                        <div class="small text-muted mt-2">(คาร์โบไฮเดรต 15 กรัม หรือข้าว 1 ทัพพี = 1 คาร์บ)</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <div class="footer-logos">
+                <i class="bi bi-shield-plus text-success" style="font-size: 2rem;"></i>
+                <i class="bi bi-people-fill text-warning" style="font-size: 2rem;"></i>
+            </div>
+            <p class="copyright">© 2026 ระบบดูแลเบาหวานด้วยตนเอง (Self-Care System)<br>คำนวณตามมาตรฐาน Harris-Benedict Equation</p>
+        </footer>
+    </div>
+
+    <script>
+        function updateGenderUI() {
+            const gender = document.querySelector('input[name="gender"]:checked').value;
+            document.getElementById('label-m').classList.toggle('active', gender === 'male');
+            document.getElementById('label-f').classList.toggle('active', gender === 'female');
+        }
+
+        function calculateCarbs() {
+            const gender = document.querySelector('input[name="gender"]:checked').value;
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const age = parseInt(document.getElementById('age').value);
+            const waist = document.getElementById('waist').value;
+            const activity = parseFloat(document.getElementById('activity').value);
+
+            if (!weight || !height || !age) {
+                alert("กรุณากรอกข้อมูลให้ครบถ้วน");
+                return;
+            }
+
+            // 1. คำนวณ BMI
+            const bmi = (weight / Math.pow(height / 100, 2)).toFixed(2);
+
+            // 2. คำนวณ BMR (Harris-Benedict Equation) ตามรูปที่ 4
+            let bmr;
+            if (gender === 'male') {
+                bmr = 66 + (13.7 * weight) + (5 * height) - (6.8 * age);
+            } else {
+                bmr = 665 + (9.6 * weight) + (1.8 * height) - (4.7 * age);
+            }
+
+            // 3. คำนวณ TDEE
+            const tdee = Math.round(bmr * activity);
+
+            // 4. คำนวณคาร์บ (20% ของ TDEE ตามสูตรในรูปที่ 4)
+            const carbCalories = (tdee * 20) / 100;
+            const carbGrams = (carbCalories / 4).toFixed(1); // คาร์บ 1 กรัมให้ 4 แคลอรี
+            const carbUnits = (carbGrams / 15).toFixed(1);  // คาร์บ 15 กรัม = 1 คาร์บ
+
+            // แสดงผล
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('r-bmi').innerText = bmi;
+            document.getElementById('r-waist').innerText = waist ? waist + ' cm' : '-';
+            document.getElementById('r-tdee').innerText = tdee.toLocaleString();
+            document.getElementById('r-carb-g').innerText = carbGrams;
+            document.getElementById('r-carb-u').innerText = carbUnits;
+
+            // เลื่อนหน้าจอลงมาที่ผลลัพธ์
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
