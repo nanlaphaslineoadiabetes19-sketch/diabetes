@@ -1,111 +1,137 @@
 <!DOCTYPE html>
 <html lang="th">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>จานอาหารสุขภาพ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-      body {
-        margin: 0;
-        padding: 20px 0;
-        background-color: #f0f2f5;
-        font-family: 'Sarabun', sans-serif;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        min-height: 100vh;
-      }
+        :root {
+            --primary-color: #27ae60; /* สีเขียวสุขภาพ */
+            --bg-color: #f8f9fa;
+            --card-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
 
-      .container {
-        width: 100%;
-        max-width: 600px;
-        padding: 0 15px;
-        box-sizing: border-box;
-      }
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            font-family: 'Sarabun', sans-serif;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
 
-      /* ปรับ Nav Bar ให้ลอยค้าง (Fixed) */
-      .nav-bar {
-        position: fixed;    /* บังคับให้ลอยค้าง */
-        top: 20px;          /* ห่างจากขอบบน 20px */
-        left: 20px;         /* ห่างจากขอบซ้าย 20px */
-        z-index: 9999;      /* อยู่ชั้นบนสุดเสมอ ไม่โดนรูปทับ */
-        width: auto;
-      }
+        /* Nav Bar สไตล์โมเดิร์นลอยตัว */
+        .nav-bar {
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 9999;
+        }
 
-      .btn-back {
-        padding: 10px 20px;
-        background-color: rgba(108, 117, 125, 0.85); /* สีเทาเข้มโปร่งแสงนิดๆ */
-        color: white;
-        border: none;
-        border-radius: 50px; /* ทรงแคปซูล */
-        cursor: pointer;
-        font-family: 'Sarabun', sans-serif;
-        font-size: 16px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* ใส่เงาให้ดูมีมิติ */
-        backdrop-filter: blur(5px); /* ทำให้ฉากหลังปุ่มเบลอ ดูหรูขึ้น */
-        transition: all 0.3s ease;
-      }
+        .btn-back {
+            padding: 10px 22px;
+            background-color: rgba(255, 255, 255, 0.9);
+            color: #444;
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-      .btn-back:hover {
-        background-color: #495057;
-        transform: scale(1.05);
-      }
+        .btn-back:hover {
+            background-color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+            color: var(--primary-color);
+        }
 
-      .main-wrapper {
-        width: 100%;
-        background: white;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-        border-radius: 12px;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 20px;
-        /* เทคนิค 1: ลบ whitespace ระหว่างภาพ */
-        font-size: 0; 
-      }
+        .container {
+            width: 100%;
+            max-width: 500px; /* ปรับความกว้างให้พอดีมือถือ */
+            animation: fadeIn 0.8s ease-out;
+        }
 
-      img {
-        width: 100%;
-        height: auto;
-        /* เทคนิค 2: บังคับให้ภาพเป็นแผ่นเดียว */
-        display: block; 
-        margin: 0;
-        padding: 0;
-        border: none;
-        /* เทคนิค 3: ให้ภาพเรียงตัวสนิท */
-        vertical-align: bottom; 
-      }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .main-wrapper {
+            width: 100%;
+            background: white;
+            box-shadow: var(--card-shadow);
+            border-radius: 0 0 30px 30px; /* มนเฉพาะด้านล่างดูหรู */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            font-size: 0; /* กำจัดช่องว่างระหว่างรูปภาพ */
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0;
+            padding: 0;
+            border: none;
+            /* ป้องกันการกระตุกขณะโหลด */
+            background-color: #eee; 
+        }
+
+        /* ส่วนท้ายเพื่อความเรียบร้อย */
+        .footer-space {
+            height: 40px;
+            background: transparent;
+        }
+
+        /* ปรับแต่ง Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #ccc;
+            border-radius: 10px;
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
 
-    <body>
     <div class="nav-bar">
-      <button class="btn-back" onclick="goBack()">
-        ⬅ กลับหน้าหลัก
-      </button>
+        <button class="btn-back" onclick="goBack()">
+            <span style="font-size: 18px;">⬅</span> กลับหน้าหลัก
+        </button>
     </div>
 
     <div class="container">
-      <div class="main-wrapper">
-        <img src="https://lh3.googleusercontent.com/d/1Y0Pm29k8TXhAq7WfgfRVQZ_8cOAKRRC5">
-        <img src="https://lh3.googleusercontent.com/d/1cqoHE86C9Z24DBYvz1Xlql2_XnmaFp9r">
-        <img src="https://lh3.googleusercontent.com/d/16r9E9Pm-PKA_tGOEYvhECDj2sRdil-_k">
-        <img src="https://lh3.googleusercontent.com/d/1mOt_lot47i6rsooSnIyEct2WAHmWAOFM">
-        <img src="https://lh3.googleusercontent.com/d/1oRrOhfxlNb5ryxUMj-NTIsGcfvBDzG5m">
-      </div>
+        <div class="main-wrapper">
+            <img src="https://lh3.googleusercontent.com/d/1Y0Pm29k8TXhAq7WfgfRVQZ_8cOAKRRC5" alt="จานสุขภาพ 1">
+            <img src="https://lh3.googleusercontent.com/d/1cqoHE86C9Z24DBYvz1Xlql2_XnmaFp9r" alt="จานสุขภาพ 2">
+            <img src="https://lh3.googleusercontent.com/d/16r9E9Pm-PKA_tGOEYvhECDj2sRdil-_k" alt="จานสุขภาพ 3">
+            <img src="https://lh3.googleusercontent.com/d/1mOt_lot47i6rsooSnIyEct2WAHmWAOFM" alt="จานสุขภาพ 4">
+            <img src="https://lh3.googleusercontent.com/d/1oRrOhfxlNb5ryxUMj-NTIsGcfvBDzG5m" alt="จานสุขภาพ 5">
+        </div>
+        <div class="footer-space"></div>
     </div>
 
     <script>
-      function goBack() {
-        var currentPath = window.location.pathname;
-        var directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
-        location.href = directoryPath + '/food.html';
-      }
+        function goBack() {
+            var currentPath = window.location.pathname;
+            var directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+            location.href = directoryPath + '/food.html';
+        }
     </script>
-  </body>
+</body>
 </html>
