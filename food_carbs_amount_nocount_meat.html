@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>หมวดเนื้อสัตว์</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-food: #e67e22; /* สีส้มอาหาร */
+            --text-dark: #2c3e50;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #fff5e6 0%, #f4f7f6 100%);
+            font-family: 'Sarabun', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* ชิดบน */
+            min-height: 100vh;
+        }
+
+        /* Nav Bar Fixed แบบหรูหราเหมือนหน้าอื่นๆ */
+        .nav-bar {
+            position: fixed !important;
+            top: 15px !important;
+            left: 15px !important;
+            z-index: 99999 !important;
+        }
+
+        .btn-back {
+            padding: 10px 22px;
+            background-color: rgba(255, 255, 255, 0.85);
+            color: #555;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            backdrop-filter: blur(8px);
+            transition: 0.3s;
+        }
+
+        .btn-back:hover {
+            background-color: white;
+            transform: scale(1.05);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0; /* ชิดบนสุด */
+        }
+
+        .main-wrapper {
+            width: 100%;
+            background: white;
+            box-shadow: 0 0 40px rgba(0,0,0,0.05);
+            border-radius: 0 0 30px 30px;
+            overflow: hidden;
+            display: flex;
+            text-align: center;
+            flex-direction: column;
+            text-align: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* ส่วนเนื้อหาที่เป็นข้อความ */
+        .content-header {
+            padding: 40px 25px 20px; /* เว้นด้านบนเพื่อให้ไอคอนขยับขึ้นไปสวยๆ */
+            text-align: center;
+        }
+
+        .icon-header {
+            font-size: 75px;
+            margin-bottom: 5px;
+            margin-top: 0;
+            line-height: 1;
+            display: block;
+        }
+
+        h1 { 
+            color: var(--text-dark); 
+            font-size: 26px; 
+            margin-bottom: 15px; 
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        h2 {
+            color: #7f8c8d;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* การจัดการรูปภาพ */
+        .image-gallery {
+            font-size: 0; /* ลบช่องว่างระหว่างภาพ */
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0;
+            padding: 0;
+        }
+
+        footer {
+            padding: 30px 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #bdc3c7;
+            background: #fff;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="nav-bar">
+        <button class="btn-back" onclick="goBack()">
+            ⬅ ย้อนกลับ
+        </button>
+    </div>
+
+    <div class="container">
+        <div class="main-wrapper">
+            <div class="content-header">
+                <div class="icon-header">🥩</div>
+                <h1>หมวดเนื้อสัตว์</h1>
+                <h2>เนื้อสัตว์แต่ละชนิดมีปริมาณไขมันที่แตกต่างกัน ควรเลือกรับประทานเนื้อสัตว์ที่มีไขมันต่ำ เช่น เนื้อปลา เนื้ออกไก่ และไข่ขาว เป็นต้น</h2>
+                
+                <h1 style="font-size: 20px; color: var(--primary-food); margin-top: 30px;">
+                    ตัวอย่างอาหารหมวดเนื้อสัตว์ ปริมาณ 1 ส่วน
+                </h1>
+            </div>
+
+            <div class="image-gallery">
+              <img src="https://lh3.googleusercontent.com/d/1JnpcLrQsj0wbwPRMX1ObANdwy3-9o5gD">
+              <img src="https://lh3.googleusercontent.com/d/10OIug9eM2xwVmTOvz6509O6pSfiA9Q--">
+              <img src="https://lh3.googleusercontent.com/d/1L-bD7443AdyDWaLJE3O4zKZW7jvEz-iz">
+              <img src="https://lh3.googleusercontent.com/d/182QQ_KxcM96LNTWyRVSfuYS460HOh2iM">
+              <img src="https://lh3.googleusercontent.com/d/1cyBfGysCsdKykz5XbyFotoJJZfXzloFv">
+              <img src="https://lh3.googleusercontent.com/d/19_u_l6CyelDjITk9s43ojJOkYim7bKG9">
+              <img src="https://lh3.googleusercontent.com/d/1f8LIFX8I5R5BczUERWIZKRWFuAus4wZ_">
+              <img src="https://lh3.googleusercontent.com/d/1kmRYKMKpod-vNR5N0aSlqXMoPKITz5mR">
+              <img src="https://lh3.googleusercontent.com/d/1myUBrBu-wkyFR1nT7h-XgwgVBI_KSxSI">
+              <img src="https://lh3.googleusercontent.com/d/15MgDGT9gmtM2MFI0-1C3tgKVbRmOtY4g">
+            </div>
+
+            <footer>© 2026 ระบบดูแลเบาหวานด้วยตนเอง</footer>
+        </div>
+    </div>
+
+    <script>
+        function goBack() {
+            var currentPath = window.location.pathname;
+            var directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+            // แก้ไข Path ให้ตรงตามที่คุณต้องการ
+            location.href = directoryPath + '/food_carbs_amount_nocount.html';
+        }
+    </script>
+</body>
+</html>
