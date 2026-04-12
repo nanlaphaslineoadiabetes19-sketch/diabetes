@@ -7,7 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #27ae60; /* สีเขียวสุขภาพ */
+            --primary-color: #27ae60;
             --bg-color: #f8f9fa;
             --card-shadow: 0 15px 35px rgba(0,0,0,0.1);
         }
@@ -22,7 +22,6 @@
             min-height: 100vh;
         }
 
-        /* Nav Bar สไตล์โมเดิร์นลอยตัว */
         .nav-bar {
             position: fixed;
             top: 15px;
@@ -44,20 +43,13 @@
             align-items: center;
             gap: 10px;
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
-            backdrop-filter: blur(10px);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .btn-back:hover {
-            background-color: #fff;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
-            color: var(--primary-color);
+            #backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
         }
 
         .container {
             width: 100%;
-            max-width: 500px; /* ปรับความกว้างให้พอดีมือถือ */
+            max-width: 500px;
             animation: fadeIn 0.8s ease-out;
         }
 
@@ -70,11 +62,11 @@
             width: 100%;
             background: white;
             box-shadow: var(--card-shadow);
-            border-radius: 0 0 30px 30px; /* มนเฉพาะด้านล่างดูหรู */
+            border-radius: 0 0 30px 30px;
             overflow: hidden;
             display: flex;
             flex-direction: column;
-            font-size: 0; /* กำจัดช่องว่างระหว่างรูปภาพ */
+            font-size: 0;
         }
 
         img {
@@ -84,26 +76,16 @@
             margin: 0;
             padding: 0;
             border: none;
-            /* ป้องกันการกระตุกขณะโหลด */
-            background-color: #eee; 
         }
 
-        /* ส่วนท้ายเพื่อความเรียบร้อย */
-        .footer-space {
-            height: 40px;
-            background: transparent;
-        }
-
-        /* ปรับแต่ง Scrollbar */
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: #f1f1f1;
-        }
-        ::-webkit-scrollbar-thumb {
-            background: #ccc;
-            border-radius: 10px;
+        /* Footer ปรับปรุงใหม่ */
+        footer {
+            padding: 40px 20px;
+            text-align: center;
+            font-size: 13px;
+            color: #95a5a6;
+            background-color: var(--bg-color); /* ให้กลมกลืนกับพื้นหลังด้านนอก */
+            line-height: 1.6;
         }
     </style>
 </head>
@@ -111,19 +93,22 @@
 
     <div class="nav-bar">
         <button class="btn-back" onclick="goBack()">
-            <span style="font-size: 18px;">⬅</span> กลับหน้าหลัก
+            <span>⬅</span> กลับหน้าหลัก
         </button>
     </div>
 
     <div class="container">
         <div class="main-wrapper">
-            <img src="https://lh3.googleusercontent.com/d/1Y0Pm29k8TXhAq7WfgfRVQZ_8cOAKRRC5" alt="จานสุขภาพ 1">
-            <img src="https://lh3.googleusercontent.com/d/1cqoHE86C9Z24DBYvz1Xlql2_XnmaFp9r" alt="จานสุขภาพ 2">
-            <img src="https://lh3.googleusercontent.com/d/16r9E9Pm-PKA_tGOEYvhECDj2sRdil-_k" alt="จานสุขภาพ 3">
-            <img src="https://lh3.googleusercontent.com/d/1mOt_lot47i6rsooSnIyEct2WAHmWAOFM" alt="จานสุขภาพ 4">
-            <img src="https://lh3.googleusercontent.com/d/1oRrOhfxlNb5ryxUMj-NTIsGcfvBDzG5m" alt="จานสุขภาพ 5">
+            <img src="https://lh3.googleusercontent.com/d/1Y0Pm29k8TXhAq7WfgfRVQZ_8cOAKRRC5">
+            <img src="https://lh3.googleusercontent.com/d/1cqoHE86C9Z24DBYvz1Xlql2_XnmaFp9r">
+            <img src="https://lh3.googleusercontent.com/d/16r9E9Pm-PKA_tGOEYvhECDj2sRdil-_k">
+            <img src="https://lh3.googleusercontent.com/d/1mOt_lot47i6rsooSnIyEct2WAHmWAOFM">
+            <img src="https://lh3.googleusercontent.com/d/1oRrOhfxlNb5ryxUMj-NTIsGcfvBDzG5m">
         </div>
-        <div class="footer-space"></div>
+
+        <footer>
+            © 2026 ระบบดูแลเบาหวานด้วยตนเอง
+        </footer>
     </div>
 
     <script>
