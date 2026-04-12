@@ -1,107 +1,130 @@
 <!DOCTYPE html>
 <html lang="th">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ความรู้เกี่ยวกับคาร์บ</title>
-    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&display=swap" rel="stylesheet">
     <style>
-      body {
-        margin: 0;
-        padding: 20px 0;
-        background-color: #f0f2f5;
-        font-family: 'Sarabun', sans-serif;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        min-height: 100vh;
-      }
+        :root {
+            --primary-color: #3498db;
+            --bg-gradient: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            --shadow-soft: 0 10px 30px rgba(0,0,0,0.1);
+        }
 
-      .container {
-        width: 100%;
-        max-width: 600px;
-        padding: 0 15px;
-        box-sizing: border-box;
-      }
+        body {
+            margin: 0;
+            padding: 0;
+            background: var(--bg-gradient);
+            font-family: 'Sarabun', sans-serif;
+            display: flex;
+            justify-content: center;
+            min-height: 100vh;
+        }
 
-      /* ปรับ Nav Bar ให้ลอยค้าง (Fixed) */
-      .nav-bar {
-        position: fixed;    /* บังคับให้ลอยค้าง */
-        top: 20px;          /* ห่างจากขอบบน 20px */
-        left: 20px;         /* ห่างจากขอบซ้าย 20px */
-        z-index: 9999;      /* อยู่ชั้นบนสุดเสมอ ไม่โดนรูปทับ */
-        width: auto;
-      }
+        /* Nav Bar สไตล์ลอยตัวแบบโมเดิร์น */
+        .nav-bar {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 10000;
+        }
 
-      .btn-back {
-        padding: 10px 20px;
-        background-color: rgba(108, 117, 125, 0.85); /* สีเทาเข้มโปร่งแสงนิดๆ */
-        color: white;
-        border: none;
-        border-radius: 50px; /* ทรงแคปซูล */
-        cursor: pointer;
-        font-family: 'Sarabun', sans-serif;
-        font-size: 16px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* ใส่เงาให้ดูมีมิติ */
-        backdrop-filter: blur(5px); /* ทำให้ฉากหลังปุ่มเบลอ ดูหรูขึ้น */
-        transition: all 0.3s ease;
-      }
+        .btn-back {
+            padding: 10px 22px;
+            background-color: rgba(255, 255, 255, 0.85);
+            color: #2c3e50;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: var(--shadow-soft);
+            backdrop-filter: blur(12px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-      .btn-back:hover {
-        background-color: #495057;
-        transform: scale(1.05);
-      }
+        .btn-back:hover {
+            background-color: #fff;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.15);
+        }
 
-      .main-wrapper {
-        width: 100%;
-        background: white;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-        border-radius: 12px;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 20px;
-        /* เทคนิค 1: ลบ whitespace ระหว่างภาพ */
-        font-size: 0; 
-      }
+        .container {
+            width: 100%;
+            max-width: 500px; /* ขนาดกำลังดีสำหรับอ่านบนมือถือ */
+            animation: slideUp 0.6s ease-out;
+        }
 
-      img {
-        width: 100%;
-        height: auto;
-        /* เทคนิค 2: บังคับให้ภาพเป็นแผ่นเดียว */
-        display: block; 
-        margin: 0;
-        padding: 0;
-        border: none;
-        /* เทคนิค 3: ให้ภาพเรียงตัวสนิท */
-        vertical-align: bottom; 
-      }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .main-wrapper {
+            width: 100%;
+            background: white;
+            box-shadow: var(--shadow-soft);
+            border-radius: 0 0 35px 35px; /* มนล่างแบบแอปพรีเมียม */
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            font-size: 0; /* ลบช่องว่างขาวระหว่างรูป */
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0;
+            padding: 0;
+            border: none;
+            vertical-align: bottom;
+        }
+
+        /* Footer ดีไซน์สะอาดตา */
+        footer {
+            padding: 40px 20px;
+            text-align: center;
+            font-size: 13px;
+            color: #7f8c8d;
+            background: transparent;
+            letter-spacing: 0.5px;
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
 
-    <body>
     <div class="nav-bar">
-      <button class="btn-back" onclick="goBack()">
-        ⬅ กลับหน้าหลัก
-      </button>
+        <button class="btn-back" onclick="goBack()">
+            <span style="font-size: 18px;">⬅</span> ย้อนกลับ
+        </button>
     </div>
 
     <div class="container">
-      <div class="main-wrapper">
-        <img src="https://lh3.googleusercontent.com/d/1VyiGZG8fmMIjvWhWkREZSr3FJbh9EBff" alt="ความรู้เกี่ยวกับคาร์บ 1"><img src="https://lh3.googleusercontent.com/d/1kYXrNJ3Ax7Lfoz1c0gMl05XHlzm2sqoa" alt="ความรู้เกี่ยวกับคาร์บ 2"><img src="https://lh3.googleusercontent.com/d/1sfL6I8_CWQeiYe51LcVKpuz76d2hxw_G" alt="ความรู้เกี่ยวกับคาร์บ 3"><img src="https://lh3.googleusercontent.com/d/1fei6kI29WHWoQItkdSEtO6pg902SAo4T" alt="ความรู้เกี่ยวกับคาร์บ 4"><img src="https://lh3.googleusercontent.com/d/1RqjfUHeZc4gxe-trlolI7ZQX0tW7_Yrg" alt="ความรู้เกี่ยวกับคาร์บ 5">
-      </div>
+        <div class="main-wrapper">
+            <img src="https://lh3.googleusercontent.com/d/1VyiGZG8fmMIjvWhWkREZSr3FJbh9EBff" alt="ความรู้เกี่ยวกับคาร์บ 1">
+            <img src="https://lh3.googleusercontent.com/d/1kYXrNJ3Ax7Lfoz1c0gMl05XHlzm2sqoa" alt="ความรู้เกี่ยวกับคาร์บ 2">
+            <img src="https://lh3.googleusercontent.com/d/1sfL6I8_CWQeiYe51LcVKpuz76d2hxw_G" alt="ความรู้เกี่ยวกับคาร์บ 3">
+            <img src="https://lh3.googleusercontent.com/d/1fei6kI29WHWoQItkdSEtO6pg902SAo4T" alt="ความรู้เกี่ยวกับคาร์บ 4">
+            <img src="https://lh3.googleusercontent.com/d/1RqjfUHeZc4gxe-trlolI7ZQX0tW7_Yrg" alt="ความรู้เกี่ยวกับคาร์บ 5">
+        </div>
+
+        <footer>
+            © 2026 ระบบดูแลเบาหวานด้วยตนเอง 
+        </footer>
     </div>
 
     <script>
-      function goBack() {
-        var currentPath = window.location.pathname;
-        var directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
-        location.href = directoryPath + '/food.html';
-      }
+        function goBack() {
+            var currentPath = window.location.pathname;
+            var directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+            location.href = directoryPath + '/food.html';
+        }
     </script>
-  </body>
+</body>
 </html>
