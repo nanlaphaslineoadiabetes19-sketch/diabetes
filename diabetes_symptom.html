@@ -6,102 +6,153 @@
     <title>อาการของโรคเบาหวาน</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@400;700&display=swap" rel="stylesheet">
     <style>
-      body {
-        margin: 0;
-        padding: 20px 0;
-        background-color: #f0f2f5;
-        font-family: 'Sarabun', sans-serif;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        min-height: 100vh;
-      }
+        :root {
+            --primary-food: #e67e22; /* สีส้มอาหาร */
+            --text-dark: #2c3e50;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
 
-      .container {
-        width: 100%;
-        max-width: 600px;
-        padding: 0 15px;
-        box-sizing: border-box;
-      }
+        body {
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #fff5e6 0%, #f4f7f6 100%);
+            font-family: 'Sarabun', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* ชิดบน */
+            min-height: 100vh;
+        }
 
-      /* ปรับ Nav Bar ให้ลอยค้าง (Fixed) */
-      .nav-bar {
-        position: fixed;    /* บังคับให้ลอยค้าง */
-        top: 20px;          /* ห่างจากขอบบน 20px */
-        left: 20px;         /* ห่างจากขอบซ้าย 20px */
-        z-index: 9999;      /* อยู่ชั้นบนสุดเสมอ ไม่โดนรูปทับ */
-        width: auto;
-      }
+        /* Nav Bar Fixed แบบหรูหราเหมือนหน้าอื่นๆ */
+        .nav-bar {
+            position: fixed !important;
+            top: 15px !important;
+            left: 15px !important;
+            z-index: 99999 !important;
+        }
 
-      .btn-back {
-        padding: 10px 20px;
-        background-color: rgba(108, 117, 125, 0.85); /* สีเทาเข้มโปร่งแสงนิดๆ */
-        color: white;
-        border: none;
-        border-radius: 50px; /* ทรงแคปซูล */
-        cursor: pointer;
-        font-family: 'Sarabun', sans-serif;
-        font-size: 16px;
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3); /* ใส่เงาให้ดูมีมิติ */
-        backdrop-filter: blur(5px); /* ทำให้ฉากหลังปุ่มเบลอ ดูหรูขึ้น */
-        transition: all 0.3s ease;
-      }
+        .btn-back {
+            padding: 10px 22px;
+            background-color: rgba(255, 255, 255, 0.85);
+            color: #555;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            backdrop-filter: blur(8px);
+            transition: 0.3s;
+        }
 
-      .btn-back:hover {
-        background-color: #495057;
-        transform: scale(1.05);
-      }
+        .btn-back:hover {
+            background-color: white;
+            transform: scale(1.05);
+        }
 
-      .main-wrapper {
-        width: 100%;
-        background: white;
-        box-shadow: 0 10px 40px rgba(0,0,0,0.15);
-        border-radius: 12px;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 20px;
-        /* เทคนิค 1: ลบ whitespace ระหว่างภาพ */
-        font-size: 0; 
-      }
+        .container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0; /* ชิดบนสุด */
+        }
 
-      img {
-        width: 100%;
-        height: auto;
-        /* เทคนิค 2: บังคับให้ภาพเป็นแผ่นเดียว */
-        display: block; 
-        margin: 0;
-        padding: 0;
-        border: none;
-        /* เทคนิค 3: ให้ภาพเรียงตัวสนิท */
-        vertical-align: bottom; 
-      }
+        .main-wrapper {
+            width: 100%;
+            background: white;
+            box-shadow: 0 0 40px rgba(0,0,0,0.05);
+            border-radius: 0 0 30px 30px;
+            overflow: hidden;
+            display: flex;
+            text-align: center;
+            flex-direction: column;
+            text-align: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        /* ส่วนเนื้อหาที่เป็นข้อความ */
+        .content-header {
+            padding: 40px 25px 20px; /* เว้นด้านบนเพื่อให้ไอคอนขยับขึ้นไปสวยๆ */
+            text-align: center;
+        }
+
+        .icon-header {
+            font-size: 75px;
+            margin-bottom: 5px;
+            margin-top: 0;
+            line-height: 1;
+            display: block;
+        }
+
+        h1 { 
+            color: var(--text-dark); 
+            font-size: 26px; 
+            margin-bottom: 15px; 
+            font-weight: 700;
+            line-height: 1.3;
+        }
+
+        h2 {
+            color: #7f8c8d;
+            font-size: 16px;
+            font-weight: 400;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        /* การจัดการรูปภาพ */
+        .image-gallery {
+            font-size: 0; /* ลบช่องว่างระหว่างภาพ */
+        }
+
+        img {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0;
+            padding: 0;
+        }
+
+        footer {
+            padding: 30px 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #bdc3c7;
+            background: #fff;
+        }
     </style>
   </head>
   <body>
 
-    <body>
     <div class="nav-bar">
-      <button class="btn-back" onclick="goBack()">
-        ⬅ กลับหน้าหลัก
-      </button>
+        <button class="btn-back" onclick="goBack()">
+            <span style="font-size: 18px;">⬅</span> ย้อนกลับ
+        </button>
     </div>
 
     <div class="container">
       <div class="main-wrapper">
-        <img src="https://lh3.googleusercontent.com/d/1tsgfVYIGcePGMfw-1F6w8X732IAwDKit" alt="อาการเบาหวาน 1"><img src="https://lh3.googleusercontent.com/d/1Q62HYPvYyu39fos2T2NOaU-yoFK9_hdr" alt="อาการเบาหวาน 2"><img src="https://lh3.googleusercontent.com/d/1BbiXsmFlr2cKbJYRuaSE14AKvIaqS3Yi" alt="อาการเบาหวาน 3">
+        <div class="image-gallery">
+          <img src="https://lh3.googleusercontent.com/d/1tsgfVYIGcePGMfw-1F6w8X732IAwDKit">
+        </div>
+        <footer>
+            © 2026 ระบบดูแลเบาหวานด้วยตนเอง 
+        </footer>
       </div>
     </div>
 
     <script>
-      function goBack() {
-        var currentPath = window.location.pathname;
-        var directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
-        location.href = directoryPath + '/diabetes.html';
-      }
+        function goBack() {
+            var currentPath = window.location.pathname;
+            var directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+            location.href = directoryPath + '/diabetes.html';
+        }
     </script>
+    
   </body>
 </html>
