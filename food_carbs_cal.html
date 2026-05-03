@@ -69,7 +69,6 @@
             border-radius: 0 0 40px 40px;
         }
 
-        .logo-area img { max-width: 120px; margin-bottom: 10px; }
         .hero-banner h1 { font-family: 'Kanit', sans-serif; font-weight: 600; font-size: 1.8rem; margin: 0; }
         .hero-banner p { font-weight: 300; opacity: 0.9; font-size: 0.9rem; margin-top: 5px; }
 
@@ -191,7 +190,7 @@
                         <option value="1.375">ออกกำลังกายเล็กน้อย 1-3 วัน/สัปดาห์</option>
                         <option value="1.55">ออกกำลังกายปานกลาง 4-5 วัน/สัปดาห์</option>
                         <option value="1.725">ออกกำลังกายหนัก 6-7 วัน/สัปดาห์</option>
-                        <option value="1.9">ออกกำลังกายหนักมาก 2 ครั้ง/วัน เป็นนักกีฬา, ทำงานใช้แรงงาน</option>
+                        <option value="1.9">ออกกำลังกายหนักมาก 2 ครั้ง/วัน</option>
                     </select>
                 </div>
 
@@ -209,72 +208,36 @@
                     <span class="res-data" id="r-waist">-</span>
                 </div>
                 <div class="res-card">
-                    <span class="res-title">พลังงานที่ควรได้รับ (กิโลแคลอรี่/วัน):</span>
+                    <span class="res-title">พลังงานที่ควรได้รับ (kcal/วัน):</span>
                     <span class="res-data" id="r-tdee">-</span>
                 </div>
                 <div class="res-card border-0">
                     <span class="res-title fw-bold">ปริมาณคาร์บที่แนะนำต่อวัน:</span>
                     <span class="highlight-res"><span id="r-carb-u">-</span> คาร์บต่อวัน</span>
                 </div>
-                <p class="text-center text-muted small mt-3">(หมายเหตุ: คาร์โบไฮเดรต 15 กรัม หรือข้าวหนึ่งทัพพี เท่ากับ 1 คาร์บ)</p>
+                <p class="text-center text-muted small mt-3">(หมายเหตุ: 1 คาร์บ = ข้าว 1 ทัพพี หรือคาร์โบไฮเดรต 15 กรัม)</p>
             </div>
         </div>
 
         <footer>
-            <p class="copyright">© 2026 ระบบดูแลเบาหวานด้วยตนเอง (Self-Care System)<br>คำนวณตามมาตรฐาน Harris-Benedict Equation</p>
+            <p class="copyright">© 2026 ระบบดูแลเบาหวานด้วยตนเอง (Self-Care System)<br>Harris-Benedict Equation</p>
         </footer>
     </div>
 
+    <!-- LIFF SDK -->
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    
     <script>
+        let userLineId = "Guest";
+
+        // 1. ตรวจสอบการเปลี่ยนเพศเพื่อความสวยงาม
         function updateGenderUI() {
             const gender = document.querySelector('input[name="gender"]:checked').value;
             document.getElementById('label-m').classList.toggle('active', gender === 'male');
             document.getElementById('label-f').classList.toggle('active', gender === 'female');
         }
 
-        function calculateCarbs() {
-            const gender = document.querySelector('input[name="gender"]:checked').value;
-            const weight = parseFloat(document.getElementById('weight').value);
-            const height = parseFloat(document.getElementById('height').value);
-            const age = parseInt(document.getElementById('age').value);
-            const activity = parseFloat(document.getElementById('activity').value);
-
-            // Logic คำนวณรอบเอว: เลือกค่าจาก ซม. ก่อน ถ้าไม่มีให้เอานิ้วมาคูณ 2.54
-            let waist_cm = parseFloat(document.getElementById('waist_cm').value);
-            let waist_inch = parseFloat(document.getElementById('waist_inch').value);
-            let finalWaist = "-";
-
-            if (!isNaN(waist_cm)) {
-                finalWaist = waist_cm.toFixed(1) + " ซม.";
-            } else if (!isNaN(waist_inch)) {
-                finalWaist = (waist_inch * 2.54).toFixed(1) + " ซม.";
-            }
-
-            if (!weight || !height || !age) { alert("กรุณากรอกข้อมูลให้ครบถ้วน"); return; }
-
-            const bmi = (weight / Math.pow(height / 100, 2)).toFixed(2);
-            let bmr = (gender === 'male') 
-                ? 66 + (13.7 * weight) + (5 * height) - (6.8 * age)
-                : 665 + (9.6 * weight) + (1.8 * height) - (4.7 * age);
-            
-            const tdee = Math.round(bmr * activity);
-            const carbGrams = ((tdee * 0.2) / 4).toFixed(1);
-            const carbUnits = (carbGrams / 15).toFixed(1);
-
-            document.getElementById('results').style.display = 'block';
-            document.getElementById('r-bmi').innerText = bmi;
-            document.getElementById('r-waist').innerText = finalWaist;
-            document.getElementById('r-tdee').innerText = tdee.toLocaleString();
-            document.getElementById('r-carb-u').innerText = carbUnits;
-            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
-        }
-    </script>
-        
-    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
-    <script>
-        let userLineId = "Guest";
-    
-        // 1. เริ่มต้นระบบ LIFF
+        // 2. เริ่มต้น LIFF
         async function initLIFF() {
             try {
                 await liff.init({ liffId: "2009966517-vtjZMQ5e" });
@@ -289,10 +252,9 @@
             }
         }
         initLIFF();
-    
-        // 2. ฟังก์ชันคำนวณและส่งข้อมูล (รวมเป็นหนึ่งเดียว)
+
+        // 3. ฟังก์ชันคำนวณและส่งข้อมูล (ที่เดียวจบ)
         async function calculateCarbs() {
-            // --- ส่วนที่ 1: ดึงค่าจาก Form ---
             const gender = document.querySelector('input[name="gender"]:checked').value;
             const weight = parseFloat(document.getElementById('weight').value);
             const height = parseFloat(document.getElementById('height').value);
@@ -300,39 +262,42 @@
             const activity = parseFloat(document.getElementById('activity').value);
             let waist_cm = parseFloat(document.getElementById('waist_cm').value);
             let waist_inch = parseFloat(document.getElementById('waist_inch').value);
-    
-            // ตรวจสอบข้อมูลพื้นฐาน
+
             if (!weight || !height || !age) { 
-                alert("กรุณากรอกข้อมูล น้ำหนัก ส่วนสูง และอายุ ให้ครบถ้วน"); 
+                alert("กรุณากรอกข้อมูลพื้นฐานให้ครบถ้วน"); 
                 return; 
             }
-    
-            // --- ส่วนที่ 2: ตรรกะการคำนวณ ---
+
+            // คำนวณรอบเอว
             let finalWaistText = "-";
+            let sendWaist = "";
             if (!isNaN(waist_cm)) {
                 finalWaistText = waist_cm.toFixed(1) + " ซม.";
+                sendWaist = waist_cm;
             } else if (!isNaN(waist_inch)) {
-                finalWaistText = (waist_inch * 2.54).toFixed(1) + " ซม.";
+                let calcWaist = waist_inch * 2.54;
+                finalWaistText = calcWaist.toFixed(1) + " ซม.";
+                sendWaist = calcWaist.toFixed(1);
             }
-    
+
+            // คำนวณ BMI และ TDEE
             const bmi = (weight / Math.pow(height / 100, 2)).toFixed(2);
             let bmr = (gender === 'male') 
                 ? 66 + (13.7 * weight) + (5 * height) - (6.8 * age)
                 : 665 + (9.6 * weight) + (1.8 * height) - (4.7 * age);
             
             const tdee = Math.round(bmr * activity);
-            const carbGrams = ((tdee * 0.2) / 4).toFixed(1); // คำนวณที่ 20% ของพลังงาน
-            const carbUnits = (carbGrams / 15).toFixed(1);
-    
-            // --- ส่วนที่ 3: แสดงผลบนหน้าเว็บ ---
+            const carbUnits = ((tdee * 0.2 / 4) / 15).toFixed(1);
+
+            // แสดงผลลัพธ์
             document.getElementById('results').style.display = 'block';
             document.getElementById('r-bmi').innerText = bmi;
             document.getElementById('r-waist').innerText = finalWaistText;
             document.getElementById('r-tdee').innerText = tdee.toLocaleString();
             document.getElementById('r-carb-u').innerText = carbUnits;
             document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
-    
-            // --- ส่วนที่ 4: ส่งข้อมูลไป Google Sheets ---
+
+            // ส่งข้อมูลไป Google Sheets
             const scriptURL = 'https://script.google.com/macros/s/AKfycbzlGzevHmNHbAvn_rhiL66Whw2qav-5at0gk5MD33uyXjevHveyMyoQXkTTF4AMTwxwNw/exec';
             
             const formData = {
@@ -341,38 +306,24 @@
                 weight: weight,
                 height: height,
                 age: age,
-                waist_cm: isNaN(waist_cm) ? "" : waist_cm,
-                waist_inch: isNaN(waist_inch) ? "" : waist_inch,
-                activity: activity,
+                waist: sendWaist,
                 bmi: bmi,
-                kcalories_per_day: tdee,
-                carbs_per_day: carbUnits
+                kcal: tdee,
+                carbs: carbUnits
             };
-    
+
             try {
-                // ใช้โหมด no-cors เพื่อลดปัญหาเรื่องสิทธิ์การเข้าถึงข้ามโดเมนในเบื้องต้น
                 fetch(scriptURL, {
                     method: 'POST',
-                    mode: 'no-cors', 
+                    mode: 'no-cors',
                     cache: 'no-cache',
-                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
                 });
-                
-                // เนื่องจาก no-cors จะมองไม่เห็น response ให้แจ้งเตือนว่าสำเร็จไปก่อน
-                alert("คำนวณและบันทึกข้อมูลเรียบร้อยแล้ว!");
+                alert("บันทึกข้อมูลเรียบร้อย!");
             } catch (error) {
-                console.error('Error!', error.message);
-                alert("บันทึกข้อมูลไม่สำเร็จ แต่การคำนวณเสร็จสิ้น");
+                console.error('Error!', error);
             }
         }
-    
-        function updateGenderUI() {
-            const gender = document.querySelector('input[name="gender"]:checked').value;
-            document.getElementById('label-m').classList.toggle('active', gender === 'male');
-            document.getElementById('label-f').classList.toggle('active', gender === 'female');
-        }
     </script>
-    
 </body>
 </html>
