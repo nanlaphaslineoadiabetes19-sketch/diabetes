@@ -269,5 +269,71 @@
             document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
         }
     </script>
+    
+    <!-- เพิ่มสคริปต์ LIFF และคำสั่งส่งข้อมูล -->
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script>
+        let userLineId = "Guest";
+    
+        // เริ่มต้นระบบ LIFF เพื่อดึง Line ID
+        async function initLIFF() {
+            try {
+                await liff.init({ liffId: "2009966517-vtjZMQ5e" }); // ต้องไปสร้าง LIFF ID ใน Line Developers
+                if (liff.isLoggedIn()) {
+                    const profile = await liff.getProfile();
+                    userLineId = profile.userId;
+                } else {
+                    liff.login();
+                }
+            } catch (err) {
+                console.error("LIFF Error:", err);
+            }
+        }
+        initLIFF();
+    
+        // แก้ไขฟังก์ชัน calculateCarbs เดิม
+        async function calculateCarbs() {
+            // ... (โค้ดคำนวณเดิมของคุณทั้งหมด) ...
+            const name = document.getElementById('name').value;
+            if (!name) { alert("กรุณากรอกชื่อ"); return; }
+            
+            // เก็บข้อมูลลง Object
+            const formData = {
+                line_id: userLineId,
+                name: name,
+                sex: gender === 'male' ? 'ชาย' : 'หญิง',
+                weight: weight,
+                height: height,
+                age: age,
+                waist_cm: isNaN(waist_cm) ? "" : waist_cm,
+                waist_inch: isNaN(waist_inch) ? "" : waist_inch,
+                activity: activity,
+                bmi: bmi,
+                kcalories_per_day: tdee,
+                carbs_per_day: carbUnits
+            };
+    
+            // แสดงผลในหน้าเว็บก่อน
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('r-bmi').innerText = bmi;
+            document.getElementById('r-waist').innerText = finalWaist;
+            document.getElementById('r-tdee').innerText = tdee.toLocaleString();
+            document.getElementById('r-carb-u').innerText = carbUnits;
+    
+            // ส่งข้อมูลไป Google Sheets
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbzlGzevHmNHbAvn_rhiL66Whw2qav-5at0gk5MD33uyXjevHveyMyoQXkTTF4AMTwxwNw/exec';
+            
+            try {
+                await fetch(scriptURL, {
+                    method: 'POST',
+                    body: JSON.stringify(formData)
+                });
+                alert("บันทึกข้อมูลเรียบร้อยแล้ว!");
+            } catch (error) {
+                console.error('Error!', error.message);
+            }
+        }
+    </script>
+    
 </body>
 </html>
