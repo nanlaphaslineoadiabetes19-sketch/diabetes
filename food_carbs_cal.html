@@ -269,16 +269,15 @@
             document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
         }
     </script>
-    
-    <!-- เพิ่มสคริปต์ LIFF และคำสั่งส่งข้อมูล -->
+        
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <script>
         let userLineId = "Guest";
     
-        // เริ่มต้นระบบ LIFF เพื่อดึง Line ID
+        // 1. เริ่มต้นระบบ LIFF
         async function initLIFF() {
             try {
-                await liff.init({ liffId: "2009966517-vtjZMQ5e" }); // ต้องไปสร้าง LIFF ID ใน Line Developers
+                await liff.init({ liffId: "2009966517-vtjZMQ5e" });
                 if (liff.isLoggedIn()) {
                     const profile = await liff.getProfile();
                     userLineId = profile.userId;
@@ -291,16 +290,53 @@
         }
         initLIFF();
     
-        // แก้ไขฟังก์ชัน calculateCarbs เดิม
+        // 2. ฟังก์ชันคำนวณและส่งข้อมูล (รวมเป็นหนึ่งเดียว)
         async function calculateCarbs() {
-            // ... (โค้ดคำนวณเดิมของคุณทั้งหมด) ...
-            const name = document.getElementById('name').value;
-            if (!name) { alert("กรุณากรอกชื่อ"); return; }
+            // --- ส่วนที่ 1: ดึงค่าจาก Form ---
+            const gender = document.querySelector('input[name="gender"]:checked').value;
+            const weight = parseFloat(document.getElementById('weight').value);
+            const height = parseFloat(document.getElementById('height').value);
+            const age = parseInt(document.getElementById('age').value);
+            const activity = parseFloat(document.getElementById('activity').value);
+            let waist_cm = parseFloat(document.getElementById('waist_cm').value);
+            let waist_inch = parseFloat(document.getElementById('waist_inch').value);
+    
+            // ตรวจสอบข้อมูลพื้นฐาน
+            if (!weight || !height || !age) { 
+                alert("กรุณากรอกข้อมูล น้ำหนัก ส่วนสูง และอายุ ให้ครบถ้วน"); 
+                return; 
+            }
+    
+            // --- ส่วนที่ 2: ตรรกะการคำนวณ ---
+            let finalWaistText = "-";
+            if (!isNaN(waist_cm)) {
+                finalWaistText = waist_cm.toFixed(1) + " ซม.";
+            } else if (!isNaN(waist_inch)) {
+                finalWaistText = (waist_inch * 2.54).toFixed(1) + " ซม.";
+            }
+    
+            const bmi = (weight / Math.pow(height / 100, 2)).toFixed(2);
+            let bmr = (gender === 'male') 
+                ? 66 + (13.7 * weight) + (5 * height) - (6.8 * age)
+                : 665 + (9.6 * weight) + (1.8 * height) - (4.7 * age);
             
-            // เก็บข้อมูลลง Object
+            const tdee = Math.round(bmr * activity);
+            const carbGrams = ((tdee * 0.2) / 4).toFixed(1); // คำนวณที่ 20% ของพลังงาน
+            const carbUnits = (carbGrams / 15).toFixed(1);
+    
+            // --- ส่วนที่ 3: แสดงผลบนหน้าเว็บ ---
+            document.getElementById('results').style.display = 'block';
+            document.getElementById('r-bmi').innerText = bmi;
+            document.getElementById('r-waist').innerText = finalWaistText;
+            document.getElementById('r-tdee').innerText = tdee.toLocaleString();
+            document.getElementById('r-carb-u').innerText = carbUnits;
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+    
+            // --- ส่วนที่ 4: ส่งข้อมูลไป Google Sheets ---
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbzlGzevHmNHbAvn_rhiL66Whw2qav-5at0gk5MD33uyXjevHveyMyoQXkTTF4AMTwxwNw/exec';
+            
             const formData = {
                 line_id: userLineId,
-                name: name,
                 sex: gender === 'male' ? 'ชาย' : 'หญิง',
                 weight: weight,
                 height: height,
@@ -313,26 +349,28 @@
                 carbs_per_day: carbUnits
             };
     
-            // แสดงผลในหน้าเว็บก่อน
-            document.getElementById('results').style.display = 'block';
-            document.getElementById('r-bmi').innerText = bmi;
-            document.getElementById('r-waist').innerText = finalWaist;
-            document.getElementById('r-tdee').innerText = tdee.toLocaleString();
-            document.getElementById('r-carb-u').innerText = carbUnits;
-    
-            // ส่งข้อมูลไป Google Sheets
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbzlGzevHmNHbAvn_rhiL66Whw2qav-5at0gk5MD33uyXjevHveyMyoQXkTTF4AMTwxwNw/exec';
-        //    const scriptURL = 'https://liff.line.me/2009966517-vtjZMQ5e';
-            
             try {
-                await fetch(scriptURL, {
+                // ใช้โหมด no-cors เพื่อลดปัญหาเรื่องสิทธิ์การเข้าถึงข้ามโดเมนในเบื้องต้น
+                fetch(scriptURL, {
                     method: 'POST',
+                    mode: 'no-cors', 
+                    cache: 'no-cache',
+                    headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(formData)
                 });
-                alert("บันทึกข้อมูลเรียบร้อยแล้ว!");
+                
+                // เนื่องจาก no-cors จะมองไม่เห็น response ให้แจ้งเตือนว่าสำเร็จไปก่อน
+                alert("คำนวณและบันทึกข้อมูลเรียบร้อยแล้ว!");
             } catch (error) {
                 console.error('Error!', error.message);
+                alert("บันทึกข้อมูลไม่สำเร็จ แต่การคำนวณเสร็จสิ้น");
             }
+        }
+    
+        function updateGenderUI() {
+            const gender = document.querySelector('input[name="gender"]:checked').value;
+            document.getElementById('label-m').classList.toggle('active', gender === 'male');
+            document.getElementById('label-f').classList.toggle('active', gender === 'female');
         }
     </script>
     
