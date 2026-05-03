@@ -260,24 +260,12 @@
             const height = parseFloat(document.getElementById('height').value);
             const age = parseInt(document.getElementById('age').value);
             const activity = parseFloat(document.getElementById('activity').value);
-            let waist_cm = parseFloat(document.getElementById('waist_cm').value);
-            let waist_inch = parseFloat(document.getElementById('waist_inch').value);
+            let waist_cm = parseFloat(document.getElementById('waist_cm').value) || 0;
+            let waist_inch = parseFloat(document.getElementById('waist_inch').value) || 0;
 
             if (!weight || !height || !age) { 
                 alert("กรุณากรอกข้อมูลพื้นฐานให้ครบถ้วน"); 
                 return; 
-            }
-
-            // คำนวณรอบเอว
-            let finalWaistText = "-";
-            let sendWaist = "";
-            if (!isNaN(waist_cm)) {
-                finalWaistText = waist_cm.toFixed(1) + " ซม.";
-                sendWaist = waist_cm;
-            } else if (!isNaN(waist_inch)) {
-                let calcWaist = waist_inch * 2.54;
-                finalWaistText = calcWaist.toFixed(1) + " ซม.";
-                sendWaist = calcWaist.toFixed(1);
             }
 
             // คำนวณ BMI และ TDEE
@@ -289,15 +277,15 @@
             const tdee = Math.round(bmr * activity);
             const carbUnits = ((tdee * 0.2 / 4) / 15).toFixed(1);
 
-            // แสดงผลลัพธ์
+            // แสดงผลลัพธ์บนหน้าจอ
             document.getElementById('results').style.display = 'block';
             document.getElementById('r-bmi').innerText = bmi;
-            document.getElementById('r-waist').innerText = finalWaistText;
+            document.getElementById('r-waist').innerText = waist_cm > 0 ? waist_cm + " ซม." : (waist_inch * 2.54).toFixed(1) + " ซม.";
             document.getElementById('r-tdee').innerText = tdee.toLocaleString();
             document.getElementById('r-carb-u').innerText = carbUnits;
             document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
 
-            // ส่งข้อมูลไป Google Sheets
+            // --- ส่วนที่แก้ไขให้ตรงกับ Google Sheets ---
             const scriptURL = 'https://script.google.com/macros/s/AKfycbzlGzevHmNHbAvn_rhiL66Whw2qav-5at0gk5MD33uyXjevHveyMyoQXkTTF4AMTwxwNw/exec';
             
             const formData = {
@@ -306,10 +294,12 @@
                 weight: weight,
                 height: height,
                 age: age,
-                waist: sendWaist,
-                bmi: bmi,
-                kcal: tdee,
-                carbs: carbUnits
+                waist_cm: waist_cm,      // ตรงกับ G1
+                waist_inch: waist_inch,  // ตรงกับ H1
+                activity: activity,      // ตรงกับ I1
+                bmi: bmi,                // ตรงกับ J1
+                kcalories_per_day: tdee, // ตรงกับ L1
+                carbs_per_day: carbUnits // ตรงกับ M1
             };
 
             try {
@@ -319,7 +309,8 @@
                     cache: 'no-cache',
                     body: JSON.stringify(formData)
                 });
-                alert("บันทึกข้อมูลเรียบร้อย!");
+                // ลบ alert("บันทึกข้อมูลเรียบร้อย!") ออกแล้วครับ
+                console.log("Data sent to Google Sheets"); 
             } catch (error) {
                 console.error('Error!', error);
             }
