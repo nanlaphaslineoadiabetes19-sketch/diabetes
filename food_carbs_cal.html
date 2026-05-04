@@ -229,21 +229,15 @@
     
     <script>
         let userLineId = "Guest";
+        let userLineName = "Guest Name"; // เพิ่มตัวแปรสำหรับเก็บชื่อ
 
-        // 1. ตรวจสอบการเปลี่ยนเพศเพื่อความสวยงาม
-        function updateGenderUI() {
-            const gender = document.querySelector('input[name="gender"]:checked').value;
-            document.getElementById('label-m').classList.toggle('active', gender === 'male');
-            document.getElementById('label-f').classList.toggle('active', gender === 'female');
-        }
-
-        // 2. เริ่มต้น LIFF
         async function initLIFF() {
             try {
                 await liff.init({ liffId: "2009966517-vtjZMQ5e" });
                 if (liff.isLoggedIn()) {
                     const profile = await liff.getProfile();
                     userLineId = profile.userId;
+                    userLineName = profile.displayName; // ดึงชื่อจากโปรไฟล์ LINE มาเก็บไว้
                 } else {
                     liff.login();
                 }
@@ -253,8 +247,8 @@
         }
         initLIFF();
 
-        // 3. ฟังก์ชันคำนวณและส่งข้อมูล (ที่เดียวจบ)
         async function calculateCarbs() {
+            // ... (โค้ดดึงค่าจาก Input) ...
             const gender = document.querySelector('input[name="gender"]:checked').value;
             const weight = parseFloat(document.getElementById('weight').value);
             const height = parseFloat(document.getElementById('height').value);
@@ -277,29 +271,29 @@
             const tdee = Math.round(bmr * activity);
             const carbUnits = ((tdee * 0.2 / 4) / 15).toFixed(1);
 
-            // แสดงผลลัพธ์บนหน้าจอ
+            // แสดงผลบนหน้าจอ
             document.getElementById('results').style.display = 'block';
             document.getElementById('r-bmi').innerText = bmi;
             document.getElementById('r-waist').innerText = waist_cm > 0 ? waist_cm + " ซม." : (waist_inch * 2.54).toFixed(1) + " ซม.";
             document.getElementById('r-tdee').innerText = tdee.toLocaleString();
             document.getElementById('r-carb-u').innerText = carbUnits;
-            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
 
-            // --- ส่วนที่แก้ไขให้ตรงกับ Google Sheets ---
+            // --- ส่งข้อมูลไป Google Sheets ---
             const scriptURL = 'https://script.google.com/macros/s/AKfycbzlGzevHmNHbAvn_rhiL66Whw2qav-5at0gk5MD33uyXjevHveyMyoQXkTTF4AMTwxwNw/exec';
             
             const formData = {
                 line_id: userLineId,
+                line_name: userLineName, // ส่งชื่อเจ้าของ LINE ไปด้วย
                 sex: gender === 'male' ? 'ชาย' : 'หญิง',
                 weight: weight,
                 height: height,
                 age: age,
-                waist_cm: waist_cm,      // ตรงกับ G1
-                waist_inch: waist_inch,  // ตรงกับ H1
-                activity: activity,      // ตรงกับ I1
-                bmi: bmi,                // ตรงกับ J1
-                kcalories_per_day: tdee, // ตรงกับ L1
-                carbs_per_day: carbUnits // ตรงกับ M1
+                waist_cm: waist_cm,
+                waist_inch: waist_inch,
+                activity: activity,
+                bmi: bmi,
+                kcalories_per_day: tdee,
+                carbs_per_day: carbUnits
             };
 
             try {
@@ -309,12 +303,13 @@
                     cache: 'no-cache',
                     body: JSON.stringify(formData)
                 });
-                // ลบ alert("บันทึกข้อมูลเรียบร้อย!") ออกแล้วครับ
-                console.log("Data sent to Google Sheets"); 
+                // เอา alert ออก
+                console.log("บันทึกข้อมูลของ " + userLineName + " เรียบร้อย");
             } catch (error) {
                 console.error('Error!', error);
             }
         }
     </script>
+    
 </body>
 </html>
