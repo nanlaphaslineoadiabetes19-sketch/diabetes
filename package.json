@@ -1,0 +1,12 @@
+{
+  "name": "diabetes-line-bot",
+  "version": "1.0.0",
+  "description": "System for switching LINE Rich Menus",
+  "main": "api/webhook.js",
+  "dependencies": {
+    "@line/bot-sdk": "^9.0.0"
+  },
+  "engines": {
+    "node": "18.x"
+  }
+}
