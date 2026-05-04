@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>นับคาร์บ ลดโรค NCDs</title>
+    <title>นับคาร์บ</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&family=Kanit:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
@@ -133,14 +133,12 @@
 
     <div class="container-main">
         <div class="hero-banner"><br>
-            <h1>นับคาร์บ ลดโรค NCDs</h1>
-            <p>คือการวางแผนการกินคาร์โบไฮเดรตให้พอดีในแต่ละวัน<br>ช่วยควบคุมน้ำหนัก ลดโรค NCDs ได้</p>
+            <h1>นับคาร์บ</h1>
         </div>
 
         <div class="form-section">
             <div class="section-header">
                 <h2>ใส่ข้อมูลเพื่อคำนวณคาร์บที่เหมาะสมในแต่ละวัน</h2>
-                <p>และเลือกกินคาร์โบไฮเดรตตามคาร์บที่ได้รับ เพื่อลดโรค NCDs</p>
             </div>
             
             <form id="healthForm">
@@ -201,7 +199,10 @@
                 <h5 class="text-center fw-bold mb-4" style="color: var(--primary-green);"><i class="bi bi-clipboard-check me-2"></i>แนะนำให้กิน:</h5>
                 <div class="res-card">
                     <span class="res-title">ดัชนีมวลกาย (BMI):</span>
-                    <span class="res-data" id="r-bmi">-</span>
+                    <div class="text-end">
+                        <span class="res-data" id="r-bmi">-</span><br>
+                        <span id="r-bmi-status" style="font-size: 0.85rem; font-weight: bold; color: var(--primary-orange);"></span>
+                    </div>
                 </div>
                 <div class="res-card">
                     <span class="res-title">รอบเอว:</span>
@@ -215,7 +216,6 @@
                     <span class="res-title fw-bold">ปริมาณคาร์บที่แนะนำต่อวัน:</span>
                     <span class="highlight-res"><span id="r-carb-u">-</span> คาร์บต่อวัน</span>
                 </div>
-                <p class="text-center text-muted small mt-3">(หมายเหตุ: 1 คาร์บ = ข้าว 1 ทัพพี หรือคาร์โบไฮเดรต 15 กรัม)</p>
             </div>
         </div>
 
@@ -285,15 +285,33 @@
             }
     
             const bmi = (weight / Math.pow(height / 100, 2)).toFixed(2);
+            // --- เพิ่มส่วนแปลผล BMI ---
+                let bmiStatus = "";
+                if (bmi < 18.5) {
+                    bmiStatus = "ผอม";
+                } else if (bmi >= 18.5 && bmi < 23) {
+                    bmiStatus = "สมส่วน";
+                } else if (bmi >= 23 && bmi < 25) {
+                    bmiStatus = "น้ำหนักเกิน";
+                } else if (bmi >= 25 && bmi < 30) {
+                    bmiStatus = "อ้วน";
+                } else {
+                    bmiStatus = "อ้วนอันตราย";
+                }
+            // ------------------------
+
+            // ... ส่วนคำนวณ TDEE และ Carb Units ...
             let bmr = (gender === 'male') 
                 ? 66 + (13.7 * weight) + (5 * height) - (6.8 * age)
                 : 665 + (9.6 * weight) + (1.8 * height) - (4.7 * age);
             
             const tdee = Math.round(bmr * activity);
             const carbUnits = ((tdee * 0.2 / 4) / 15).toFixed(1);
-    
+
+            // แสดงผลบนหน้าจอ
             document.getElementById('results').style.display = 'block';
             document.getElementById('r-bmi').innerText = bmi;
+            document.getElementById('r-bmi-status').innerText = "(" + bmiStatus + ")"; // แสดงผลแปลผล
             document.getElementById('r-waist').innerText = displayWaist; // แสดงผลที่คำนวณด้านบน
             document.getElementById('r-tdee').innerText = tdee.toLocaleString();
             document.getElementById('r-carb-u').innerText = carbUnits;
@@ -311,6 +329,7 @@
                 waist_inch: waist_inch,
                 activity: activity,
                 bmi: bmi,
+                bmi_status: bmiStatus,
                 kcalories_per_day: tdee,
                 carbs_per_day: carbUnits
             };
