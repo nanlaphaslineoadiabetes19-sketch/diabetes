@@ -233,41 +233,39 @@
     
         async function initLIFF() {
             try {
-                await liff.init({ liffId: "2009966517-vtjZMQ5e" });
+                // ใช้ liffId ของคุณเดิม
+                await liff.init({ liffId: "2009966517-vtjZMQ5e" }); 
+                
                 if (liff.isLoggedIn()) {
+                    // หาก Login แล้ว ให้ดึงข้อมูลโปรไฟล์ทันที
                     const profile = await liff.getProfile();
                     userLineId = profile.userId;
                     userLineName = profile.displayName;
+                    console.log("Logged in as:", userLineName);
                 } else {
+                    // หากยังไม่ได้ Login (เช่น เปิดจาก Chrome/Safari นอกแอป LINE) 
+                    // ให้เด้งไปหน้า Login ของ LINE
                     liff.login();
                 }
             } catch (err) {
-                console.error("LIFF Error:", err);
+                console.error("LIFF Initialization failed", err);
             }
         }
-        initLIFF();
-    
-        // --- ฟังก์ชันที่เพิ่มเข้ามาเพื่อแก้ปัญหาปุ่มค้าง ---
-        function updateGenderUI() {
-            const maleRadio = document.querySelector('input[name="gender"][value="male"]');
-            const femaleRadio = document.querySelector('input[name="gender"][value="female"]');
-            const labelM = document.getElementById('label-m');
-            const labelF = document.getElementById('label-f');
-    
-            if (maleRadio.checked) {
-                labelM.classList.add('active');
-                labelF.classList.remove('active');
-            } else {
-                labelF.classList.add('active');
-                labelM.classList.remove('active');
-            }
-        }
+        
+        // เรียกใช้งานเมื่อโหลดหน้าเว็บ
+        window.onload = function() {
+            initLIFF();
+        };
     
         async function calculateCarbs() {
-            // ดึงค่าเพศที่เลือกอยู่ปัจจุบัน
+            // ตรวจสอบอีกครั้งก่อนบันทึกว่าไม่ใช่ Guest
+            if (userLineId === "Guest") {
+                alert("กรุณารอระบบโหลดข้อมูล LINE สักครู่ หรือลองเปิดใหม่อีกครั้งผ่านแอป LINE");
+                return;
+            }
+    
             const genderElement = document.querySelector('input[name="gender"]:checked');
             const gender = genderElement ? genderElement.value : 'male';
-            
             const weight = parseFloat(document.getElementById('weight').value);
             const height = parseFloat(document.getElementById('height').value);
             const age = parseInt(document.getElementById('age').value);
@@ -280,10 +278,7 @@
                 return; 
             }
     
-            // คำนวณ BMI
             const bmi = (weight / Math.pow(height / 100, 2)).toFixed(2);
-            
-            // คำนวณ BMR (Harris-Benedict Equation)
             let bmr = (gender === 'male') 
                 ? 66 + (13.7 * weight) + (5 * height) - (6.8 * age)
                 : 665 + (9.6 * weight) + (1.8 * height) - (4.7 * age);
@@ -291,14 +286,12 @@
             const tdee = Math.round(bmr * activity);
             const carbUnits = ((tdee * 0.2 / 4) / 15).toFixed(1);
     
-            // แสดงผลบนหน้าจอ
             document.getElementById('results').style.display = 'block';
             document.getElementById('r-bmi').innerText = bmi;
             document.getElementById('r-waist').innerText = waist_cm > 0 ? waist_cm + " ซม." : (waist_inch * 2.54).toFixed(1) + " ซม.";
             document.getElementById('r-tdee').innerText = tdee.toLocaleString();
             document.getElementById('r-carb-u').innerText = carbUnits;
     
-            // --- ส่งข้อมูลไป Google Sheets ---
             const scriptURL = 'https://script.google.com/macros/s/AKfycbzlGzevHmNHbAvn_rhiL66Whw2qav-5at0gk5MD33uyXjevHveyMyoQXkTTF4AMTwxwNw/exec';
             
             const formData = {
@@ -323,7 +316,7 @@
                     cache: 'no-cache',
                     body: JSON.stringify(formData)
                 });
-                console.log("บันทึกข้อมูลของ " + userLineName + " เพศ: " + (gender === 'male' ? 'ชาย' : 'หญิง'));
+                console.log("บันทึกข้อมูลเรียบร้อย");
             } catch (error) {
                 console.error('Error!', error);
             }
