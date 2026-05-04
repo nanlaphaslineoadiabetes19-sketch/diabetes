@@ -229,15 +229,15 @@
     
     <script>
         let userLineId = "Guest";
-        let userLineName = "Guest Name"; // เพิ่มตัวแปรสำหรับเก็บชื่อ
-
+        let userLineName = "Guest Name";
+    
         async function initLIFF() {
             try {
                 await liff.init({ liffId: "2009966517-vtjZMQ5e" });
                 if (liff.isLoggedIn()) {
                     const profile = await liff.getProfile();
                     userLineId = profile.userId;
-                    userLineName = profile.displayName; // ดึงชื่อจากโปรไฟล์ LINE มาเก็บไว้
+                    userLineName = profile.displayName;
                 } else {
                     liff.login();
                 }
@@ -246,44 +246,64 @@
             }
         }
         initLIFF();
-
+    
+        // --- ฟังก์ชันที่เพิ่มเข้ามาเพื่อแก้ปัญหาปุ่มค้าง ---
+        function updateGenderUI() {
+            const maleRadio = document.querySelector('input[name="gender"][value="male"]');
+            const femaleRadio = document.querySelector('input[name="gender"][value="female"]');
+            const labelM = document.getElementById('label-m');
+            const labelF = document.getElementById('label-f');
+    
+            if (maleRadio.checked) {
+                labelM.classList.add('active');
+                labelF.classList.remove('active');
+            } else {
+                labelF.classList.add('active');
+                labelM.classList.remove('active');
+            }
+        }
+    
         async function calculateCarbs() {
-            // ... (โค้ดดึงค่าจาก Input) ...
-            const gender = document.querySelector('input[name="gender"]:checked').value;
+            // ดึงค่าเพศที่เลือกอยู่ปัจจุบัน
+            const genderElement = document.querySelector('input[name="gender"]:checked');
+            const gender = genderElement ? genderElement.value : 'male';
+            
             const weight = parseFloat(document.getElementById('weight').value);
             const height = parseFloat(document.getElementById('height').value);
             const age = parseInt(document.getElementById('age').value);
             const activity = parseFloat(document.getElementById('activity').value);
             let waist_cm = parseFloat(document.getElementById('waist_cm').value) || 0;
             let waist_inch = parseFloat(document.getElementById('waist_inch').value) || 0;
-
+    
             if (!weight || !height || !age) { 
                 alert("กรุณากรอกข้อมูลพื้นฐานให้ครบถ้วน"); 
                 return; 
             }
-
-            // คำนวณ BMI และ TDEE
+    
+            // คำนวณ BMI
             const bmi = (weight / Math.pow(height / 100, 2)).toFixed(2);
+            
+            // คำนวณ BMR (Harris-Benedict Equation)
             let bmr = (gender === 'male') 
                 ? 66 + (13.7 * weight) + (5 * height) - (6.8 * age)
                 : 665 + (9.6 * weight) + (1.8 * height) - (4.7 * age);
             
             const tdee = Math.round(bmr * activity);
             const carbUnits = ((tdee * 0.2 / 4) / 15).toFixed(1);
-
+    
             // แสดงผลบนหน้าจอ
             document.getElementById('results').style.display = 'block';
             document.getElementById('r-bmi').innerText = bmi;
             document.getElementById('r-waist').innerText = waist_cm > 0 ? waist_cm + " ซม." : (waist_inch * 2.54).toFixed(1) + " ซม.";
             document.getElementById('r-tdee').innerText = tdee.toLocaleString();
             document.getElementById('r-carb-u').innerText = carbUnits;
-
+    
             // --- ส่งข้อมูลไป Google Sheets ---
             const scriptURL = 'https://script.google.com/macros/s/AKfycbzlGzevHmNHbAvn_rhiL66Whw2qav-5at0gk5MD33uyXjevHveyMyoQXkTTF4AMTwxwNw/exec';
             
             const formData = {
                 line_id: userLineId,
-                line_name: userLineName, // ส่งชื่อเจ้าของ LINE ไปด้วย
+                line_name: userLineName,
                 sex: gender === 'male' ? 'ชาย' : 'หญิง',
                 weight: weight,
                 height: height,
@@ -295,7 +315,7 @@
                 kcalories_per_day: tdee,
                 carbs_per_day: carbUnits
             };
-
+    
             try {
                 fetch(scriptURL, {
                     method: 'POST',
@@ -303,8 +323,7 @@
                     cache: 'no-cache',
                     body: JSON.stringify(formData)
                 });
-                // เอา alert ออก
-                console.log("บันทึกข้อมูลของ " + userLineName + " เรียบร้อย");
+                console.log("บันทึกข้อมูลของ " + userLineName + " เพศ: " + (gender === 'male' ? 'ชาย' : 'หญิง'));
             } catch (error) {
                 console.error('Error!', error);
             }
