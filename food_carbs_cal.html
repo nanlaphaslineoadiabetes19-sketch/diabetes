@@ -233,18 +233,14 @@
     
         async function initLIFF() {
             try {
-                // ใช้ liffId ของคุณเดิม
                 await liff.init({ liffId: "2009966517-vtjZMQ5e" }); 
                 
                 if (liff.isLoggedIn()) {
-                    // หาก Login แล้ว ให้ดึงข้อมูลโปรไฟล์ทันที
                     const profile = await liff.getProfile();
                     userLineId = profile.userId;
                     userLineName = profile.displayName;
                     console.log("Logged in as:", userLineName);
                 } else {
-                    // หากยังไม่ได้ Login (เช่น เปิดจาก Chrome/Safari นอกแอป LINE) 
-                    // ให้เด้งไปหน้า Login ของ LINE
                     liff.login();
                 }
             } catch (err) {
@@ -252,13 +248,11 @@
             }
         }
         
-        // เรียกใช้งานเมื่อโหลดหน้าเว็บ
         window.onload = function() {
             initLIFF();
         };
     
         async function calculateCarbs() {
-            // ตรวจสอบอีกครั้งก่อนบันทึกว่าไม่ใช่ Guest
             if (userLineId === "Guest") {
                 alert("กรุณารอระบบโหลดข้อมูล LINE สักครู่ หรือลองเปิดใหม่อีกครั้งผ่านแอป LINE");
                 return;
@@ -270,8 +264,20 @@
             const height = parseFloat(document.getElementById('height').value);
             const age = parseInt(document.getElementById('age').value);
             const activity = parseFloat(document.getElementById('activity').value);
+            
+            // --- ส่วนจัดการเรื่องรอบเอวที่ปรับปรุงใหม่ ---
             let waist_cm = parseFloat(document.getElementById('waist_cm').value) || 0;
             let waist_inch = parseFloat(document.getElementById('waist_inch').value) || 0;
+            let displayWaist = "";
+
+            if (waist_cm > 0) {
+                displayWaist = waist_cm + " ซม.";
+            } else if (waist_inch > 0) {
+                displayWaist = (waist_inch * 2.54).toFixed(1) + " ซม.";
+            } else {
+                displayWaist = "ไม่ระบุ";
+            }
+            // ---------------------------------------
     
             if (!weight || !height || !age) { 
                 alert("กรุณากรอกข้อมูลพื้นฐานให้ครบถ้วน"); 
@@ -288,7 +294,7 @@
     
             document.getElementById('results').style.display = 'block';
             document.getElementById('r-bmi').innerText = bmi;
-            document.getElementById('r-waist').innerText = waist_cm > 0 ? waist_cm + " ซม." : (waist_inch * 2.54).toFixed(1) + " ซม.";
+            document.getElementById('r-waist').innerText = displayWaist; // แสดงผลที่คำนวณด้านบน
             document.getElementById('r-tdee').innerText = tdee.toLocaleString();
             document.getElementById('r-carb-u').innerText = carbUnits;
     
@@ -322,6 +328,7 @@
             }
         }
 
+        // ฟังก์ชันใหม่ที่ช่วยให้กดสลับเพศแล้วสีเปลี่ยนตาม
         function updateGenderUI() {
             const maleRadio = document.querySelector('input[name="gender"][value="male"]');
             const labelM = document.getElementById('label-m');
@@ -335,8 +342,6 @@
                 labelM.classList.remove('active');
             }
         }
-        
     </script>
-    
 </body>
 </html>
