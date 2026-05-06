@@ -10,7 +10,7 @@ const config = {
 
 const client = new Client(config);
 
-app.post('/webhook', express.json(), (req, res) => {
+app.post('/api/webhook', express.json(), (req, res) => {
   const events = req.body.events;
   
   Promise.all(events.map(async (event) => {
