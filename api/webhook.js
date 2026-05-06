@@ -8,23 +8,29 @@ const config = {
 const client = new Client(config);
 
 module.exports = async (req, res) => {
-  if (req.method === 'POST') {
-    const events = req.body.events;
-    await Promise.all(events.map(handleEvent));
-    return res.status(200).send('OK');
+  // ตรวจสอบว่าเป็น POST request หรือไม่ (LINE จะส่ง POST มาเสมอ)
+  if (req.method !== 'POST') {
+    return res.status(200).send('Method Not Allowed');
   }
-  res.status(405).send('Method Not Allowed');
+
+  const events = req.body.events;
+
+  try {
+    await Promise.all(events.map(async (event) => {
+      if (event.type === 'postback') {
+        const userId = event.source.userId;
+        const data = event.postback.data;
+
+        if (data === 'action=switch_to_menu_2') {
+          await client.linkRichMenuToUser(userId, process.env.RICH_MENU_ID_2);
+        } else if (data === 'action=switch_to_menu_1') {
+          await client.linkRichMenuToUser(userId, process.env.RICH_MENU_ID_1);
+        }
+      }
+    }));
+    res.status(200).send('OK');
+  } catch (err) {
+    console.error(err);
+    res.status(500).end();
+  }
 };
-
-async function handleEvent(event) {
-  if (event.type !== 'postback') return;
-
-  const userId = event.source.userId;
-  const data = event.postback.data;
-
-  if (data === 'action=switch_to_menu_2') {
-    return client.linkRichMenuToUser(userId, process.env.RICH_MENU_ID_2);
-  } else if (data === 'action=switch_to_menu_1') {
-    return client.linkRichMenuToUser(userId, process.env.RICH_MENU_ID_1);
-  }
-}
