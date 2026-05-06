@@ -1,0 +1,16 @@
+{
+  "redirects": [
+    { "source": "/menu1", "destination": "https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/diabetes.html", "permanent": false },
+    { "source": "/menu2", "destination": "https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/diabetes_medicine.html", "permanent": false },
+    { "source": "/menu3", "destination": "https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/food.html", "permanent": false },
+    { "source": "/menu4", "destination": "https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/sugartest.html", "permanent": false },
+    { "source": "/menu5", "destination": "https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/exercise.html", "permanent": false },
+    { "source": "/menu6", "destination": "https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/health_care_services.html", "permanent": false },
+    { "source": "/menu7", "destination": "https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/Illness.html", "permanent": false },
+    { "source": "/menu8", "destination": "https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/guidelines.html", "permanent": false },
+    { "source": "/menu9", "destination": "https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/self.html", "permanent": false },
+    { "source": "/menu10", "destination": "https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/graph.html", "permanent": false },
+    { "source": "/menu11", "destination": "https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/nurse.html", "permanent": false },
+    { "source": "/menu12", "destination": "https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/contact.html", "permanent": false }
+  ]
+}
