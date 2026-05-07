@@ -159,30 +159,102 @@
 
                 <table class="meal-table">
                     <thead>
-                        <tr><th width="15%">มื้อ</th><th width="70%">รายการอาหาร</th><th width="15%">คาร์บ</th></tr>
+                        <tr>
+                            <th width="15%">มื้อ</th>
+                            <th width="70%">รายการอาหาร</th>
+                            <th width="15%">คาร์บ</th>
+                        </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td class="text-center fw-bold" rowspan="3">เช้า</td>
-                            <td><select class="meal-select" id="m1_main" onchange="updatePlanning()"></select></td>
+                            <td>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="cat-label">อาหารหลัก</span>
+                                    <button type="button" class="btn btn-sm btn-outline-success py-0 px-1" onclick="addMoreSelect('m1_main_container', 'อาหารหลัก')"><i class="bi bi-plus-lg"></i></button>
+                                </div>
+                                <div id="m1_main_container"></div>
+                            </td>
                             <td rowspan="3"><span class="carb-display" id="m1_total">0</span></td>
                         </tr>
-                        <tr><td><select class="meal-select" id="m1_snack" onchange="updatePlanning()"></select></td></tr>
-                        <tr><td><select class="meal-select" id="m1_drink" onchange="updatePlanning()"></select></td></tr>
+                        <tr>
+                            <td>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="cat-label">อาหารว่าง</span>
+                                    <button type="button" class="btn btn-sm btn-outline-success py-0 px-1" onclick="addMoreSelect('m1_snack_container', 'อาหารว่าง')"><i class="bi bi-plus-lg"></i></button>
+                                </div>
+                                <div id="m1_snack_container"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="cat-label">เครื่องดื่ม</span>
+                                    <button type="button" class="btn btn-sm btn-outline-success py-0 px-1" onclick="addMoreSelect('m1_drink_container', 'เครื่องดื่ม')"><i class="bi bi-plus-lg"></i></button>
+                                </div>
+                                <div id="m1_drink_container"></div>
+                            </td>
+                        </tr>
+                
                         <tr>
                             <td class="text-center fw-bold" rowspan="3">กลางวัน</td>
-                            <td><select class="meal-select" id="m2_main" onchange="updatePlanning()"></select></td>
+                            <td>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="cat-label">อาหารหลัก</span>
+                                    <button type="button" class="btn btn-sm btn-outline-success py-0 px-1" onclick="addMoreSelect('m2_main_container', 'อาหารหลัก')"><i class="bi bi-plus-lg"></i></button>
+                                </div>
+                                <div id="m2_main_container"></div>
+                            </td>
                             <td rowspan="3"><span class="carb-display" id="m2_total">0</span></td>
                         </tr>
-                        <tr><td><select class="meal-select" id="m2_snack" onchange="updatePlanning()"></select></td></tr>
-                        <tr><td><select class="meal-select" id="m2_drink" onchange="updatePlanning()"></select></td></tr>
+                        <tr>
+                            <td>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="cat-label">อาหารว่าง</span>
+                                    <button type="button" class="btn btn-sm btn-outline-success py-0 px-1" onclick="addMoreSelect('m2_snack_container', 'อาหารว่าง')"><i class="bi bi-plus-lg"></i></button>
+                                </div>
+                                <div id="m2_snack_container"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="cat-label">เครื่องดื่ม</span>
+                                    <button type="button" class="btn btn-sm btn-outline-success py-0 px-1" onclick="addMoreSelect('m2_drink_container', 'เครื่องดื่ม')"><i class="bi bi-plus-lg"></i></button>
+                                </div>
+                                <div id="m2_drink_container"></div>
+                            </td>
+                        </tr>
+                
                         <tr>
                             <td class="text-center fw-bold" rowspan="3">เย็น</td>
-                            <td><select class="meal-select" id="m3_main" onchange="updatePlanning()"></select></td>
+                            <td>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="cat-label">อาหารหลัก</span>
+                                    <button type="button" class="btn btn-sm btn-outline-success py-0 px-1" onclick="addMoreSelect('m3_main_container', 'อาหารหลัก')"><i class="bi bi-plus-lg"></i></button>
+                                </div>
+                                <div id="m3_main_container"></div>
+                            </td>
                             <td rowspan="3"><span class="carb-display" id="m3_total">0</span></td>
                         </tr>
-                        <tr><td><select class="meal-select" id="m3_snack" onchange="updatePlanning()"></select></td></tr>
-                        <tr><td><select class="meal-select" id="m3_drink" onchange="updatePlanning()"></select></td></tr>
+                        <tr>
+                            <td>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="cat-label">อาหารว่าง</span>
+                                    <button type="button" class="btn btn-sm btn-outline-success py-0 px-1" onclick="addMoreSelect('m3_snack_container', 'อาหารว่าง')"><i class="bi bi-plus-lg"></i></button>
+                                </div>
+                                <div id="m3_snack_container"></div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="d-flex justify-content-between align-items-center mb-1">
+                                    <span class="cat-label">เครื่องดื่ม</span>
+                                    <button type="button" class="btn btn-sm btn-outline-success py-0 px-1" onclick="addMoreSelect('m3_drink_container', 'เครื่องดื่ม')"><i class="bi bi-plus-lg"></i></button>
+                                </div>
+                                <div id="m3_drink_container"></div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -218,19 +290,19 @@
             } catch (err) { console.error(err); }
         }
 
+        // แก้ไขฟังก์ชัน populateDropdowns ให้สร้างช่องแรกเริ่มโดยอัตโนมัติ
         function populateDropdowns() {
             if(!foodDataCache) return;
             const meals = ['m1', 'm2', 'm3'];
+            const types = { 'main': 'อาหารหลัก', 'snack': 'อาหารว่าง', 'drink': 'เครื่องดื่ม' };
+            
             meals.forEach(m => {
-                const types = { 'main': 'อาหารหลัก', 'snack': 'อาหารว่าง', 'drink': 'เครื่องดื่ม' };
                 for (let key in types) {
-                    const select = document.getElementById(`${m}_${key}`);
-                    select.innerHTML = `<option value="0">-- เลือก${types[key]} --</option>`;
-                    if(foodDataCache[types[key]]) {
-                        foodDataCache[types[key]].forEach(item => {
-                            select.options.add(new Option(`${item.n} (${item.c})`, item.c));
-                        });
-                    }
+                    const containerId = `${m}_${key}_container`;
+                    const container = document.getElementById(containerId);
+                    // ล้างข้อมูลเก่าก่อน (ถ้ามี) แล้วสร้างช่องแรกขึ้นมา
+                    container.innerHTML = '';
+                    addMoreSelect(containerId, types[key]);
                 }
             });
         }
@@ -283,16 +355,60 @@
             } catch (error) { console.error('Save failed', error); }
         }
 
+        // ฟังก์ชันสร้างช่องเลือกอาหารใหม่
+        function addMoreSelect(containerId, categoryName) {
+            const container = document.getElementById(containerId);
+            const wrapper = document.createElement('div');
+            wrapper.className = "d-flex gap-1 mb-2 align-items-center";
+            
+            const newSelect = document.createElement('select');
+            newSelect.className = "meal-select dynamic-meal-input flex-grow-1";
+            newSelect.onchange = updatePlanning;
+        
+            newSelect.innerHTML = `<option value="0">-- เลือก${categoryName} --</option>`;
+            if(foodDataCache && foodDataCache[categoryName]) {
+                foodDataCache[categoryName].forEach(item => {
+                    newSelect.options.add(new Option(`${item.n} (${item.c})`, item.c));
+                });
+            }
+        
+            const delBtn = document.createElement('button');
+            delBtn.innerHTML = '<i class="bi bi-trash"></i>';
+            delBtn.className = "btn btn-sm btn-outline-danger border-0 py-0";
+            delBtn.type = "button";
+            delBtn.onclick = function() {
+                wrapper.remove();
+                updatePlanning();
+            };
+        
+            wrapper.appendChild(newSelect);
+            wrapper.appendChild(delBtn);
+            container.appendChild(wrapper);
+        }
+        
+        // ฟังก์ชันคำนวณคาร์บรวมทั้งหมด
         function updatePlanning() {
             let grandTotal = 0;
-            ['m1', 'm2', 'm3'].forEach(m => {
-                const v1 = parseFloat(document.getElementById(`${m}_main`).value) || 0;
-                const v2 = parseFloat(document.getElementById(`${m}_snack`).value) || 0;
-                const v3 = parseFloat(document.getElementById(`${m}_drink`).value) || 0;
-                const mealSum = v1 + v2 + v3;
+            const meals = ['m1', 'm2', 'm3'];
+            
+            meals.forEach(m => {
+                let mealSum = 0;
+                const containers = [`${m}_main_container`, `${m}_snack_container`, `${m}_drink_container`];
+                
+                containers.forEach(cId => {
+                    const container = document.getElementById(cId);
+                    if(container) {
+                        const selects = container.querySelectorAll('.dynamic-meal-input');
+                        selects.forEach(sel => {
+                            mealSum += parseFloat(sel.value) || 0;
+                        });
+                    }
+                });
+        
                 document.getElementById(`${m}_total`).innerText = mealSum.toFixed(1);
                 grandTotal += mealSum;
             });
+        
             const remain = currentTargetCarb - grandTotal;
             const remEl = document.getElementById('plan-rem');
             remEl.innerText = remain.toFixed(1);
