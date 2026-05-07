@@ -41,10 +41,15 @@
         }
 
         .container-main {
-            width: 100%; max-width: 550px; margin: 0 auto;
-            background: white; min-height: 100vh;
-            box-shadow: var(--card-shadow); display: flex; flex-direction: column;
-            overflow-x: hidden;      /* ป้องกันการเลื่อนซ้าย-ขวาที่น่ารำคาญ */
+            width: 100%; 
+            max-width: 550px; 
+            margin: 0 auto;
+            background: white; 
+            min-height: 100vh;
+            box-shadow: var(--card-shadow); 
+            display: flex; 
+            flex-direction: column;
+            overflow-x: hidden; /* ป้องกันจอขยับซ้ายขวา */
         }
 
         /* เพิ่ม Media Query สำหรับหน้าจอขนาดเล็กมาก */
@@ -54,6 +59,16 @@
             }
             .form-section {
                 padding: 20px 15px; /* ลด Padding ลงเล็กน้อย */
+            }
+        }
+
+        /* เมื่อหมุนจอแนวนอน หรือจอใหญ่ขึ้น */
+        @media (min-width: 576px) {
+            .container-main {
+                max-width: 600px; /* ขยายให้กว้างขึ้นเล็กน้อยเมื่อวางแนวนอน */
+                margin: 20px auto;
+                min-height: auto;
+                border-radius: 20px;
             }
         }
 
@@ -101,17 +116,27 @@
         .planning-section { margin-top: 35px; border-top: 2px solid #eee; padding-top: 25px; display: none; }
         .planning-title { font-family: 'Sarabun', sans-serif; font-size: 1.3rem; text-align: center; color: var(--text-dark); margin-bottom: 15px; }
         .carb-remaining-box { background: white; border: 2px solid var(--primary-orange); border-radius: 15px; padding: 12px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        /* ปรับแต่งตารางให้รองรับหน้าจอแคบ */
-        .meal-table { width: 100%; border-collapse: collapse; font-size: 1.2rem; background: white; border: 1px solid #dee2e6; table-layout: fixed; }
+        
+        /* ปรับปรุงตารางให้ยืดหยุ่น (Responsive Table) */
+        .meal-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            background: white; 
+            border: 1px solid #dee2e6; 
+            table-layout: auto; /* เปลี่ยนจาก fixed เป็น auto เพื่อให้คอลัมน์ปรับตามเนื้อหา */
+        }
+        
         /* หัวตาราง */
         .meal-table th { background: #f8f9fa; padding: 12px 5px; font-size: 1.1rem; border: 1px solid #dee2e6; text-align: center; }
         .meal-table td { padding: 8px 5px; font-size: 1.1rem; border: 1px solid #dee2e6; vertical-align: middle; }
+        
         /* ชื่อมื้ออาหาร (เช้า/กลางวัน/เย็น) */
         .meal-table td.fw-bold {
             font-size: 1.1rem;
             color: #2c3e50;
             vertical-align: middle;
         }
+        
         /* ปรับฟอนต์และระยะห่างในมือถือ */
         @media (max-width: 400px) {
             .meal-table th, .meal-table td {
@@ -123,16 +148,29 @@
                 font-weight: bold;
                 color: #007bff;
             }
+            .btn-outline-success, .btn-danger {
+                padding: 5px 8px !important; /* ลดขนาดปุ่มลงนิดเดียวในจอแคบ */
+            }
         }
+        
         /* ขยายช่อง Select ให้ใหญ่สะใจคนแก่ */
         .meal-select {
-            font-size: 1.1rem !important;
+            width: 100% !important; /* บังคับให้ Select กว้างเต็มช่องเสมอ */
+            font-size: 1rem !important;
             padding: 8px !important;
             height: auto !important;
             border: 2px solid #ddd; /* เส้นขอบชัดขึ้น */
             border-radius: 8px;
             margin-bottom: 5px;
         }
+
+        .dynamic-meal-input-wrapper {
+            display: flex;
+            gap: 5px;
+            align-items: flex-start; /* ให้ปุ่มลบอยู่ด้านบนเมื่อข้อความยาว */
+            width: 100%;
+        }
+        
         .carb-display { font-weight: bold; color: var(--primary-orange); display: block; text-align: center; font-size: 1rem; }
         .over-limit { color: #e74c3c !important; }
         /* ป้ายกำกับ อาหารหลัก/ว่าง/เครื่องดื่ม */
@@ -405,7 +443,9 @@
         function addMoreSelect(containerId, categoryName) {
             const container = document.getElementById(containerId);
             const wrapper = document.createElement('div');
-            wrapper.className = "d-flex gap-2 mb-3 align-items-center"; // เพิ่ม gap และ margin
+            // wrapper.className = "d-flex gap-2 mb-3 align-items-center"; // เพิ่ม gap และ margin
+            // ใช้คลาส dynamic-meal-input-wrapper ที่เราเขียน CSS รองรับไว้
+            wrapper.className = "dynamic-meal-input-wrapper mb-2";
             
             const newSelect = document.createElement('select');
             // เพิ่มคลาส form-select ของ Bootstrap เพื่อให้สวยงามและใหญ่
