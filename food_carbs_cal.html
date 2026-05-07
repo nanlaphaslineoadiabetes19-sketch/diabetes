@@ -151,24 +151,16 @@
         }
 
         /* เน้นเส้นแบ่งระหว่างมื้อ (เช้า-กลางวัน, กลางวัน-เย็น) */
-        /* เราจะเน้นเส้นล่างของแถวสุดท้ายในแต่ละมื้อ */
         .meal-table tr td[rowspan="3"] {
-            border-left: 4px solid var(--primary-green) !important; /* เพิ่มแถบสีแนวตั้งด้านหน้ามื้ออาหาร */
+            border-left: 4px solid var(--primary-green) !important; 
             font-size: 1.2rem;
         }
 
         /* เพิ่มความหนาเส้นคั่นระหว่างมื้ออาหารให้มองเห็นง่าย */
         .meal-table tbody tr:nth-child(3n) {
-            border-bottom: 4px solid #6c757d !important; /* เส้นสีเทาเข้มหนาๆ คั่นจบแต่ละมื้อ */
+            border-bottom: 4px solid #6c757d !important; 
         }
         
-        /* ชื่อมื้ออาหาร (เช้า/กลางวัน/เย็น) */
-        .meal-table td.fw-bold {
-            font-size: 1.1rem;
-            color: #2c3e50;
-            vertical-align: middle;
-        }
-
         /* กำหนดขนาดแต่ละคอลัมน์ให้ชัดเจน */
         .meal-table th:nth-child(1), 
         .meal-table td:nth-child(1) { 
@@ -181,60 +173,40 @@
             text-align: center;
         }
         
-        /* ช่อง "รายการอาหาร" จะขยายเท่าที่เหลือ */
         .meal-table th:nth-child(2), 
         .meal-table td:nth-child(2) { 
             width: auto; 
         }
         
-        /* ปรับฟอนต์และระยะห่างในมือถือ */
-        @media (max-width: 400px) {
-            .meal-table th, .meal-table td {
-                font-size: 0.75rem; /* ลดขนาดตัวอักษรลงอีก */
-                padding: 5px 2px;
-            }
-            .carb-display {
-                font-size: 1.5rem; /* เน้นตัวเลขใหญ่ๆ */
-                font-weight: bold;
-                color: #007bff;
-            }
-            .btn-outline-success, .btn-danger {
-                padding: 5px 6px !important; /* ลดขนาดปุ่มลงนิดเดียวในจอแคบ */
-            }
-            .cat-label {
-                font-size: 0.9rem; /* ลดขนาดตัวหนังสือหัวข้อ อาหารหลัก/ว่าง */
-            }
-        }
-        
-        /* ขยายช่อง Select ให้ใหญ่สะใจคนแก่ */
-        .meal-select {
-            width: 100% !important; /* บังคับให้ Select กว้างเต็มช่องเสมอ */
-            font-size: 1rem !important;
-            padding: 8px !important;
-            height: auto !important;
-            border: 2px solid #ddd; /* เส้นขอบชัดขึ้น */
-            border-radius: 8px;
+        /* CSS ใหม่สำหรับปุ่มกดเลือกอาหาร (วิธีที่ 1) */
+        .meal-modal-btn {
+            width: 100%;
+            text-align: left;
+            font-size: 1.1rem !important;
+            padding: 10px !important;
+            border: 2px solid #ddd !important;
+            border-radius: 10px !important;
+            background: #fff !important;
+            color: #444 !important;
+            font-weight: 500;
             margin-bottom: 5px;
-            min-width: 0; /* สำคัญมาก: ช่วยให้ Flexbox ย่อขนาด Select ลงได้เมื่อจอแคบ */
+            white-space: normal;
+        }
+        .meal-modal-btn.selected {
+            border-color: var(--primary-green) !important;
+            background-color: #f0fff4 !important;
+            color: var(--primary-green) !important;
+            font-weight: 700;
         }
 
-        /* wrapper สำหรับ Select และปุ่มลบ (แก้ไขให้ Responsive) */
-        .dynamic-meal-input-wrapper {
-            display: flex;
-            gap: 2px;
-            align-items: center;
-            width: 100%;
-        }
-        
         .carb-display { font-weight: bold; color: var(--primary-orange); display: block; text-align: center; font-size: 1rem; }
         .over-limit { color: #e74c3c !important; }
         
-        /* ป้ายกำกับ อาหารหลัก/ว่าง/เครื่องดื่ม */
         .cat-label { 
             font-size: 1.2rem; 
             font-weight: 800; 
             color: #495057; 
-            background: #f8f9fa; /* ใส่พื้นหลังอ่อนๆ ให้หัวข้อย่อย */
+            background: #f8f9fa; 
             padding: 2px 8px;
             border-radius: 5px;
             display: inline-block; 
@@ -243,6 +215,21 @@
 
         footer { padding: 40px 20px; text-align: center; margin-top: auto; }
         .copyright { font-size: 12px; color: #bdc3c7; line-height: 1.6; }
+        
+        /* ปรับแต่ง Modal ให้สวยงามและตัวหนังสือใหญ่ */
+        #foodSelectorModal .modal-title { font-size: 1.5rem; font-weight: 700; }
+        .food-option-btn {
+            width: 100%;
+            padding: 18px;
+            margin-bottom: 10px;
+            font-size: 1.3rem !important;
+            font-weight: 700 !important;
+            border-radius: 15px;
+            text-align: left;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
@@ -345,7 +332,7 @@
                                 <div id="m1_drink_container"></div>
                             </td>
                         </tr>
-                
+                        
                         <tr>
                             <td class="text-center fw-bold" rowspan="3">กลางวัน</td>
                             <td>
@@ -412,13 +399,31 @@
         <footer><p class="copyright">© 2026 ระบบดูแลเบาหวานด้วยตนเอง (Self-Care System)<br>Harris-Benedict Equation</p></footer>
     </div>
 
+    <div class="modal fade" id="foodSelectorModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content" style="border-radius: 25px; border: none;">
+                <div class="modal-header border-0 pb-0">
+                    <h5 class="modal-title" id="modalTitleLabel">เลือกรายการ</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body pt-3">
+                    <div id="foodOptionsList">
+                        </div>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-secondary btn-lg w-100" style="border-radius: 15px;" data-bs-dismiss="modal">ปิด</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         let userLineId = "Guest";
         let userLineName = "Guest Name";
         let currentTargetCarb = 0;
         let foodDataCache = null;
-        // ใส่ URL ของ Google Apps Script ที่ใช้ดึงข้อมูลอาหาร (GET) และบันทึกข้อมูล (POST)
         const scriptURL = 'https://script.google.com/macros/s/AKfycbzlGzevHmNHbAvn_rhiL66Whw2qav-5at0gk5MD33uyXjevHveyMyoQXkTTF4AMTwxwNw/exec'; 
 
         async function initLIFF() {
@@ -440,7 +445,6 @@
             } catch (err) { console.error(err); }
         }
 
-        // แก้ไขฟังก์ชัน populateDropdowns ให้สร้างช่องแรกเริ่มโดยอัตโนมัติ
         function populateDropdowns() {
             if(!foodDataCache) return;
             const meals = ['m1', 'm2', 'm3'];
@@ -450,7 +454,6 @@
                 for (let key in types) {
                     const containerId = `${m}_${key}_container`;
                     const container = document.getElementById(containerId);
-                    // ล้างข้อมูลเก่าก่อน (ถ้ามี) แล้วสร้างช่องแรกขึ้นมา
                     container.innerHTML = '';
                     addMoreSelect(containerId, types[key]);
                 }
@@ -488,13 +491,11 @@
             document.getElementById('r-tdee').innerText = tdee.toLocaleString();
             document.getElementById('r-carb-u').innerText = carbUnits;
 
-            // ตั้งค่าเป้าหมายสำหรับการวางแผน
             currentTargetCarb = parseFloat(carbUnits);
             document.getElementById('planning').style.display = 'block';
             document.getElementById('plan-target').innerText = carbUnits;
             updatePlanning();
 
-            // บันทึกข้อมูลลง Google Sheets (POST)
             const formData = {
                 line_id: userLineId, line_name: userLineName, sex: gender === 'male' ? 'ชาย' : 'หญิง',
                 weight, height, age, waist_cm, waist_inch, activity, bmi, bmi_status: bmiStatus,
@@ -505,41 +506,73 @@
             } catch (error) { console.error('Save failed', error); }
         }
 
+        // --- แก้ไขฟังก์ชัน addMoreSelect เพื่อใช้ Modal (วิธีที่ 1) ---
         function addMoreSelect(containerId, categoryName) {
             const container = document.getElementById(containerId);
             const wrapper = document.createElement('div');
-            // wrapper.className = "d-flex gap-2 mb-3 align-items-center"; // เพิ่ม gap และ margin
-            // ใช้คลาส dynamic-meal-input-wrapper ที่เราเขียน CSS รองรับไว้
-            wrapper.className = "dynamic-meal-input-wrapper mb-2";
+            wrapper.className = "d-flex gap-1 mb-2 align-items-center w-100";
             
-            const newSelect = document.createElement('select');
-            // เพิ่มคลาส form-select ของ Bootstrap เพื่อให้สวยงามและใหญ่
-            newSelect.className = "form-select form-select-sm meal-select dynamic-meal-input flex-grow-1";
-            newSelect.onchange = updatePlanning;
-        
-            newSelect.innerHTML = `<option value="0">-- เลือก${categoryName} --</option>`;
-            if(foodDataCache && foodDataCache[categoryName]) {
-                foodDataCache[categoryName].forEach(item => {
-                    newSelect.options.add(new Option(`${item.n} (${item.c} คาร์บ)`, item.c));
-                });
-            }
+            // สร้างปุ่มกดที่ทำหน้าที่แทน Select เดิม
+            const modalBtn = document.createElement('button');
+            modalBtn.className = "btn meal-modal-btn flex-grow-1 dynamic-meal-input";
+            modalBtn.innerText = `-- แตะเพื่อเลือก${categoryName} --`;
+            modalBtn.setAttribute("data-carb", "0"); // เก็บค่าคาร์บไว้คำนวณ
+            modalBtn.type = "button";
+            
+            // เมื่อกดปุ่ม ให้แสดงหน้าต่างเลือกอาหาร
+            modalBtn.onclick = function() {
+                showFoodModal(categoryName, modalBtn);
+            };
         
             const delBtn = document.createElement('button');
-            // เปลี่ยนจาก x เล็กๆ เป็นคำว่า "ลบ" หรือไอคอนที่ชัดเจน
             delBtn.innerHTML = '<i class="bi bi-trash3-fill"></i>'; 
-            delBtn.className = "btn btn-danger py-2 px-3"; // ใช้ btn-lg วางหลัง btn-danger เพื่อให้ปุ่มใหญ่
+            delBtn.className = "btn btn-danger py-2 px-3"; 
             delBtn.type = "button";
             delBtn.onclick = function() {
                 wrapper.remove();
                 updatePlanning();
             };
         
-            wrapper.appendChild(newSelect);
+            wrapper.appendChild(modalBtn);
             wrapper.appendChild(delBtn);
             container.appendChild(wrapper);
         }
+
+        // ฟังก์ชันสร้างรายการอาหารใน Modal และแสดงผล
+        function showFoodModal(categoryName, targetBtn) {
+            const modalTitle = document.getElementById('modalTitleLabel');
+            const optionsList = document.getElementById('foodOptionsList');
+            const modalEl = document.getElementById('foodSelectorModal');
+            
+            modalTitle.innerText = `กรุณาเลือก${categoryName}`;
+            optionsList.innerHTML = ''; // ล้างรายการเก่า
+            
+            if(foodDataCache && foodDataCache[categoryName]) {
+                foodDataCache[categoryName].forEach(item => {
+                    const btn = document.createElement('button');
+                    btn.className = "btn btn-outline-success food-option-btn";
+                    btn.innerHTML = `<span>${item.n}</span> <span class="badge bg-success">${item.c} คาร์บ</span>`;
+                    
+                    btn.onclick = function() {
+                        // เมื่อเลือก: อัพเดทปุ่มที่เคยกด และปิด Modal
+                        targetBtn.innerText = `${item.n} (${item.c} คาร์บ)`;
+                        targetBtn.setAttribute("data-carb", item.c);
+                        targetBtn.classList.add("selected");
+                        
+                        updatePlanning();
+                        bootstrap.Modal.getInstance(modalEl).hide();
+                    };
+                    optionsList.appendChild(btn);
+                });
+            } else {
+                optionsList.innerHTML = '<p class="text-center p-4">ไม่พบข้อมูลอาหาร</p>';
+            }
+            
+            const myModal = new bootstrap.Modal(modalEl);
+            myModal.show();
+        }
         
-        // ฟังก์ชันคำนวณคาร์บรวมทั้งหมด
+        // แก้ไขฟังก์ชันคำนวณให้ดึงจาก data-carb ของปุ่มแทน
         function updatePlanning() {
             let grandTotal = 0;
             const meals = ['m1', 'm2', 'm3'];
@@ -551,9 +584,9 @@
                 containers.forEach(cId => {
                     const container = document.getElementById(cId);
                     if(container) {
-                        const selects = container.querySelectorAll('.dynamic-meal-input');
-                        selects.forEach(sel => {
-                            mealSum += parseFloat(sel.value) || 0;
+                        const inputs = container.querySelectorAll('.dynamic-meal-input');
+                        inputs.forEach(input => {
+                            mealSum += parseFloat(input.getAttribute("data-carb")) || 0;
                         });
                     }
                 });
