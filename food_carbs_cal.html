@@ -49,7 +49,7 @@
             box-shadow: var(--card-shadow); 
             display: flex; 
             flex-direction: column;
-            overflow-x: hidden; /* ป้องกันจอขยับซ้ายขวา */
+            overflow-x: hidden; /* ห้ามแก้: ป้องกันจอขยับซ้ายขวา */
         }
 
         /* เพิ่ม Media Query สำหรับหน้าจอขนาดเล็กมาก */
@@ -130,18 +130,19 @@
         /* 1. ปรับหัวตารางให้ใหญ่และชัด */
         .meal-table th { 
             background: #e9ecef; /* ปรับสีพื้นหลังหัวตารางให้เข้มขึ้นนิดนึง */ 
-            padding: 15px 5px; 
-            font-size: 1.3rem !important; /* ขยายขนาดตัวหนังสือ */
-            font-weight: 800; /* เพิ่มความหนาตัวอักษร */
+            padding: 8px 3px; 
+            font-size: 1rem !important; /* ขยายขนาดตัวหนังสือ */
+            font-weight: 500; /* เพิ่มความหนาตัวอักษร */
             color: #000; /* ใช้สีดำสนิท */
-            border: 2px solid #adb5bd; /* เส้นขอบหัวตารางชัดๆ */ 
+            border: 2px solid #dee2e6; /* เส้นขอบหัวตารางชัดๆ */ 
             text-align: center; 
+            white-space: nowrap; /* ห้ามแก้: ป้องกัน คาร์บ ตกบรรทัด */
             word-break: break-word; 
         }
 
         /* 2. ปรับเส้นกรอบมื้ออาหารให้หนาและแบ่งโซนชัดเจน */
         .meal-table td { 
-            padding: 12px 8px; 
+            padding: 10px 5px; 
             font-size: 1.1rem; 
             border: 1px solid #dee2e6; /* เส้นขอบปกติ */
             vertical-align: middle; 
@@ -198,6 +199,7 @@
             min-width: 0; /* สำคัญมาก: ช่วยให้ Flexbox ย่อขนาด Select ลงได้เมื่อจอแคบ */
         }
 
+        /* wrapper สำหรับ Select และปุ่มลบ (แก้ไขให้ Responsive) */
         .dynamic-meal-input-wrapper {
             display: flex;
             gap: 2px;
