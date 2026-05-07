@@ -117,6 +117,12 @@
         .planning-section { margin-top: 35px; border-top: 2px solid #eee; padding-top: 25px; display: none; }
         .planning-title { font-family: 'Sarabun', sans-serif; font-size: 1.3rem; text-align: center; color: var(--text-dark); margin-bottom: 15px; }
         .carb-remaining-box { background: white; border: 2px solid var(--primary-orange); border-radius: 15px; padding: 12px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+
+        .custom-alert {
+            font-size: 24px; /* ปรับขนาดได้ตามใจ */
+            font-weight: bold;
+            color: red;
+        }
         
         /* ปรับปรุงตารางให้ยืดหยุ่น (Responsive Table) */
         .meal-table { 
@@ -231,6 +237,16 @@
             align-items: center;
         }
     </style>
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        Swal.fire({
+          title: '<span style="font-size: 30px;">กรุณากรอกข้อมูลให้ครบถ้วน</span>',
+          icon: 'warning',
+          confirmButtonText: 'ตกลง'
+        });
+    </script>
+    
 </head>
 <body>
 
@@ -475,7 +491,16 @@
             let waist_inch = parseFloat(document.getElementById('waist_inch').value) || 0;
             let displayWaist = waist_cm > 0 ? waist_cm + " ซม." : (waist_inch > 0 ? (waist_inch * 2.54).toFixed(1) + " ซม." : "ไม่ระบุ");
 
-            if (!weight || !height || !age) { alert("กรุณากรอกข้อมูลให้ครบถ้วน"); return; }
+            if (!weight || !height || !age) {
+                Swal.fire({
+                    title: '<span style="font-size: 32px;">แจ้งเตือน</span>',
+                    html: '<b style="font-size: 24px;">กรุณากรอกข้อมูลให้ครบถ้วน</b>',
+                    icon: 'warning',
+                    confirmButtonText: '<span style="font-size: 20px;">ตกลง</span>',
+                    confirmButtonColor: '#8B4513' // ใช้สีน้ำตาลให้เข้ากับธีมคำนวณคาร์บของคุณ
+                });
+                return;
+            }
 
             const bmi = (weight / Math.pow(height / 100, 2)).toFixed(2);
             let bmiStatus = bmi < 18.5 ? "ผอม" : (bmi < 23 ? "สมส่วน" : (bmi < 25 ? "น้ำหนักเกิน" : (bmi < 30 ? "อ้วน" : "อ้วนอันตราย")));
