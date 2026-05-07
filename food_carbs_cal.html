@@ -33,6 +33,13 @@
             transition: 0.3s; text-decoration: none;
         }
 
+        /* ปรับขนาดปุ่มบวก (+) และปุ่มถังขยะ */
+        .btn-outline-success, .btn-outline-danger {
+            padding: 8px 12px !important;
+            font-size: 1.1rem !important;
+            border-width: 2px;
+        }
+
         .container-main {
             width: 100%; max-width: 550px; margin: 0 auto;
             background: white; min-height: 100vh;
@@ -94,9 +101,16 @@
         .planning-title { font-family: 'Kanit', sans-serif; font-size: 1.3rem; text-align: center; color: var(--text-dark); margin-bottom: 15px; }
         .carb-remaining-box { background: white; border: 2px solid var(--primary-orange); border-radius: 15px; padding: 12px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
         /* ปรับแต่งตารางให้รองรับหน้าจอแคบ */
-        .meal-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; background: white; border: 1px solid #dee2e6; table-layout: fixed; }
-        .meal-table th { background: #f8f9fa; padding: 10px 5px; border: 1px solid #dee2e6; text-align: center; }
+        .meal-table { width: 100%; border-collapse: collapse; font-size: 1.2rem; background: white; border: 1px solid #dee2e6; table-layout: fixed; }
+        /* หัวตาราง */
+        .meal-table th { background: #f8f9fa; padding: 12px 5px; font-size: 1.1rem; border: 1px solid #dee2e6; text-align: center; }
         .meal-table td { padding: 8px 5px; border: 1px solid #dee2e6; vertical-align: middle; }
+        /* ชื่อมื้ออาหาร (เช้า/กลางวัน/เย็น) */
+        .meal-table td.fw-bold {
+            font-size: 1.3rem;
+            color: #2c3e50;
+            vertical-align: middle;
+        }
         /* ปรับฟอนต์และระยะห่างในมือถือ */
         @media (max-width: 400px) {
             .meal-table th, .meal-table td {
@@ -104,14 +118,24 @@
                 padding: 5px 2px;
             }
             .carb-display {
-                font-size: 0.9rem;
+                font-size: 1.5rem; /* เน้นตัวเลขใหญ่ๆ */
+                font-weight: bold;
+                color: #007bff;
             }
         }
-        /* ปรับแต่งช่อง Select ให้ไม่ล้น */
-        .meal-select { width: 100%; border: 1px solid #ccc; border-radius: 5px; padding: 5px; font-size: 0.75rem; }
+        /* ขยายช่อง Select ให้ใหญ่สะใจคนแก่ */
+        .meal-select {
+            font-size: 1.2rem !important;
+            padding: 10px !important;
+            height: auto !important;
+            border: 2px solid #ddd; /* เส้นขอบชัดขึ้น */
+            border-radius: 8px;
+            margin-bottom: 5px;
+        }
         .carb-display { font-weight: bold; color: var(--primary-orange); display: block; text-align: center; font-size: 1rem; }
         .over-limit { color: #e74c3c !important; }
-        .cat-label { font-size: 0.7rem; color: #888; display: block; margin-bottom: 2px; }
+        /* ป้ายกำกับ อาหารหลัก/ว่าง/เครื่องดื่ม */
+        .cat-label { font-size: 1.1rem; font-weight: 600; color: #888; display: block; margin-bottom: 2px; }
 
         footer { padding: 40px 20px; text-align: center; margin-top: auto; }
         .copyright { font-size: 12px; color: #bdc3c7; line-height: 1.6; }
@@ -175,8 +199,8 @@
             <div id="planning" class="planning-section">
                 <h2 class="planning-title">วางแผนการรับประทานอาหาร</h2>
                 <div class="carb-remaining-box">
-                    <span style="font-size: 0.85rem; color: #666;">เป้าหมาย: <strong id="plan-target">0</strong> คาร์บ</span> | 
-                    <span style="font-size: 1.1rem; font-weight: bold;">คงเหลือ: <span id="plan-rem">0</span> คาร์บ</span>
+                    <span style="font-size: 1rem; color: #666;">เป้าหมาย: <strong id="plan-target">0</strong> คาร์บ</span> | 
+                    <span style="font-size: 1.3rem; font-weight: bold;">คงเหลือ: <span id="plan-rem">0</span> คาร์บ</span>
                 </div>
 
                 <table class="meal-table">
@@ -377,26 +401,27 @@
             } catch (error) { console.error('Save failed', error); }
         }
 
-        // ฟังก์ชันสร้างช่องเลือกอาหารใหม่
         function addMoreSelect(containerId, categoryName) {
             const container = document.getElementById(containerId);
             const wrapper = document.createElement('div');
-            wrapper.className = "d-flex gap-1 mb-2 align-items-center";
+            wrapper.className = "d-flex gap-2 mb-3 align-items-center"; // เพิ่ม gap และ margin
             
             const newSelect = document.createElement('select');
-            newSelect.className = "meal-select dynamic-meal-input flex-grow-1";
+            // เพิ่มคลาส form-select ของ Bootstrap เพื่อให้สวยงามและใหญ่
+            newSelect.className = "form-select meal-select dynamic-meal-input flex-grow-1"; 
             newSelect.onchange = updatePlanning;
         
             newSelect.innerHTML = `<option value="0">-- เลือก${categoryName} --</option>`;
             if(foodDataCache && foodDataCache[categoryName]) {
                 foodDataCache[categoryName].forEach(item => {
-                    newSelect.options.add(new Option(`${item.n} (${item.c})`, item.c));
+                    newSelect.options.add(new Option(`${item.n} (${item.c} คาร์บ)`, item.c));
                 });
             }
         
             const delBtn = document.createElement('button');
-            delBtn.innerHTML = '<i class="bi bi-trash"></i>';
-            delBtn.className = "btn btn-sm btn-outline-danger border-0 py-0";
+            // เปลี่ยนจาก x เล็กๆ เป็นคำว่า "ลบ" หรือไอคอนที่ชัดเจน
+            delBtn.innerHTML = '<i class="bi bi-trash3-fill"></i>'; 
+            delBtn.className = "btn btn-danger btn-lg py-2 px-3"; // ใช้ btn-lg เพื่อให้ปุ่มใหญ่
             delBtn.type = "button";
             delBtn.onclick = function() {
                 wrapper.remove();
