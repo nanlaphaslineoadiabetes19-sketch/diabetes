@@ -126,12 +126,20 @@
         
         /* ปรับปรุงตารางให้ยืดหยุ่น (Responsive Table) */
         .meal-table { 
-            width: 100% !important; 
+            border-collapse: collapse; /* ทำให้เส้นขอบไม่ซ้อนกัน */
+            width: 100% !important;    /* ให้ตารางกว้างพอดีหน้าจอ ไม่เกินขอบ */
+            max-width: 100%;           /* ป้องกันตารางล้น */
             border-collapse: collapse; 
             background: white; 
-            border: 1px solid #27ae60; 
+            border: 2px solid #2e7d32; /* กำหนดเส้นขอบนอกสุดให้หนาเท่ากัน */
             table-layout: fixed; /* เปลี่ยนเป็น fixed เพื่อคุมความกว้างให้เป๊ะ */
             word-wrap: break-word; /* ป้องกันเนื้อหาดันตาราง */
+        }
+
+        /* กำหนดเส้นขอบให้ช่องภายใน (th และ td) */
+        th, td {
+            border: 1px solid #2e7d32; /* เส้นขอบด้านในให้บางลงนิดหน่อยหรือเท่ากันตามชอบ */
+            padding: 8px;
         }
         
         /* 1. ปรับหัวตารางให้ใหญ่และชัด */
