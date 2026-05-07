@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;700&family=Kanit:wght@400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <style>
-        /* --- CSS เดิมของคุณทั้งหมด --- */
         :root {
             --primary-orange: #e67e22;
             --primary-green: #27ae60;
@@ -16,27 +15,69 @@
             --text-dark: #2c3e50;
             --card-shadow: 0 15px 35px rgba(0,0,0,0.1);
         }
-        body { margin: 0; padding: 0; background-color: #f4f7f6; font-family: 'Sarabun', sans-serif; color: var(--text-dark); min-height: 100vh; }
+
+        body {
+            margin: 0; padding: 0;
+            background-color: #f4f7f6;
+            font-family: 'Sarabun', sans-serif;
+            color: var(--text-dark);
+            min-height: 100vh;
+        }
+
         .nav-bar { position: fixed; top: 15px; left: 15px; z-index: 9999; }
-        .btn-back { padding: 10px 22px; background-color: rgba(255, 255, 255, 0.9); color: #444; border: 1px solid rgba(0,0,0,0.05); border-radius: 50px; cursor: pointer; font-size: 15px; font-weight: 700; display: flex; align-items: center; gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); backdrop-filter: blur(10px); transition: 0.3s; text-decoration: none; }
-        .container-main { width: 100%; max-width: 550px; margin: 0 auto; background: white; min-height: 100vh; box-shadow: var(--card-shadow); display: flex; flex-direction: column; }
-        .hero-banner { background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%); color: white; text-align: center; padding: 40px 20px; border-radius: 0 0 40px 40px; }
+        .btn-back {
+            padding: 10px 22px; background-color: rgba(255, 255, 255, 0.9); color: #444;
+            border: 1px solid rgba(0,0,0,0.05); border-radius: 50px; cursor: pointer;
+            font-size: 15px; font-weight: 700; display: flex; align-items: center;
+            gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); backdrop-filter: blur(10px);
+            transition: 0.3s; text-decoration: none;
+        }
+
+        .container-main {
+            width: 100%; max-width: 550px; margin: 0 auto;
+            background: white; min-height: 100vh;
+            box-shadow: var(--card-shadow); display: flex; flex-direction: column;
+        }
+
+        .hero-banner {
+            background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);
+            color: white; text-align: center; padding: 40px 20px; border-radius: 0 0 40px 40px;
+        }
+
         .hero-banner h1 { font-family: 'Kanit', sans-serif; font-weight: 600; font-size: 1.8rem; margin: 0; }
         .form-section { padding: 30px 25px; }
         .section-header h2 { font-family: 'Kanit', sans-serif; font-size: 1.2rem; color: var(--primary-orange); font-weight: 600; text-align: center; margin-bottom: 5px; }
-        .glass-input { border: 2px solid #f0f0f0; border-radius: 12px; padding: 12px; font-size: 1.2rem; font-weight: 600; text-align: center; transition: 0.3s; color: var(--primary-green); }
+
+        .glass-input {
+            border: 2px solid #f0f0f0; border-radius: 12px; padding: 12px;
+            font-size: 1.2rem; font-weight: 600; text-align: center;
+            transition: 0.3s; color: var(--primary-green);
+        }
+
         .form-label { font-weight: 700; font-size: 0.85rem; color: #555; margin-bottom: 5px; display: block; }
+
         .gender-selector { display: flex; gap: 10px; margin-bottom: 25px; align-items: center; }
-        .gender-box { flex: 1; border: 2px solid #eee; border-radius: 12px; padding: 10px; text-align: center; cursor: pointer; transition: 0.3s; background: #fff; }
+        .gender-box {
+            flex: 1; border: 2px solid #eee; border-radius: 12px; padding: 10px;
+            text-align: center; cursor: pointer; transition: 0.3s; background: #fff;
+        }
         .gender-box.active { border-color: var(--primary-orange); background: #fff5e6; color: var(--primary-orange); font-weight: 700; }
         input[type="radio"] { display: none; }
-        .btn-calculate { background: var(--primary-orange); color: white; border: none; border-radius: 15px; padding: 18px; font-weight: 700; width: 100%; font-size: 1.2rem; margin-top: 25px; box-shadow: 0 8px 20px rgba(230, 126, 34, 0.3); transition: 0.3s; font-family: 'Kanit', sans-serif; }
-        .result-section { background: var(--bg-cream); border-radius: 20px; padding: 25px; margin-top: 30px; border: 2px dashed var(--primary-green); display: none; }
+
+        .btn-calculate {
+            background: var(--primary-orange); color: white; border: none; border-radius: 15px;
+            padding: 18px; font-weight: 700; width: 100%; font-size: 1.2rem; margin-top: 25px;
+            box-shadow: 0 8px 20px rgba(230, 126, 34, 0.3); transition: 0.3s; font-family: 'Kanit', sans-serif;
+        }
+
+        .result-section {
+            background: var(--bg-cream); border-radius: 20px; padding: 25px; margin-top: 30px;
+            border: 2px dashed var(--primary-green); display: none;
+        }
+
         .res-card { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
         .res-data { font-weight: 700; font-size: 1.1rem; color: var(--primary-green); }
         .highlight-res { color: var(--primary-orange); font-size: 1.4rem; font-weight: 700; }
-        footer { padding: 40px 20px; text-align: center; margin-top: auto; }
-        .copyright { font-size: 12px; color: #bdc3c7; line-height: 1.6; }
 
         /* --- CSS ส่วนตารางวางแผน (3 แถวต่อมื้อ) --- */
         .planning-section { margin-top: 35px; border-top: 2px solid #eee; padding-top: 25px; display: none; }
@@ -49,6 +90,9 @@
         .carb-display { font-weight: bold; color: var(--primary-orange); display: block; text-align: center; font-size: 1rem; }
         .over-limit { color: #e74c3c !important; }
         .cat-label { font-size: 0.7rem; color: #888; display: block; margin-bottom: 2px; }
+
+        footer { padding: 40px 20px; text-align: center; margin-top: auto; }
+        .copyright { font-size: 12px; color: #bdc3c7; line-height: 1.6; }
     </style>
 </head>
 <body>
@@ -71,6 +115,7 @@
                         <label class="gender-box" id="label-f"><input type="radio" name="gender" value="female" onchange="updateGenderUI()"> หญิง</label>
                     </div>
                 </div>
+
                 <div class="row g-3">
                     <div class="col-6"><label class="form-label">น้ำหนัก (กก.)</label><input type="number" id="weight" class="form-control glass-input" placeholder="0" step="0.1" required></div>
                     <div class="col-6"><label class="form-label">ส่วนสูง (ซม.)</label><input type="number" id="height" class="form-control glass-input" placeholder="0" required></div>
@@ -82,6 +127,7 @@
                         </div>
                     </div>
                 </div>
+
                 <div class="mt-4">
                     <label class="form-label">ระดับกิจกรรมทางกาย</label>
                     <select class="form-select glass-input" id="activity" style="text-align: left; font-size: 0.95rem;">
@@ -92,6 +138,7 @@
                         <option value="1.9">ออกกำลังกายหนักมาก 2 ครั้ง/วัน</option>
                     </select>
                 </div>
+
                 <button type="button" onclick="calculateCarbs()" class="btn-calculate">คำนวณ</button>
             </form>
 
@@ -112,11 +159,7 @@
 
                 <table class="meal-table">
                     <thead>
-                        <tr>
-                            <th width="15%">มื้อ</th>
-                            <th width="70%">รายการอาหาร</th>
-                            <th width="15%">คาร์บ</th>
-                        </tr>
+                        <tr><th width="15%">มื้อ</th><th width="70%">รายการอาหาร</th><th width="15%">คาร์บ</th></tr>
                     </thead>
                     <tbody>
                         <tr>
@@ -144,7 +187,7 @@
                 </table>
             </div>
         </div>
-        <footer><p class="copyright">© 2026 ระบบดูแลเบาหวานด้วยตนเอง</p></footer>
+        <footer><p class="copyright">© 2026 ระบบดูแลเบาหวานด้วยตนเอง (Self-Care System)<br>Harris-Benedict Equation</p></footer>
     </div>
 
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
@@ -153,7 +196,8 @@
         let userLineName = "Guest Name";
         let currentTargetCarb = 0;
         let foodDataCache = null;
-        const scriptURL = 'ใส่_WEB_APP_URL_ของคุณที่นี่'; 
+        // ใส่ URL ของ Google Apps Script ที่ใช้ดึงข้อมูลอาหาร (GET) และบันทึกข้อมูล (POST)
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzlGzevHmNHbAvn_rhiL66Whw2qav-5at0gk5MD33uyXjevHveyMyoQXkTTF4AMTwxwNw/exec'; 
 
         async function initLIFF() {
             try {
@@ -182,9 +226,11 @@
                 for (let key in types) {
                     const select = document.getElementById(`${m}_${key}`);
                     select.innerHTML = `<option value="0">-- เลือก${types[key]} --</option>`;
-                    foodDataCache[types[key]].forEach(item => {
-                        select.options.add(new Option(`${item.n} (${item.c})`, item.c));
-                    });
+                    if(foodDataCache[types[key]]) {
+                        foodDataCache[types[key]].forEach(item => {
+                            select.options.add(new Option(`${item.n} (${item.c})`, item.c));
+                        });
+                    }
                 }
             });
         }
@@ -192,28 +238,49 @@
         window.onload = () => { initLIFF(); fetchFoodData(); };
 
         async function calculateCarbs() {
+            if (userLineId === "Guest") { alert("กรุณารอระบบโหลดข้อมูล LINE สักครู่"); return; }
+
             const weight = parseFloat(document.getElementById('weight').value);
             const height = parseFloat(document.getElementById('height').value);
             const age = parseInt(document.getElementById('age').value);
             const gender = document.querySelector('input[name="gender"]:checked').value;
             const activity = parseFloat(document.getElementById('activity').value);
+            
+            let waist_cm = parseFloat(document.getElementById('waist_cm').value) || 0;
+            let waist_inch = parseFloat(document.getElementById('waist_inch').value) || 0;
+            let displayWaist = waist_cm > 0 ? waist_cm + " ซม." : (waist_inch > 0 ? (waist_inch * 2.54).toFixed(1) + " ซม." : "ไม่ระบุ");
 
-            if (!weight || !height || !age) { alert("กรุณากรอกข้อมูลให้ครบ"); return; }
+            if (!weight || !height || !age) { alert("กรุณากรอกข้อมูลให้ครบถ้วน"); return; }
 
             const bmi = (weight / Math.pow(height / 100, 2)).toFixed(2);
+            let bmiStatus = bmi < 18.5 ? "ผอม" : (bmi < 23 ? "สมส่วน" : (bmi < 25 ? "น้ำหนักเกิน" : (bmi < 30 ? "อ้วน" : "อ้วนอันตราย")));
+            
             let bmr = (gender === 'male') ? 66 + (13.7 * weight) + (5 * height) - (6.8 * age) : 665 + (9.6 * weight) + (1.8 * height) - (4.7 * age);
             const tdee = Math.round(bmr * activity);
             const carbUnits = ((tdee * 0.2 / 4) / 15).toFixed(1);
 
             document.getElementById('results').style.display = 'block';
             document.getElementById('r-bmi').innerText = bmi;
+            document.getElementById('r-bmi-status').innerText = "(" + bmiStatus + ")";
+            document.getElementById('r-waist').innerText = displayWaist;
             document.getElementById('r-tdee').innerText = tdee.toLocaleString();
             document.getElementById('r-carb-u').innerText = carbUnits;
-            
+
+            // ตั้งค่าเป้าหมายสำหรับการวางแผน
             currentTargetCarb = parseFloat(carbUnits);
             document.getElementById('planning').style.display = 'block';
             document.getElementById('plan-target').innerText = carbUnits;
             updatePlanning();
+
+            // บันทึกข้อมูลลง Google Sheets (POST)
+            const formData = {
+                line_id: userLineId, line_name: userLineName, sex: gender === 'male' ? 'ชาย' : 'หญิง',
+                weight, height, age, waist_cm, waist_inch, activity, bmi, bmi_status: bmiStatus,
+                kcalories_per_day: tdee, carbs_per_day: carbUnits
+            };
+            try {
+                fetch(scriptURL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(formData) });
+            } catch (error) { console.error('Save failed', error); }
         }
 
         function updatePlanning() {
