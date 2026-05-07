@@ -293,34 +293,6 @@
                     </div>
                 </div>
 
-                document.getElementById('activity-display').addEventListener('click', function() {
-                    Swal.fire({
-                        title: 'เลือกระดับกิจกรรม',
-                        showConfirmButton: false,
-                        showCloseButton: true,
-                        customClass: {
-                            container: 'my-swal-container',
-                            popup: 'my-swal-popup'
-                        },
-                        html: `
-                            <div class="list-group text-start">
-                                <button onclick="selectActivity(1.2, 'ไม่ออกกำลังกาย, นั่งทำงานอยู่กับที่')" class="list-group-item list-group-item-action p-3 mb-2 border rounded"><b>ไม่ออกกำลังกาย, นั่งทำงานอยู่กับที่</b></button>
-                                <button onclick="selectActivity(1.375, 'ออกกำลังกายเล็กน้อย 1-3 วัน/สัปดาห์')" class="list-group-item list-group-item-action p-3 mb-2 border rounded"><b>ออกกำลังกายเล็กน้อย 1-3 วัน/สัปดาห์</b></button>
-                                <button onclick="selectActivity(1.55, 'ออกกำลังกายปานกลาง 4-5 วัน/สัปดาห์')" class="list-group-item list-group-item-action p-3 mb-2 border rounded"><b>ออกกำลังกายปานกลาง 4-5 วัน/สัปดาห์</b></button>
-                                <button onclick="selectActivity(1.725, 'ออกกำลังกายหนัก 6-7 วัน/สัปดาห์')" class="list-group-item list-group-item-action p-3 mb-2 border rounded"><b>ออกกำลังกายหนัก 6-7 วัน/สัปดาห์</b></button>
-                                <button onclick="selectActivity(1.9, 'ออกกำลังกายหนักมาก 2 ครั้ง/วัน')" class="list-group-item list-group-item-action p-3 mb-2 border rounded"><b>ออกกำลังกายหนักมาก 2 ครั้ง/วัน</b></button>
-                            </div>
-                        `
-                    });
-                });
-                
-                // ฟังก์ชันเมื่อเลือกรายการ
-                function selectActivity(value, text) {
-                    document.getElementById('activity').value = value; // เก็บค่าตัวเลขไว้คำนวณ
-                    document.getElementById('activity-display').innerText = text; // แสดงข้อความที่เลือกบนหน้าเว็บ
-                    Swal.close(); // ปิด Modal
-                }
-
                 <button type="button" onclick="calculateCarbs()" class="btn-calculate">คำนวณ</button>
             </form>
 
@@ -508,6 +480,34 @@
         }
 
         window.onload = () => { initLIFF(); fetchFoodData(); };
+
+        document.getElementById('activity-display').addEventListener('click', function() {
+                    Swal.fire({
+                        title: 'เลือกระดับกิจกรรม',
+                        showConfirmButton: false,
+                        showCloseButton: true,
+                        customClass: {
+                            container: 'my-swal-container',
+                            popup: 'my-swal-popup'
+                        },
+                        html: `
+                            <div class="list-group text-start">
+                                <button onclick="selectActivity(1.2, 'ไม่ออกกำลังกาย, นั่งทำงานอยู่กับที่')" class="list-group-item list-group-item-action p-3 mb-2 border rounded"><b>ไม่ออกกำลังกาย, นั่งทำงานอยู่กับที่</b></button>
+                                <button onclick="selectActivity(1.375, 'ออกกำลังกายเล็กน้อย 1-3 วัน/สัปดาห์')" class="list-group-item list-group-item-action p-3 mb-2 border rounded"><b>ออกกำลังกายเล็กน้อย 1-3 วัน/สัปดาห์</b></button>
+                                <button onclick="selectActivity(1.55, 'ออกกำลังกายปานกลาง 4-5 วัน/สัปดาห์')" class="list-group-item list-group-item-action p-3 mb-2 border rounded"><b>ออกกำลังกายปานกลาง 4-5 วัน/สัปดาห์</b></button>
+                                <button onclick="selectActivity(1.725, 'ออกกำลังกายหนัก 6-7 วัน/สัปดาห์')" class="list-group-item list-group-item-action p-3 mb-2 border rounded"><b>ออกกำลังกายหนัก 6-7 วัน/สัปดาห์</b></button>
+                                <button onclick="selectActivity(1.9, 'ออกกำลังกายหนักมาก 2 ครั้ง/วัน')" class="list-group-item list-group-item-action p-3 mb-2 border rounded"><b>ออกกำลังกายหนักมาก 2 ครั้ง/วัน</b></button>
+                            </div>
+                        `
+                    });
+                });
+                
+                // ฟังก์ชันเมื่อเลือกรายการ
+                function selectActivity(value, text) {
+                    document.getElementById('activity').value = value; // เก็บค่าตัวเลขไว้คำนวณ
+                    document.getElementById('activity-display').innerText = text; // แสดงข้อความที่เลือกบนหน้าเว็บ
+                    Swal.close(); // ปิด Modal
+                }
 
         async function calculateCarbs() {
             if (userLineId === "Guest") { alert("กรุณารอระบบโหลดข้อมูล LINE สักครู่"); return; }
