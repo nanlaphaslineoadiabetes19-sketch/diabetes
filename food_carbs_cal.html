@@ -39,6 +39,16 @@
             box-shadow: var(--card-shadow); display: flex; flex-direction: column;
         }
 
+        /* เพิ่ม Media Query สำหรับหน้าจอขนาดเล็กมาก */
+        @media (max-width: 576px) {
+            .container-main {
+                max-width: 100%; /* เต็มจอในมือถือ */
+            }
+            .form-section {
+                padding: 20px 15px; /* ลด Padding ลงเล็กน้อย */
+            }
+        }
+
         .hero-banner {
             background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);
             color: white; text-align: center; padding: 40px 20px; border-radius: 0 0 40px 40px;
@@ -83,9 +93,21 @@
         .planning-section { margin-top: 35px; border-top: 2px solid #eee; padding-top: 25px; display: none; }
         .planning-title { font-family: 'Kanit', sans-serif; font-size: 1.3rem; text-align: center; color: var(--text-dark); margin-bottom: 15px; }
         .carb-remaining-box { background: white; border: 2px solid var(--primary-orange); border-radius: 15px; padding: 12px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-        .meal-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; background: white; border: 1px solid #dee2e6; }
+        /* ปรับแต่งตารางให้รองรับหน้าจอแคบ */
+        .meal-table { width: 100%; border-collapse: collapse; font-size: 0.8rem; background: white; border: 1px solid #dee2e6; table-layout: fixed; }
         .meal-table th { background: #f8f9fa; padding: 10px 5px; border: 1px solid #dee2e6; text-align: center; }
         .meal-table td { padding: 8px 5px; border: 1px solid #dee2e6; vertical-align: middle; }
+        /* ปรับฟอนต์และระยะห่างในมือถือ */
+        @media (max-width: 400px) {
+            .meal-table th, .meal-table td {
+                font-size: 0.75rem; /* ลดขนาดตัวอักษรลงอีก */
+                padding: 5px 2px;
+            }
+            .carb-display {
+                font-size: 0.9rem;
+            }
+        }
+        /* ปรับแต่งช่อง Select ให้ไม่ล้น */
         .meal-select { width: 100%; border: 1px solid #ccc; border-radius: 5px; padding: 5px; font-size: 0.75rem; }
         .carb-display { font-weight: bold; color: var(--primary-orange); display: block; text-align: center; font-size: 1rem; }
         .over-limit { color: #e74c3c !important; }
