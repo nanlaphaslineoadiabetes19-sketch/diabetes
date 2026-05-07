@@ -123,7 +123,8 @@
             border-collapse: collapse; 
             background: white; 
             border: 1px solid #dee2e6; 
-            table-layout: auto; /* เปลี่ยนจาก fixed เป็น auto เพื่อให้คอลัมน์ปรับตามเนื้อหา */
+            table-layout: fixed; /* เปลี่ยนเป็น fixed เพื่อคุมความกว้างให้เป๊ะ */
+            word-wrap: break-word; /* ป้องกันเนื้อหาดันตาราง */
         }
         
         /* หัวตาราง */
@@ -149,7 +150,10 @@
                 color: #007bff;
             }
             .btn-outline-success, .btn-danger {
-                padding: 5px 8px !important; /* ลดขนาดปุ่มลงนิดเดียวในจอแคบ */
+                padding: 5px 6px !important; /* ลดขนาดปุ่มลงนิดเดียวในจอแคบ */
+            }
+            .cat-label {
+                font-size: 0.9rem; /* ลดขนาดตัวหนังสือหัวข้อ อาหารหลัก/ว่าง */
             }
         }
         
@@ -162,12 +166,13 @@
             border: 2px solid #ddd; /* เส้นขอบชัดขึ้น */
             border-radius: 8px;
             margin-bottom: 5px;
+            min-width: 0; /* สำคัญมาก: ช่วยให้ Flexbox ย่อขนาด Select ลงได้เมื่อจอแคบ */
         }
 
         .dynamic-meal-input-wrapper {
             display: flex;
-            gap: 5px;
-            align-items: flex-start; /* ให้ปุ่มลบอยู่ด้านบนเมื่อข้อความยาว */
+            gap: 2px;
+            align-items: center;
             width: 100%;
         }
         
