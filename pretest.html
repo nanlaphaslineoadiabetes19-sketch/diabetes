@@ -402,5 +402,70 @@
     }
 </script>
 
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+
+<script>
+    let lineId = "";
+    let lineName = "";
+
+    // เริ่มต้นทำงาน LIFF
+    async function initLIFF() {
+        try {
+            await liff.init({ liffId: "2009966517-vtjZMQ5e" }); // เปลี่ยนเป็น LIFF ID ของคุณ
+            if (!liff.isLoggedIn()) {
+                liff.login();
+            } else {
+                const profile = await liff.getProfile();
+                lineId = profile.userId;
+                lineName = profile.displayName;
+            }
+        } catch (err) {
+            console.error("LIFF Init Error:", err);
+        }
+    }
+    initLIFF();
+
+    async function calculateScore() {
+        const form = document.getElementById('assessmentForm');
+        const formData = new FormData(form);
+        const scriptURL = 'ใส่_URL_เว็บแอป_จากขั้นตอนที่_1_ที่นี่'; // วาง URL ที่ก๊อปมา
+
+        // ตรวจสอบความครบถ้วน (7 หัวข้อใหญ่ หรือตามจำนวนข้อทั้งหมด)
+        let count = 0;
+        for (let value of formData.values()) { count++; }
+        
+        if (count < 24) { // แก้ไขตัวเลขให้เท่ากับจำนวนข้อคำถามทั้งหมด (24 ข้อ)
+            alert('กรุณาตอบคำถามให้ครบทุกข้อ');
+            return;
+        }
+
+        // แสดงสถานะกำลังส่ง
+        const btn = document.querySelector("button");
+        btn.disabled = true;
+        btn.innerText = "กำลังบันทึกข้อมูล...";
+
+        // เตรียมข้อมูลส่งไปที่ Sheet
+        const finalData = new URLSearchParams(formData);
+        finalData.append("line_id", lineId);
+        finalData.append("line_name", lineName);
+
+        try {
+            const response = await fetch(scriptURL, { 
+                method: 'POST', 
+                body: finalData,
+                mode: 'no-cors' // สำคัญเพื่อให้ส่งผ่านข้าม Domain ได้
+            });
+            
+            alert('บันทึกข้อมูลเรียบร้อยแล้ว ขอบคุณครับ');
+            liff.closeWindow(); // ปิดหน้าต่าง LIFF ทันทีเมื่อเสร็จ
+        } catch (error) {
+            console.error('Error!', error.message);
+            alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
+            btn.disabled = false;
+            btn.innerText = "ส่งแบบประเมิน";
+        }
+    }
+</script>
+
 </body>
 </html>
