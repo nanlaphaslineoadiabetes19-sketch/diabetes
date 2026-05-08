@@ -454,8 +454,12 @@
             
             resultsForSheet[`result${i}`] = avg; 
             
-            // ปรับรูปแบบ: เอาวงเล็บออก และใส่ชื่อด้าน
-            swalHtml += `${sections[`s${i}`].title} เท่ากับ ${avg} อยู่ในระดับ ${level}<br>`;
+            // ปรับรูปแบบ: ลบวงเล็บออก และเน้นความชัดเจนของตัวเลขและระดับ
+            swalHtml += `
+                <div style="border-bottom: 1px solid #eee; padding: 8px 0; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 18px; color: #555;">${sections[`s${i}`].title}</span>
+                    <span style="font-size: 18px; font-weight: 600;">เท่ากับ ${avg} <span style="color: #2e7d32;">(ระดับ ${level})</span></span>
+                </div>`;
         }
 
         if (totalCount < 24) {
@@ -470,21 +474,31 @@
 
         const totalAvg = (totalSum / 24).toFixed(2);
         const totalLevel = getLevel(totalAvg);
-        // ปรับรูปแบบผลรวม: เอาวงเล็บออก
-        const totalResultsDisplay = `ผลคะแนนเฉลี่ยของพฤติกรรมการจัดการตนเอง เท่ากับ ${totalAvg} อยู่ในระดับ ${totalLevel}`;
 
         const result = await Swal.fire({
-            title: 'ยืนยันการส่งข้อมูล?',
-            html: `<div style="text-align:left; font-size:14px;">
-                    <b style="color:#2e7d32;">${totalResultsDisplay}</b><br><br>
-                    ${swalHtml}
-                   </div>`,
-            icon: 'question',
+            title: '<span style="font-size: 26px; color: #2e7d32;">สรุปผลการประเมินของคุณ</span>',
+            html: `
+                <div style="text-align:left; padding: 10px;">
+                    <div style="background: #f1f8e9; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 2px solid #2e7d32;">
+                        <div style="font-size: 20px; font-weight: bold; color: #1b5e20; line-height: 1.4;">
+                            ผลเฉลี่ยรวม เท่ากับ ${totalAvg} อยู่ในระดับ ${totalLevel}
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        ${swalHtml}
+                    </div>
+                </div>`,
+            icon: 'info',
+            width: '90%', // ขยายหน้าต่างให้กว้างขึ้นสำหรับมือถือ
             showCancelButton: true,
             confirmButtonColor: '#2e7d32',
             cancelButtonColor: '#d33',
             confirmButtonText: 'ใช่, ส่งข้อมูล',
-            cancelButtonText: 'ตรวจสอบอีกครั้ง'
+            cancelButtonText: 'ตรวจสอบอีกครั้ง',
+            customClass: {
+                confirmButton: 'swal-big-button',
+                cancelButton: 'swal-big-button'
+            }
         });
 
         if (result.isConfirmed) {
@@ -511,7 +525,8 @@
                 await fetch(scriptURL, { method: 'POST', body: finalData, mode: 'no-cors' });
                 await Swal.fire({
                     icon: 'success',
-                    title: 'บันทึกสำเร็จ!',
+                    title: 'บันทึกข้อมูลสำเร็จ',
+                    text: 'ขอบคุณที่ตอบแบบประเมินค่ะ',
                     confirmButtonColor: '#2e7d32'
                 });
                 liff.closeWindow(); 
