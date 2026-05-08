@@ -20,7 +20,7 @@
             background-color: #f5f5f5;
             color: var(--text-color);
             margin: 0;
-            padding: 20px;
+            padding: 15px; /* ปรับให้เหมาะกับมือถือ */
             line-height: 1.6;
         }
 
@@ -28,7 +28,7 @@
             max-width: 800px;
             background: var(--white);
             margin: 0 auto;
-            padding: 40px;
+            padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
@@ -36,7 +36,7 @@
         h1 {
             color: var(--primary-color);
             text-align: center;
-            font-size: 24px;
+            font-size: 26px; /* ใหญ่ขึ้นสำหรับผู้สูงอายุ */
             margin-bottom: 10px;
         }
 
@@ -46,60 +46,74 @@
             border-radius: 8px;
             border-left: 5px solid var(--primary-color);
             margin-bottom: 30px;
-            font-size: 15px;
+            font-size: 18px; /* อ่านง่ายขึ้น */
         }
 
         .section-title {
             background-color: var(--primary-color);
             color: var(--white);
-            padding: 10px 20px;
+            padding: 12px 20px;
             border-radius: 6px;
-            margin: 30px 0 15px 0;
+            margin: 35px 0 15px 0;
             font-weight: 600;
+            font-size: 20px;
         }
 
         .question-row {
             border-bottom: 1px solid var(--border-color);
-            padding: 15px 0;
+            padding: 20px 0;
         }
 
         .question-text {
-            margin-bottom: 12px;
+            margin-bottom: 15px;
             font-weight: 400;
+            font-size: 19px; /* ขยายขนาดคำถาม */
+            color: #000;
         }
 
         .options-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 15px;
         }
 
         .options-inline {
             display: flex;
             justify-content: space-between;
-            max-width: 400px;
+            max-width: 100%;
+            background: #fafafa;
+            padding: 15px;
+            border-radius: 10px;
         }
 
         .form-control {
             width: 100%;
-            padding: 10px;
-            border: 1px solid var(--border-color);
-            border-radius: 6px;
+            padding: 12px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
             box-sizing: border-box;
             font-family: 'Sarabun', sans-serif;
+            font-size: 18px;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            outline: none;
         }
 
         label {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 10px;
             cursor: pointer;
+            font-size: 18px;
+            font-weight: 500;
         }
 
         input[type="radio"] {
             accent-color: var(--primary-color);
-            width: 18px;
-            height: 18px;
+            width: 25px; /* ใหญ่ขึ้นเพื่อให้กดง่าย */
+            height: 25px;
         }
 
         .footer {
@@ -107,32 +121,42 @@
             text-align: center;
         }
 
-        button {
+        .btn-submit {
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 15px 50px;
-            font-size: 18px;
-            border-radius: 30px;
+            padding: 18px 50px;
+            font-size: 22px;
+            font-weight: bold;
+            border-radius: 40px;
             cursor: pointer;
             width: 100%;
-            transition: background 0.3s;
+            transition: transform 0.2s, background 0.3s;
+            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
         }
 
-        button:hover {
-            background-color: #1b5e20;
+        .btn-submit:active {
+            transform: scale(0.98);
+        }
+
+        /* สำหรับหน้าต่างสรุปผล */
+        .swal-big-button {
+            padding: 15px 30px !important;
+            font-size: 20px !important;
+            border-radius: 30px !important;
         }
 
         @media (max-width: 600px) {
-            .container { padding: 20px; }
+            .container { padding: 15px; }
             .options-grid { grid-template-columns: 1fr; }
+            .options-inline { flex-wrap: wrap; justify-content: space-around; }
         }
     </style>
 </head>
 <body>
 
 <div class="container">
-    <h1>แบบประเมินพฤติกรรมการจัดการภาวะเบาหวานด้วยตนเอง (Post-test)</h1>
+    <h1>แบบประเมินพฤติกรรมการจัดการภาวะเบาหวาน (Post-test)</h1>
     
     <div class="instruction-box">
         <strong>คำชี้แจง:</strong> แบบประเมินนี้ประกอบด้วย 2 ส่วน คือ ข้อมูลส่วนบุคคล และพฤติกรรมการจัดการตนเอง 24 ข้อ โปรดตอบตามความเป็นจริง ข้อมูลจะถูกเก็บเป็นความลับเพื่อใช้ในการปรับปรุงการดูแลผู้ป่วยเท่านั้น
@@ -288,7 +312,7 @@
                 <label><input type="radio" name="q2_6" value="1" required> 1</label>
                 <label><input type="radio" name="q2_6" value="2"> 2</label>
                 <label><input type="radio" name="q2_6" value="3"> 3</label>
-                <label><input type="radio" name="q2_6" value="4" > 4</label>
+                <label><input type="radio" name="q2_6" value="4"> 4</label>
             </div>
         </div>
 
@@ -441,7 +465,7 @@
         </div>
 
         <div class="footer">
-            <button type="button" onclick="submitForm()">ส่งแบบประเมิน Post-test</button>
+            <button type="button" class="btn-submit" onclick="handleCalculateScore()">ส่งแบบประเมิน Post-test</button>
         </div>
     </form>
 </div>
@@ -453,7 +477,6 @@
     let lineId = "";
     let lineName = "";
 
-    // ตั้งค่า LIFF
     async function initLIFF() {
         try {
             await liff.init({ liffId: "2010014768-MW1xWNz2" });
@@ -470,15 +493,21 @@
     }
     initLIFF();
 
-    async function submitForm() {
+    function getLevel(score) {
+        if (score >= 3.25) return "ดีมาก";
+        if (score >= 2.50) return "ดี";
+        if (score >= 1.75) return "ปานกลาง";
+        return "น้อย";
+    }
+
+    async function handleCalculateScore() {
         const form = document.getElementById('postTestForm');
         
-        // ตรวจสอบว่ากรอกครบไหม
         if (!form.checkValidity()) {
             Swal.fire({
                 icon: 'warning',
-                title: 'กรอกข้อมูลไม่ครบ',
-                text: 'กรุณากรอกข้อมูลส่วนตัวและตอบคำถามพฤติกรรมให้ครบถ้วนค่ะ',
+                title: 'ข้อมูลไม่ครบถ้วน',
+                text: 'กรุณากรอกข้อมูลส่วนตัวและตอบคำถามให้ครบทุกข้อก่อนนะคะ',
                 confirmButtonColor: '#2e7d32'
             });
             return;
@@ -487,44 +516,103 @@
         const formData = new FormData(form);
         const scriptURL = 'https://script.google.com/macros/s/AKfycbxTB8k2qKX8E8sM5pekLsy8i4uUWhrrmR5MgqiIPsUJQ1iesquTlR80CboO1utPmGl7/exec'; 
 
-        // แสดง Loading
-        Swal.fire({
-            title: 'กำลังบันทึกข้อมูล...',
-            allowOutsideClick: false,
-            didOpen: () => {
-                Swal.showLoading();
+        const sections = {
+            s1: { title: "ด้านการรับประทานยา", questions: ["q1_1", "q1_2"] },
+            s2: { title: "ด้านการรับประทานอาหาร", questions: ["q2_1", "q2_2", "q2_3", "q2_4", "q2_5", "q2_6"] },
+            s3: { title: "ด้านการจัดการกับระดับน้ำตาลในเลือด", questions: ["q3_1", "q3_2", "q3_3", "q3_4"] },
+            s4: { title: "ด้านการออกกำลังกาย", questions: ["q4_1", "q4_2", "q4_3"] },
+            s5: { title: "ด้านการใช้บริการทางด้านสุขภาพ", questions: ["q5_1", "q5_2", "q5_3", "q5_4"] },
+            s6: { title: "ด้านการจัดการกับความเจ็บป่วย", questions: ["q6_1", "q6_2", "q6_3", "q6_4", "q6_5"] }
+        };
+
+        let totalSum = 0;
+        let totalCount = 0;
+        let resultsForSheet = {}; 
+        let swalHtml = "";         
+
+        for (let i = 1; i <= 6; i++) {
+            let sectionSum = 0;
+            let sectionQuestions = sections[`s${i}`].questions;
+            let sectionCount = sectionQuestions.length;
+            
+            sectionQuestions.forEach(qName => {
+                const val = formData.get(qName);
+                if (val) {
+                    const score = parseInt(val);
+                    sectionSum += score;
+                    totalSum += score;
+                    totalCount++;
+                }
+            });
+
+            const avg = (sectionSum / sectionCount).toFixed(2);
+            const level = getLevel(avg);
+            resultsForSheet[`result${i}`] = avg; 
+            
+            swalHtml += `
+                <div style="border-bottom: 1px solid #eee; padding: 10px 0; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 18px; color: #555;">${sections[`s${i}`].title}</span>
+                    <span style="font-size: 18px; font-weight: 600;">เท่ากับ ${avg} <span style="color: #2e7d32;">(ระดับ ${level})</span></span>
+                </div>`;
+        }
+
+        const totalAvg = (totalSum / 24).toFixed(2);
+        const totalLevel = getLevel(totalAvg);
+
+        const result = await Swal.fire({
+            title: '<span style="font-size: 26px; color: #2e7d32;">สรุปผลการประเมิน (Post-test)</span>',
+            html: `
+                <div style="text-align:left; padding: 10px;">
+                    <div style="background: #f1f8e9; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 2px solid #2e7d32;">
+                        <div style="font-size: 20px; font-weight: bold; color: #1b5e20; line-height: 1.4; text-align: center;">
+                            คะแนนเฉลี่ยรวม เท่ากับ ${totalAvg}<br>อยู่ในระดับ ${totalLevel}
+                        </div>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        ${swalHtml}
+                    </div>
+                </div>`,
+            icon: 'info',
+            width: '90%',
+            showCancelButton: true,
+            confirmButtonColor: '#2e7d32',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'ยืนยันและส่งข้อมูล',
+            cancelButtonText: 'แก้ไขข้อมูล',
+            customClass: {
+                confirmButton: 'swal-big-button',
+                cancelButton: 'swal-big-button'
             }
         });
 
-        const finalData = new URLSearchParams(formData);
-        finalData.append("line_id", lineId);
-        finalData.append("line_name", lineName);
-        finalData.append("type", "post"); // *** ระบุว่าเป็น Post-test เพื่อให้ Script แยก Sheet ได้
-
-        try {
-            // ส่งข้อมูลไปยัง Google Sheets
-            await fetch(scriptURL, { 
-                method: 'POST', 
-                body: finalData, 
-                mode: 'no-cors' 
-            });
-
-            await Swal.fire({
-                icon: 'success',
-                title: 'สำเร็จ!',
-                text: 'บันทึกข้อมูล Post-test ของคุณเรียบร้อยแล้ว ขอบคุณค่ะ',
-                confirmButtonColor: '#2e7d32'
-            });
-            
-            liff.closeWindow(); // ปิดหน้าต่าง LIFF
-        } catch (e) {
-            console.error('Error!', e.message);
+        if (result.isConfirmed) {
             Swal.fire({
-                icon: 'error',
-                title: 'เกิดข้อผิดพลาด',
-                text: 'ไม่สามารถส่งข้อมูลได้ กรุณาลองใหม่อีกครั้ง',
-                confirmButtonColor: '#d33'
+                title: 'กำลังบันทึกข้อมูล...',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
             });
+
+            const finalData = new URLSearchParams(formData);
+            finalData.append("line_id", lineId);
+            finalData.append("line_name", lineName);
+            finalData.append("type", "post");
+            finalData.append("total_results", totalAvg);
+            for(let i=1; i<=6; i++) {
+                finalData.append(`result${i}`, resultsForSheet[`result${i}`]);
+            }
+
+            try {
+                await fetch(scriptURL, { method: 'POST', body: finalData, mode: 'no-cors' });
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'บันทึกสำเร็จ',
+                    text: 'ขอบคุณที่ให้ความร่วมมือในการทำแบบประเมินค่ะ',
+                    confirmButtonColor: '#2e7d32'
+                });
+                liff.closeWindow(); 
+            } catch (error) {
+                Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'ไม่สามารถบันทึกได้ กรุณาลองใหม่อีกครั้ง', confirmButtonColor: '#d33' });
+            }
         }
     }
 </script>
