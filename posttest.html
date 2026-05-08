@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>แบบประเมินพฤติกรรมการจัดการภาวะเบาหวานด้วยตนเอง (Post-test)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bootstrap-4/bootstrap-4.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2e7d32;
+            --secondary-color: #f1f8e9;
+            --text-color: #333;
+            --border-color: #e0e0e0;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: #f5f5f5;
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            background: var(--white);
+            margin: 0 auto;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            text-align: center;
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .instruction-box {
+            background-color: var(--secondary-color);
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 15px;
+        }
+
+        .section-title {
+            background-color: var(--primary-color);
+            color: var(--white);
+            padding: 10px 20px;
+            border-radius: 6px;
+            margin: 30px 0 15px 0;
+            font-weight: 600;
+        }
+
+        .question-row {
+            border-bottom: 1px solid var(--border-color);
+            padding: 15px 0;
+        }
+
+        .question-text {
+            margin-bottom: 12px;
+            font-weight: 400;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .options-inline {
+            display: flex;
+            justify-content: space-between;
+            max-width: 400px;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-family: 'Sarabun', sans-serif;
+        }
+
+        label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+
+        input[type="radio"] {
+            accent-color: var(--primary-color);
+            width: 18px;
+            height: 18px;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            font-size: 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            width: 100%;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #1b5e20;
+        }
+
+        @media (max-width: 600px) {
+            .container { padding: 20px; }
+            .options-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>แบบประเมินพฤติกรรมการจัดการภาวะเบาหวานด้วยตนเอง (Post-test)</h1>
+    
+    <div class="instruction-box">
+        <strong>คำชี้แจง:</strong> แบบประเมินนี้ประกอบด้วย 2 ส่วน คือ ข้อมูลส่วนบุคคล และพฤติกรรมการจัดการตนเอง 24 ข้อ โปรดตอบตามความเป็นจริง ข้อมูลจะถูกเก็บเป็นความลับเพื่อใช้ในการปรับปรุงการดูแลผู้ป่วยเท่านั้น
+    </div>
+
+    <form id="postTestForm">
+        <div class="section-title">ตอนที่ 1 แบบสอบถามข้อมูลส่วนบุคคลของผู้ป่วย</div>
+        
+        <div class="question-row">
+            <div class="question-text">1. เพศ</div>
+            <div class="options-grid">
+                <label><input type="radio" name="sex" value="ชาย" required> ชาย</label>
+                <label><input type="radio" name="sex" value="หญิง"> หญิง</label>
+            </div>
+        </div>
+
+        <div class="question-row">
+            <div class="question-text">2. อายุ</div>
+            <div style="display: flex; gap: 10px;">
+                <input type="number" name="age_year" placeholder="ปี" class="form-control" required>
+                <input type="number" name="age_month" placeholder="เดือน" class="form-control" required>
+            </div>
+        </div>
+
+        <div class="question-row">
+            <div class="question-text">3. สถานภาพ</div>
+            <div class="options-grid">
+                <label><input type="radio" name="status" value="โสด"> โสด</label>
+                <label><input type="radio" name="status" value="สมรส"> สมรส</label>
+                <label><input type="radio" name="status" value="หม้าย"> หม้าย</label>
+                <label><input type="radio" name="status" value="หย่า"> หย่า</label>
+            </div>
+        </div>
+
+        <div class="question-row">
+            <div class="question-text">4. ระดับการศึกษาสูงสุด</div>
+            <select name="education" class="form-control">
+                <option value="ไม่ได้ศึกษา">ไม่ได้ศึกษา</option>
+                <option value="ประถมศึกษา">ประถมศึกษา</option>
+                <option value="มัธยมศึกษา">มัธยมศึกษา</option>
+                <option value="ปวช./ปวส.">ปวช./ปวส.</option>
+                <option value="ปริญญาตรี">ปริญญาตรี</option>
+                <option value="สูงกว่าปริญญาตรี">สูงกว่าปริญญาตรี</option>
+            </select>
+        </div>
+
+        <div class="question-row">
+            <div class="question-text">5. อาชีพ</div>
+            <select name="occupation" class="form-control">
+                <option value="ไม่ได้ทำงาน">ไม่ได้ทำงาน</option>
+                <option value="เกษตรกรรม">เกษตรกรรม</option>
+                <option value="รับจ้าง">รับจ้าง</option>
+                <option value="ค้าขาย">ค้าขาย</option>
+                <option value="ธุรกิจส่วนตัว">ธุรกิจส่วนตัว</option>
+                <option value="รับราชการ/รัฐวิสาหกิจ">รับราชการ/รัฐวิสาหกิจ</option>
+            </select>
+        </div>
+
+        <div class="question-row">
+            <div class="question-text">6. รายได้เฉลี่ย/เดือน (บาท)</div>
+            <div class="options-grid">
+                <label><input type="radio" name="income" value="< 15,000"> น้อยกว่า 15,000</label>
+                <label><input type="radio" name="income" value="15,000 - 30,000"> 15,000 - 30,000</label>
+                <label><input type="radio" name="income" value="> 30,000"> มากกว่า 30,000</label>
+                <label><input type="radio" name="income" value="ไม่มีรายได้"> ไม่มีรายได้</label>
+            </div>
+        </div>
+
+        <div class="question-row">
+            <div class="question-text">7. โรคประจำตัว</div>
+            <input type="text" name="disease" placeholder="ระบุโรคประจำตัว (ถ้าไม่มีใส่ - )" class="form-control">
+        </div>
+
+        <div class="question-row">
+            <div class="question-text">8. ดัชนีมวลกาย (BMI)</div>
+            <input type="text" name="bmi" placeholder="ระบุ BMI (ถ้าทราบ)" class="form-control">
+        </div>
+
+        <div class="question-row">
+            <div class="question-text">9. การสูบบุหรี่</div>
+            <input type="number" name="smoking" placeholder="จำนวนมวน/วัน (ถ้าไม่สูบใส่ 0)" class="form-control">
+        </div>
+
+        <div class="section-title">ตอนที่ 2 พฤติกรรมการจัดการภาวะเบาหวาน (24 ข้อ)</div>
+
+        <div class="question-row">
+            <div class="question-text">1.1 ท่านรับประทานยารักษาโรคเบาหวานอย่างสม่ำเสมอและถูกต้อง</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q1_1" value="1" required> 1</label>
+                <label><input type="radio" name="q1_1" value="2"> 2</label>
+                <label><input type="radio" name="q1_1" value="3"> 3</label>
+                <label><input type="radio" name="q1_1" value="4"> 4</label>
+            </div>
+        </div>
+        <div class="question-row">
+            <div class="question-text">1.2 ท่านไม่ลืมรับประทานยารักษาโรคเบาหวาน</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q1_2" value="1" required> 1</label>
+                <label><input type="radio" name="q1_2" value="2"> 2</label>
+                <label><input type="radio" name="q1_2" value="3"> 3</label>
+                <label><input type="radio" name="q1_2" value="4"> 4</label>
+            </div>
+        </div>
+
+        <div class="question-row">
+            <div class="question-text">2.1 ท่านเลือกรับประทานอาหารที่สามารถควบคุมระดับน้ำตาลในเลือด</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q2_1" value="1" required> 1</label>
+                <label><input type="radio" name="q2_1" value="2"> 2</label>
+                <label><input type="radio" name="q2_1" value="3"> 3</label>
+                <label><input type="radio" name="q2_1" value="4"> 4</label>
+            </div>
+        </div>
+        <div class="question-row">
+            <div class="question-text">2.2 ท่านหลีกเลี่ยงรับประทานขนมหวานหรืออาหารที่มีคาร์โบไฮเดรตสูง เช่น ข้าวเหนียว เผือก มัน และเครื่องดื่มที่มีรสหวาน</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q2_2" value="1" required> 1</label>
+                <label><input type="radio" name="q2_2" value="2"> 2</label>
+                <label><input type="radio" name="q2_2" value="3"> 3</label>
+                <label><input type="radio" name="q2_2" value="4"> 4</label>
+            </div>
+        </div>
+        <div class="question-row">
+            <div class="question-text">2.3 ท่านปฏิบัติตามคำแนะนำของทีมสุขภาพด้านการรับประทานอาหาร</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q2_3" value="1" required> 1</label>
+                <label><input type="radio" name="q2_3" value="2"> 2</label>
+                <label><input type="radio" name="q2_3" value="3"> 3</label>
+                <label><input type="radio" name="q2_3" value="4"> 4</label>
+            </div>
+        </div>
+        <div class="question-row">
+            <div class="question-text">2.4 ท่านรับประทานอาหารเพียงพอ ไม่มากหรือน้อยเกินไป</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q2_4" value="1" required> 1</label>
+                <label><input type="radio" name="q2_4" value="2"> 2</label>
+                <label><input type="radio" name="q2_4" value="3"> 3</label>
+                <label><input type="radio" name="q2_4" value="4"> 4</label>
+            </div>
+        </div>
+        <div class="question-row">
+            <div class="question-text">2.5 ท่านควบคุมการรับประทานอาหารตามคำแนะนำ</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q2_5" value="1" required> 1</label>
+                <label><input type="radio" name="q2_5" value="2"> 2</label>
+                <label><input type="radio" name="q2_5" value="3"> 3</label>
+                <label><input type="radio" name="q2_5" value="4"> 4</label>
+            </div>
+        </div>
+        <div class="question-row">
+            <div class="question-text">2.6 ในมื้ออาหารท่านควบคุมปริมาณคาร์โบไฮเดรต เช่น ข้าวแป้ง ผลไม้ ขนมหวาน และเครื่องดื่มต่างๆ</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q2_6" value="1" required> 1</label>
+                <label><input type="radio" name="q2_6" value="2"> 2</label>
+                <label><input type="radio" name="q2_6" value="3"> 3</label>
+                <label><input type="radio" name="q2_6" value="4" > 4</label>
+            </div>
+        </div>
+
+        <div class="question-row">
+            <div class="question-text">3.1 ท่านตรวจวัดระดับน้ำตาลในเลือดอย่างเคร่งครัด</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q3_1" value="1" required> 1</label>
+                <label><input type="radio" name="q3_1" value="2"> 2</label>
+                <label><input type="radio" name="q3_1" value="3"> 3</label>
+                <label><input type="radio" name="q3_1" value="4"> 4</label>
+            </div>
+        </div>
+        <div class="question-row">
+            <div class="question-text">3.2 ท่านจดบันทึกระดับน้ำตาลในเลือดอย่างสม่ำเสมอ</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q3_2" value="1" required> 1</label>
+                <label><input type="radio" name="q3_2" value="2"> 2</label>
+                <label><input type="radio" name="q3_2" value="3"> 3</label>
+                <label><input type="radio" name="q3_2" value="4"> 4</label>
+            </div>
+        </div>
+        <div class="question-row">
+            <div class="question-text">3.3 ท่านได้ตรวจวัดระดับน้ำตาลในเลือดบ่อยเพียงพอ</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q3_3" value="1" required> 1</label>
+                <label><input type="radio" name="q3_3" value="2"> 2</label>
+                <label><input type="radio" name="q3_3" value="3"> 3</label>
+                <label><input type="radio" name="q3_3" value="4"> 4</label>
+            </div>
+        </div>
+        <div class="question-row">
+            <div class="question-text">3.4 ท่านตรวจวัดระดับน้ำตาลในเลือดก่อนรับประทานอาหารทุกมื้อ</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q3_4" value="1" required> 1</label>
+                <label><input type="radio" name="q3_4" value="2"> 2</label>
+                <label><input type="radio" name="q3_4" value="3"> 3</label>
+                <label><input type="radio" name="q3_4" value="4"> 4</label>
+            </div>
+        </div>
+
+        <div class="question-row">
+            <div class="question-text">4.1 ท่านออกกำลังกายอย่างสม่ำเสมอ เพื่อควบคุมโรคเบาหวาน</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q4_1" value="1" required> 1</label>
+                <label><input type="radio" name="q4_1" value="2"> 2</label>
+                <label><input type="radio" name="q4_1" value="3"> 3</label>
+                <label><input type="radio" name="q4_1" value="4"> 4</label>
+            </div>
+        </div>
+        <div class="question-row">
+            <div class="question-text">4.2 ท่านไม่ค่อยหลีกเลี่ยงการออกกำลังกาย</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q4_2" value="1" required> 1</label>
+                <label><input type="radio" name="q4_2" value="2"> 2</label>
+                <label><input type="radio" name="q4_2" value="3"> 3</label>
+                <label><input type="radio" name="q4_2" value="4"> 4</label>
+            </div>
+        </div>
+        <div class="question-row">
+            <div class="question-text">4.3 ท่านออกกำลังกายเพียงพอเท่าที่ควร</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q4_3" value="1" required> 1</label>
+                <label><input type="radio" name="q4_3" value="2"> 2</label>
+                <label><input type="radio" name="q4_3" value="3"> 3</label>
+                <label><input type="radio" name="q4_3" value="4"> 4</label>
+            </div>
+        </div>
+
+        <div class="question-row">
+            <div class="question-text">5.1 ท่านไปพบแพทย์เป็นประจำ</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q5_1" value="1" required> 1</label>
+                <label><input type="radio" name="q5_1" value="2"> 2</label>
+                <label><input type="radio" name="q5_1" value="3"> 3</label>
+                <label><input type="radio" name="q5_1" value="4"> 4</label>
+            </div>
+        </div>
+        <div class="question-row">
+            <div class="question-text">5.2 ท่านไม่หลีกเลี่ยงการไปพบแพทย์</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q5_2" value="1" required> 1</label>
+                <label><input type="radio" name="q5_2" value="2"> 2</label>
+                <label><input type="radio" name="q5_2" value="3"> 3</label>
+                <label><input type="radio" name="q5_2" value="4"> 4</label>
+            </div>
+        </div>
+        <div class="question-row">
+            <div class="question-text">5.3 ท่านไปพบแพทย์ตามความจำเป็นของการรักษาโรคเบาหวาน</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q5_3" value="1" required> 1</label>
+                <label><input type="radio" name="q5_3" value="2"> 2</label>
+                <label><input type="radio" name="q5_3" value="3"> 3</label>
+                <label><input type="radio" name="q5_3" value="4"> 4</label>
+            </div>
+        </div>
+        <div class="question-row">
+            <div class="question-text">5.4 ท่านมาตรวจและปรึกษากับแพทย์เป็นประจำ</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q5_4" value="1" required> 1</label>
+                <label><input type="radio" name="q5_4" value="2"> 2</label>
+                <label><input type="radio" name="q5_4" value="3"> 3</label>
+                <label><input type="radio" name="q5_4" value="4"> 4</label>
+            </div>
+        </div>
+
+        <div class="question-row">
+            <div class="question-text">6.1 ท่านสามารถปรับปรุงการดูแลตนเองเพื่อควบคุมโรคได้</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q6_1" value="1" required> 1</label>
+                <label><input type="radio" name="q6_1" value="2"> 2</label>
+                <label><input type="radio" name="q6_1" value="3"> 3</label>
+                <label><input type="radio" name="q6_1" value="4"> 4</label>
+            </div>
+        </div>
+        <div class="question-row">
+            <div class="question-text">6.2 ท่านมีพฤติกรรมการจัดการโรคเบาหวานที่เหมาะสม</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q6_2" value="1" required> 1</label>
+                <label><input type="radio" name="q6_2" value="2"> 2</label>
+                <label><input type="radio" name="q6_2" value="3"> 3</label>
+                <label><input type="radio" name="q6_2" value="4"> 4</label>
+            </div>
+        </div>
+        <div class="question-row">
+            <div class="question-text">6.3 ท่านควบคุมระดับน้ำตาลในเลือดให้อยู่ในเกณฑ์ปกติ</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q6_3" value="1" required> 1</label>
+                <label><input type="radio" name="q6_3" value="2"> 2</label>
+                <label><input type="radio" name="q6_3" value="3"> 3</label>
+                <label><input type="radio" name="q6_3" value="4"> 4</label>
+            </div>
+        </div>
+        <div class="question-row">
+            <div class="question-text">6.4 ท่านพกคาร์โบไฮเดรตชนิดดูดซึมเร็ว (เช่น ลูกอม) เพื่อแก้ภาวะน้ำตาลต่ำ</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q6_4" value="1" required> 1</label>
+                <label><input type="radio" name="q6_4" value="2"> 2</label>
+                <label><input type="radio" name="q6_4" value="3"> 3</label>
+                <label><input type="radio" name="q6_4" value="4"> 4</label>
+            </div>
+        </div>
+        <div class="question-row">
+            <div class="question-text">6.5 เมื่อน้ำตาลต่ำ ท่านรับประทานคาร์โบไฮเดรตในปริมาณที่เหมาะสม</div>
+            <div class="options-inline">
+                <label><input type="radio" name="q6_5" value="1" required> 1</label>
+                <label><input type="radio" name="q6_5" value="2"> 2</label>
+                <label><input type="radio" name="q6_5" value="3"> 3</label>
+                <label><input type="radio" name="q6_5" value="4"> 4</label>
+            </div>
+        </div>
+
+        <div class="footer">
+            <button type="button" onclick="submitForm()">ส่งแบบประเมิน Post-test</button>
+        </div>
+    </form>
+</div>
+
+<script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+    let lineId = "";
+    let lineName = "";
+
+    // ตั้งค่า LIFF
+    async function initLIFF() {
+        try {
+            await liff.init({ liffId: "2010014768-MW1xWNz2" });
+            if (!liff.isLoggedIn()) {
+                liff.login();
+            } else {
+                const profile = await liff.getProfile();
+                lineId = profile.userId;
+                lineName = profile.displayName;
+            }
+        } catch (err) {
+            console.error("LIFF Init Error:", err);
+        }
+    }
+    initLIFF();
+
+    async function submitForm() {
+        const form = document.getElementById('postTestForm');
+        
+        // ตรวจสอบว่ากรอกครบไหม
+        if (!form.checkValidity()) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'กรอกข้อมูลไม่ครบ',
+                text: 'กรุณากรอกข้อมูลส่วนตัวและตอบคำถามพฤติกรรมให้ครบถ้วนครับ',
+                confirmButtonColor: '#2e7d32'
+            });
+            return;
+        }
+
+        const formData = new FormData(form);
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxTB8k2qKX8E8sM5pekLsy8i4uUWhrrmR5MgqiIPsUJQ1iesquTlR80CboO1utPmGl7/exec'; 
+
+        // แสดง Loading
+        Swal.fire({
+            title: 'กำลังบันทึกข้อมูล...',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        const finalData = new URLSearchParams(formData);
+        finalData.append("line_id", lineId);
+        finalData.append("line_name", lineName);
+        finalData.append("type", "post"); // *** ระบุว่าเป็น Post-test เพื่อให้ Script แยก Sheet ได้
+
+        try {
+            // ส่งข้อมูลไปยัง Google Sheets
+            await fetch(scriptURL, { 
+                method: 'POST', 
+                body: finalData, 
+                mode: 'no-cors' 
+            });
+
+            await Swal.fire({
+                icon: 'success',
+                title: 'สำเร็จ!',
+                text: 'บันทึกข้อมูล Post-test ของคุณเรียบร้อยแล้ว ขอบคุณครับ',
+                confirmButtonColor: '#2e7d32'
+            });
+            
+            liff.closeWindow(); // ปิดหน้าต่าง LIFF
+        } catch (e) {
+            console.error('Error!', e.message);
+            Swal.fire({
+                icon: 'error',
+                title: 'เกิดข้อผิดพลาด',
+                text: 'ไม่สามารถส่งข้อมูลได้ กรุณาลองใหม่อีกครั้ง',
+                confirmButtonColor: '#d33'
+            });
+        }
+    }
+</script>
+
+</body>
+</html>
