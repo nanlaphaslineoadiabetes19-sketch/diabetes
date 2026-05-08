@@ -409,19 +409,53 @@
     }
     initLIFF();
 
+    // ฟังก์ชันช่วยแปลผลตามเกณฑ์ Best
+    function getLevel(avg) {
+        if (avg >= 3.01) return "ดี";
+        if (avg >= 2.01) return "ปานกลาง";
+        return "ไม่ดี";
+    }
+
     async function handleCalculateScore() {
         const form = document.getElementById('assessmentForm');
         const formData = new FormData(form);
         const scriptURL = 'https://script.google.com/macros/s/AKfycbxTB8k2qKX8E8sM5pekLsy8i4uUWhrrmR5MgqiIPsUJQ1iesquTlR80CboO1utPmGl7/exec'; 
 
-        let count = 0;
-        let totalScore = 0;
-        for (let value of formData.values()) { 
-            totalScore += parseInt(value);
-            count++; 
+        // คำนวณคะแนนแยกรายด้าน
+        const sections = {
+            s1: ["q1_1", "q1_2"],
+            s2: ["q2_1", "q2_2", "q2_3", "q2_4", "q2_5", "q2_6"],
+            s3: ["q3_1", "q3_2", "q3_3", "q3_4"],
+            s4: ["q4_1", "q4_2", "q4_3"],
+            s5: ["q5_1", "q5_2", "q5_3", "q5_4"],
+            s6: ["q6_1", "q6_2", "q6_3", "q6_4", "q6_5"]
+        };
+
+        let totalSum = 0;
+        let totalCount = 0;
+        let results = {};
+
+        // วนลูปคำนวณแต่ละด้าน
+        for (let i = 1; i <= 6; i++) {
+            let sectionSum = 0;
+            let sectionCount = sections[`s${i}`].length;
+            
+            sections[`s${i}`].forEach(qName => {
+                const val = formData.get(qName);
+                if (val) {
+                    const score = parseInt(val);
+                    sectionSum += score;
+                    totalSum += score;
+                    totalCount++;
+                }
+            });
+
+            const avg = sectionSum / sectionCount;
+            const level = getLevel(avg);
+            results[`result${i}`] = `ด้านที่ ${i} เท่ากับ(${avg.toFixed(2)}) อยู่ในระดับ(${level})`;
         }
-        
-        if (count < 24) {
+
+        if (totalCount < 24) {
             Swal.fire({
                 icon: 'warning',
                 title: 'ข้อมูลไม่ครบถ้วน',
@@ -432,9 +466,17 @@
             return;
         }
 
+        const totalAvg = totalSum / 24;
+        const totalLevel = getLevel(totalAvg);
+        const totalResultsStr = `ผลคะแนนเฉลี่ยของพฤติกรรมการจัดการตนเอง เท่ากับ(${totalAvg.toFixed(2)}) อยู่ในระดับ(${totalLevel})`;
+
         const result = await Swal.fire({
             title: 'ยืนยันการส่งข้อมูล?',
-            text: "คะแนนรวมของคุณคือ " + totalScore + " คะแนน ต้องการส่งข้อมูลใช่หรือไม่?",
+            html: `<div style="text-align:left; font-size:14px;">
+                    <b>${totalResultsStr}</b><br><br>
+                    1. ด้านการรับประทานยา: ${getLevel(formData.get("q1_1") && formData.get("q1_2") ? (parseInt(formData.get("q1_1"))+parseInt(formData.get("q1_2")))/2 : 0)}<br>
+                    ...และด้านอื่นๆ ตามการคำนวณ
+                   </div>`,
             icon: 'question',
             showCancelButton: true,
             confirmButtonColor: '#2e7d32',
@@ -456,11 +498,19 @@
             const btn = document.querySelector("button");
             btn.disabled = true;
 
-            // รวมส่วนที่ต้องการ: สร้าง URLSearchParams และเพิ่ม line_id, line_name และ type
             const finalData = new URLSearchParams(formData);
             finalData.append("line_id", lineId);
             finalData.append("line_name", lineName);
-            finalData.append("type", "pre"); // เพิ่มเพื่อให้ Script รู้ว่าเป็นข้อมูล Pre-test
+            finalData.append("type", "pre");
+            
+            // เพิ่มคอลัมน์ผลประเมินตามที่ระบุ
+            finalData.append("total_results", totalResultsStr);
+            finalData.append("result1", results.result1);
+            finalData.append("result2", results.result2);
+            finalData.append("result3", results.result3);
+            finalData.append("result4", results.result4);
+            finalData.append("result5", results.result5);
+            finalData.append("result6", results.result6);
 
             try {
                 await fetch(scriptURL, { 
