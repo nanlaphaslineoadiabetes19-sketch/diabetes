@@ -11,7 +11,7 @@
             --primary-color: #2e7d32;
             --secondary-color: #f1f8e9;
             --text-color: #333;
-            --border-color: #cccccc; /* ปรับให้เข้มขึ้นเล็กน้อยเพื่อให้เห็นขอบชัด */
+            --border-color: #cccccc; 
             --white: #ffffff;
         }
 
@@ -66,12 +66,12 @@
 
         .question-text {
             margin-bottom: 15px;
-            font-weight: 600; /* ปรับให้หนาขึ้นเพื่อให้แยกจากตัวเลือกชัดเจน */
+            font-weight: 600;
             font-size: 20px; 
             color: #000;
         }
 
-        /* ปรับปรุง Radio แบบปุ่มกดสำหรับผู้สูงอายุ */
+        /* Radio Grid Style - ปรับตามรูปตัวอย่างที่ 3 */
         .options-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -89,15 +89,30 @@
             transition: all 0.2s;
             font-size: 19px;
             font-weight: 500;
+            position: relative;
         }
 
+        .custom-radio-label input[type="radio"] {
+            margin-right: 12px;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            accent-color: var(--primary-color);
+        }
+
+        .custom-radio-label:hover {
+            background-color: #f9f9f9;
+        }
+
+        /* เมื่อเลือก (Checked) */
         .custom-radio-label:has(input:checked) {
             border-color: var(--primary-color);
             background-color: var(--secondary-color);
             color: var(--primary-color);
+            box-shadow: 0 4px 10px rgba(46, 125, 50, 0.1);
         }
 
-        /* ปรับปรุง Input และ Select ให้ดูทันสมัยและตัวใหญ่ */
+        /* ฟอร์มทั่วไป */
         .form-control {
             width: 100%;
             padding: 15px;
@@ -107,14 +122,6 @@
             font-family: 'Sarabun', sans-serif;
             font-size: 19px;
             background-color: #fcfcfc;
-            appearance: none; /* สำหรับ select ในมือถือ */
-        }
-
-        select.form-control {
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%232e7d32' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 15px center;
-            padding-right: 45px;
         }
 
         .form-control:focus {
@@ -134,7 +141,7 @@
             border: 1px solid #eee;
         }
 
-        label {
+        .options-inline label {
             display: flex;
             align-items: center;
             gap: 12px;
@@ -142,7 +149,7 @@
             font-size: 19px;
         }
 
-        input[type="radio"] {
+        .options-inline input[type="radio"] {
             accent-color: var(--primary-color);
             width: 28px;
             height: 28px;
@@ -232,26 +239,26 @@
 
         <div class="question-row">
             <div class="question-text">4. ระดับการศึกษาสูงสุด</div>
-            <select name="education" class="form-control">
-                <option value="ไม่ได้ศึกษา">ไม่ได้ศึกษา</option>
-                <option value="ประถมศึกษา" selected>ประถมศึกษา</option>
-                <option value="มัธยมศึกษา">มัธยมศึกษา</option>
-                <option value="ปวช./ปวส.">ปวช./ปวส.</option>
-                <option value="ปริญญาตรี">ปริญญาตรี</option>
-                <option value="สูงกว่าปริญญาตรี">สูงกว่าปริญญาตรี</option>
-            </select>
+            <div class="options-grid">
+                <label class="custom-radio-label"><input type="radio" name="education" value="ไม่ได้ศึกษา" required> ไม่ได้ศึกษา</label>
+                <label class="custom-radio-label"><input type="radio" name="education" value="ประถมศึกษา"> ประถมศึกษา</label>
+                <label class="custom-radio-label"><input type="radio" name="education" value="มัธยมศึกษา"> มัธยมศึกษา</label>
+                <label class="custom-radio-label"><input type="radio" name="education" value="ปวช./ปวส."> ปวช./ปวส.</label>
+                <label class="custom-radio-label"><input type="radio" name="education" value="ปริญญาตรี"> ปริญญาตรี</label>
+                <label class="custom-radio-label"><input type="radio" name="education" value="สูงกว่าปริญญาตรี"> สูงกว่าปริญญาตรี</label>
+            </div>
         </div>
 
         <div class="question-row">
             <div class="question-text">5. อาชีพ</div>
-            <select name="occupation" class="form-control">
-                <option value="ไม่ได้ทำงาน">ไม่ได้ทำงาน</option>
-                <option value="เกษตรกรรม">เกษตรกรรม</option>
-                <option value="รับจ้าง">รับจ้าง</option>
-                <option value="ค้าขาย">ค้าขาย</option>
-                <option value="ธุรกิจส่วนตัว">ธุรกิจส่วนตัว</option>
-                <option value="รับราชการ/รัฐวิสาหกิจ">รับราชการ/รัฐวิสาหกิจ</option>
-            </select>
+            <div class="options-grid">
+                <label class="custom-radio-label"><input type="radio" name="occupation" value="ไม่ได้ทำงาน" required> ไม่ได้ทำงาน</label>
+                <label class="custom-radio-label"><input type="radio" name="occupation" value="เกษตรกรรม"> เกษตรกรรม</label>
+                <label class="custom-radio-label"><input type="radio" name="occupation" value="รับจ้าง"> รับจ้าง</label>
+                <label class="custom-radio-label"><input type="radio" name="occupation" value="ค้าขาย"> ค้าขาย</label>
+                <label class="custom-radio-label"><input type="radio" name="occupation" value="ธุรกิจส่วนตัว"> ธุรกิจส่วนตัว</label>
+                <label class="custom-radio-label"><input type="radio" name="occupation" value="รับราชการ/รัฐวิสาหกิจ"> รับราชการ/รัฐวิสาหกิจ</label>
+            </div>
         </div>
 
         <div class="question-row">
@@ -271,12 +278,12 @@
 
         <div class="question-row">
             <div class="question-text">8. ดัชนีมวลกาย (BMI)</div>
-            <input type="text" name="bmi" placeholder="ระบุ BMI (เช่น 22.5)" class="form-control">
+            <input type="text" name="bmi" placeholder="ระบุ BMI (เช่น 22.5)" class="form-control" inputmode="decimal">
         </div>
 
         <div class="question-row">
             <div class="question-text">9. การสูบบุหรี่</div>
-            <input type="number" name="smoking" placeholder="จำนวนมวน/วัน (ถ้าไม่สูบใส่ 0)" class="form-control">
+            <input type="number" name="smoking" placeholder="จำนวนมวน/วัน (ถ้าไม่สูบใส่ 0)" class="form-control" inputmode="decimal">
         </div>
 
         <div class="section-title">ตอนที่ 2 พฤติกรรมการจัดการภาวะเบาหวาน (24 ข้อ)</div>
@@ -514,7 +521,6 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-    // ส่วน Script ทั้งหมดคงเดิมจากโค้ดที่คุณให้มาเพื่อให้ระบบทำงานได้สมบูรณ์
     let lineId = "";
     let lineName = "";
 
