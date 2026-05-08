@@ -434,6 +434,7 @@
         let totalSum = 0;
         let totalCount = 0;
         let results = {};
+        let swalHtml = ""; // สำหรับเก็บข้อความแสดงใน SweetAlert
 
         // วนลูปคำนวณแต่ละด้าน
         for (let i = 1; i <= 6; i++) {
@@ -452,7 +453,10 @@
 
             const avg = sectionSum / sectionCount;
             const level = getLevel(avg);
-            results[`result${i}`] = `ด้านที่ ${i} เท่ากับ(${avg.toFixed(2)}) อยู่ในระดับ(${level})`;
+            // ปรับรูปแบบข้อความตามที่คุณต้องการ
+            const textResult = `ด้านที่ ${i} เท่ากับ(${avg.toFixed(2)}) อยู่ในระดับ(${level})`;
+            results[`result${i}`] = textResult;
+            swalHtml += textResult + "<br>"; // เพิ่มบรรทัดสำหรับแสดงใน Pop-up
         }
 
         if (totalCount < 24) {
@@ -473,9 +477,8 @@
         const result = await Swal.fire({
             title: 'ยืนยันการส่งข้อมูล?',
             html: `<div style="text-align:left; font-size:14px;">
-                    <b>${totalResultsStr}</b><br><br>
-                    1. ด้านการรับประทานยา: ${getLevel(formData.get("q1_1") && formData.get("q1_2") ? (parseInt(formData.get("q1_1"))+parseInt(formData.get("q1_2")))/2 : 0)}<br>
-                    ...และด้านอื่นๆ ตามการคำนวณ
+                    <b style="color:#2e7d32;">${totalResultsStr}</b><br><br>
+                    ${swalHtml}
                    </div>`,
             icon: 'question',
             showCancelButton: true,
@@ -503,7 +506,6 @@
             finalData.append("line_name", lineName);
             finalData.append("type", "pre");
             
-            // เพิ่มคอลัมน์ผลประเมินตามที่ระบุ
             finalData.append("total_results", totalResultsStr);
             finalData.append("result1", results.result1);
             finalData.append("result2", results.result2);
