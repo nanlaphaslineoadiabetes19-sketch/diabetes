@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>แบบประเมินพฤติกรรมการจัดการภาวะเบาหวานด้วยตนเอง</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bootstrap-4/bootstrap-4.css" rel="stylesheet">
     <style>
         :root {
             --primary-color: #2e7d32;
@@ -125,6 +126,11 @@
             transform: translateY(-2px);
         }
 
+        /* ปรับแต่งฟอนต์ของ SweetAlert ให้เป็น Sarabun */
+        .swal2-popup {
+            font-family: 'Sarabun', sans-serif !important;
+        }
+
         @media (max-width: 600px) {
             .container { padding: 20px; }
             .options { flex-wrap: wrap; gap: 15px; }
@@ -178,7 +184,7 @@
             </div>
         </div>
         <div class="question-row">
-            <div class="question-text">2) ท่านหลีกเลี่ยงรับประทานขนมหวานหรืออาหารที่มีคาร์โบไฮเดรตสูง ในปริมาณมาก เช่น ข้าวเหนียว เผือก มัน ถั่วลันเตา และเครื่องดื่ม ที่มีรสหวาน เป็นต้น</div>
+            <div class="question-text">2) ท่านหลีกเลี่ยงรับประทานขนมหวานหรืออาหารที่มีคาร์โบไฮเดรตสูง ในปริมาณมาก</div>
             <div class="options">
                 <label class="option-item"><input type="radio" name="q2_2" value="1" required> 1</label>
                 <label class="option-item"><input type="radio" name="q2_2" value="2"> 2</label>
@@ -214,7 +220,7 @@
             </div>
         </div>
         <div class="question-row">
-            <div class="question-text">6) ในมื้ออาหารท่านควบคุมปริมาณคาร์โบไฮเดรต เช่น ข้าวแป้ง ผลไม้ ขนมหวาน และเครื่องดื่มต่างๆ เป็นต้น</div>
+            <div class="question-text">6) ในมื้ออาหารท่านควบคุมปริมาณคาร์โบไฮเดรต เช่น ข้าวแป้ง ผลไม้ ขนมหวาน เป็นต้น</div>
             <div class="options">
                 <label class="option-item"><input type="radio" name="q2_6" value="1" required> 1</label>
                 <label class="option-item"><input type="radio" name="q2_6" value="2"> 2</label>
@@ -234,7 +240,7 @@
             </div>
         </div>
         <div class="question-row">
-            <div class="question-text">2) ท่านจดบันทึกระดับน้ำตาลในเลือดอย่างสม่ำเสมอ เพื่อใช้เป็นข้อมูลในการวางแผนและปรับปรุงการจัดการโรคเบาหวานของตนเอง</div>
+            <div class="question-text">2) ท่านจดบันทึกระดับน้ำตาลในเลือดอย่างสม่ำเสมอ</div>
             <div class="options">
                 <label class="option-item"><input type="radio" name="q3_2" value="1" required> 1</label>
                 <label class="option-item"><input type="radio" name="q3_2" value="2"> 2</label>
@@ -243,7 +249,7 @@
             </div>
         </div>
         <div class="question-row">
-            <div class="question-text">3) ท่านได้ตรวจวัดระดับน้ำตาลในเลือดบ่อยเพียงพอที่จะควบคุมระดับน้ำตาลในเลือดได้อย่างเหมาะสม</div>
+            <div class="question-text">3) ท่านตรวจวัดระดับน้ำตาลในเลือดบ่อยเพียงพอ</div>
             <div class="options">
                 <label class="option-item"><input type="radio" name="q3_3" value="1" required> 1</label>
                 <label class="option-item"><input type="radio" name="q3_3" value="2"> 2</label>
@@ -263,7 +269,7 @@
 
         <div class="section-title">4. การออกกำลังกาย</div>
         <div class="question-row">
-            <div class="question-text">1) ท่านออกกำลังกายอย่างสม่ำเสมอ เพื่อควบคุมโรคเบาหวาน และส่งเสริมสุขภาพโดยรวม</div>
+            <div class="question-text">1) ท่านออกกำลังกายอย่างสม่ำเสมอ</div>
             <div class="options">
                 <label class="option-item"><input type="radio" name="q4_1" value="1" required> 1</label>
                 <label class="option-item"><input type="radio" name="q4_1" value="2"> 2</label>
@@ -272,7 +278,7 @@
             </div>
         </div>
         <div class="question-row">
-            <div class="question-text">2) ท่านไม่ค่อยหลีกเลี่ยงการออกกำลังกายแม้ว่าการออกกำลังกาย จะเป็นประโยชน์ต่อการควบโรคเบาหวาน</div>
+            <div class="question-text">2) ท่านไม่ค่อยหลีกเลี่ยงการออกกำลังกาย</div>
             <div class="options">
                 <label class="option-item"><input type="radio" name="q4_2" value="1" required> 1</label>
                 <label class="option-item"><input type="radio" name="q4_2" value="2"> 2</label>
@@ -310,7 +316,7 @@
             </div>
         </div>
         <div class="question-row">
-            <div class="question-text">3) เกี่ยวกับการรักษาโรคเบาหวานของท่านท่านควรไปพบแพทย์บ่อยขึ้น</div>
+            <div class="question-text">3) ท่านควรไปพบแพทย์บ่อยขึ้น</div>
             <div class="options">
                 <label class="option-item"><input type="radio" name="q5_3" value="1" required> 1</label>
                 <label class="option-item"><input type="radio" name="q5_3" value="2"> 2</label>
@@ -319,7 +325,7 @@
             </div>
         </div>
         <div class="question-row">
-            <div class="question-text">4) ท่านมาตรวจและปรึกษาเกี่ยวกับการรักษาโรคเบาหวานกับแพทย์เป็นประจำ</div>
+            <div class="question-text">4) ท่านตรวจและปรึกษากับแพทย์เป็นประจำ</div>
             <div class="options">
                 <label class="option-item"><input type="radio" name="q5_4" value="1" required> 1</label>
                 <label class="option-item"><input type="radio" name="q5_4" value="2"> 2</label>
@@ -330,7 +336,7 @@
 
         <div class="section-title">6. การจัดการกับความเจ็บป่วย</div>
         <div class="question-row">
-            <div class="question-text">1) ท่านสามารถปรับปรุงการดูแลตนเองเพื่อควบคุมโรคหวานได้ดีขึ้น</div>
+            <div class="question-text">1) ท่านสามารถปรับปรุงการดูแลตนเองได้ดีขึ้น</div>
             <div class="options">
                 <label class="option-item"><input type="radio" name="q6_1" value="1" required> 1</label>
                 <label class="option-item"><input type="radio" name="q6_1" value="2"> 2</label>
@@ -339,7 +345,7 @@
             </div>
         </div>
         <div class="question-row">
-            <div class="question-text">2) ท่านมีพฤติกรรมการดูแลตนเองในการจัดการโรคเบาหวานที่เหมาะสม</div>
+            <div class="question-text">2) ท่านมีพฤติกรรมการดูแลตนเองที่เหมาะสม</div>
             <div class="options">
                 <label class="option-item"><input type="radio" name="q6_2" value="1" required> 1</label>
                 <label class="option-item"><input type="radio" name="q6_2" value="2"> 2</label>
@@ -348,7 +354,7 @@
             </div>
         </div>
         <div class="question-row">
-            <div class="question-text">3) ท่านควบคุมระดับน้ำตาลในเลือดให้อยู่ในเกณฑ์ปกติอย่างสม่ำเสมอ</div>
+            <div class="question-text">3) ท่านควบคุมระดับน้ำตาลได้ปกติสม่ำเสมอ</div>
             <div class="options">
                 <label class="option-item"><input type="radio" name="q6_3" value="1" required> 1</label>
                 <label class="option-item"><input type="radio" name="q6_3" value="2"> 2</label>
@@ -357,7 +363,7 @@
             </div>
         </div>
         <div class="question-row">
-            <div class="question-text">4) ท่านพกคาร์โบไฮเดรตชนิดดูดซึมเร็วเพื่อใช้ในการรักษาภาวะน้ำตาลในเลือดต่ำอย่างรวดเร็ว เช่น ลูกอม</div>
+            <div class="question-text">4) ท่านพกคาร์โบไฮเดรตดูดซึมเร็ว (เช่น ลูกอม) ไว้กรณีฉุกเฉิน</div>
             <div class="options">
                 <label class="option-item"><input type="radio" name="q6_4" value="1" required> 1</label>
                 <label class="option-item"><input type="radio" name="q6_4" value="2"> 2</label>
@@ -366,7 +372,7 @@
             </div>
         </div>
         <div class="question-row">
-            <div class="question-text">5) ในกรณีที่น้ำตาลในเลือดต่ำท่านจะรับประทานคาร์โบไฮเดรตในปริมาณที่เหมาะสม เพื่อป้องกันไม่ให้น้ำตาลในเลือดสูงเกินไป</div>
+            <div class="question-text">5) กรณีน้ำตาลต่ำ ท่านรับประทานในปริมาณที่เหมาะสม</div>
             <div class="options">
                 <label class="option-item"><input type="radio" name="q6_5" value="1" required> 1</label>
                 <label class="option-item"><input type="radio" name="q6_5" value="2"> 2</label>
@@ -376,33 +382,13 @@
         </div>
 
         <div class="footer">
-            <button type="button" onclick="calculateScore()">ส่งแบบประเมิน</button>
+            <button type="button" onclick="handleCalculateScore()">ส่งแบบประเมิน</button>
         </div>
     </form>
 </div>
 
-<script>
-    function calculateScore() {
-        const form = document.getElementById('assessmentForm');
-        const formData = new FormData(form);
-        let totalScore = 0;
-        let count = 0;
-
-        for (let value of formData.values()) {
-            totalScore += parseInt(value);
-            count++;
-        }
-
-        if (count < 7) { // ปรับตามจำนวนข้อจริง
-            alert('กรุณาตอบคำถามให้ครบทุกข้อ');
-            return;
-        }
-
-        alert('คะแนนรวมของคุณคือ: ' + totalScore + '\\nขอบคุณที่ให้ความร่วมมือ');
-    }
-</script>
-
 <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
     let lineId = "";
@@ -425,44 +411,85 @@
     }
     initLIFF();
 
-    async function calculateScore() {
+    async function handleCalculateScore() {
         const form = document.getElementById('assessmentForm');
         const formData = new FormData(form);
         const scriptURL = 'https://script.google.com/macros/s/AKfycbxTB8k2qKX8E8sM5pekLsy8i4uUWhrrmR5MgqiIPsUJQ1iesquTlR80CboO1utPmGl7/exec'; 
 
-        // ตรวจสอบความครบถ้วน (7 หัวข้อใหญ่ หรือตามจำนวนข้อทั้งหมด)
+        // ตรวจสอบความครบถ้วน (24 ข้อ)
         let count = 0;
-        for (let value of formData.values()) { count++; }
+        let totalScore = 0;
+        for (let value of formData.values()) { 
+            totalScore += parseInt(value);
+            count++; 
+        }
         
-        if (count < 24) { // แก้ไขตัวเลขให้เท่ากับจำนวนข้อคำถามทั้งหมด (24 ข้อ)
-            alert('กรุณาตอบคำถามให้ครบทุกข้อ');
+        if (count < 24) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'ข้อมูลไม่ครบถ้วน',
+                text: 'กรุณาตอบคำถามให้ครบทุกข้อก่อนส่งแบบประเมินครับ',
+                confirmButtonColor: '#2e7d32',
+                confirmButtonText: 'รับทราบ'
+            });
             return;
         }
 
-        // แสดงสถานะกำลังส่ง
-        const btn = document.querySelector("button");
-        btn.disabled = true;
-        btn.innerText = "กำลังบันทึกข้อมูล...";
+        // แสดงกล่องยืนยันก่อนส่ง
+        const result = await Swal.fire({
+            title: 'ยืนยันการส่งข้อมูล?',
+            text: "คะแนนรวมของคุณคือ " + totalScore + " คะแนน คุณต้องการส่งข้อมูลใช่หรือไม่?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#2e7d32',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'ใช่, ส่งข้อมูลเลย',
+            cancelButtonText: 'ยกเลิก'
+        });
 
-        // เตรียมข้อมูลส่งไปที่ Sheet
-        const finalData = new URLSearchParams(formData);
-        finalData.append("line_id", lineId);
-        finalData.append("line_name", lineName);
-
-        try {
-            const response = await fetch(scriptURL, { 
-                method: 'POST', 
-                body: finalData,
-                mode: 'no-cors' // สำคัญเพื่อให้ส่งผ่านข้าม Domain ได้
+        if (result.isConfirmed) {
+            // แสดงสถานะ Loading
+            Swal.fire({
+                title: 'กำลังบันทึกข้อมูล...',
+                text: 'กรุณารอสักครู่ครับ',
+                allowOutsideClick: false,
+                didOpen: () => {
+                    Swal.showLoading();
+                }
             });
-            
-            alert('บันทึกข้อมูลเรียบร้อยแล้ว ขอบคุณครับ');
-            liff.closeWindow(); // ปิดหน้าต่าง LIFF ทันทีเมื่อเสร็จ
-        } catch (error) {
-            console.error('Error!', error.message);
-            alert('เกิดข้อผิดพลาดในการบันทึกข้อมูล');
-            btn.disabled = false;
-            btn.innerText = "ส่งแบบประเมิน";
+
+            const btn = document.querySelector("button");
+            btn.disabled = true;
+
+            const finalData = new URLSearchParams(formData);
+            finalData.append("line_id", lineId);
+            finalData.append("line_name", lineName);
+
+            try {
+                await fetch(scriptURL, { 
+                    method: 'POST', 
+                    body: finalData,
+                    mode: 'no-cors'
+                });
+                
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'บันทึกสำเร็จ!',
+                    text: 'ขอบคุณที่ให้ความร่วมมือในการตอบแบบประเมินครับ',
+                    confirmButtonColor: '#2e7d32'
+                });
+                
+                liff.closeWindow(); 
+            } catch (error) {
+                console.error('Error!', error.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด',
+                    text: 'ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่อีกครั้ง',
+                    confirmButtonColor: '#d33'
+                });
+                btn.disabled = false;
+            }
         }
     }
 </script>
