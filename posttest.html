@@ -59,6 +59,18 @@
             font-size: 20px;
         }
 
+        /* สไตล์สำหรับหัวข้อย่อย 1-6 */
+        .sub-section-header {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 25px 0 10px 0;
+            font-weight: 600;
+            font-size: 20px;
+            border-left: 4px solid #2e7d32;
+        }
+
         .question-row {
             border-bottom: 1px solid #eeeeee;
             padding: 20px 0;
@@ -71,7 +83,6 @@
             color: #000;
         }
 
-        /* Radio Grid Style - ปรับตามรูปตัวอย่างที่ 3 */
         .options-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -104,7 +115,6 @@
             background-color: #f9f9f9;
         }
 
-        /* เมื่อเลือก (Checked) */
         .custom-radio-label:has(input:checked) {
             border-color: var(--primary-color);
             background-color: var(--secondary-color);
@@ -112,7 +122,6 @@
             box-shadow: 0 4px 10px rgba(46, 125, 50, 0.1);
         }
 
-        /* ฟอร์มทั่วไป */
         .form-control {
             width: 100%;
             padding: 15px;
@@ -230,7 +239,7 @@
         <div class="question-row">
             <div class="question-text">3. สถานภาพ</div>
             <div class="options-grid">
-                <label class="custom-radio-label"><input type="radio" name="status" value="โสด"> โสด</label>
+                <label class="custom-radio-label"><input type="radio" name="status" value="โสด" required> โสด</label>
                 <label class="custom-radio-label"><input type="radio" name="status" value="สมรส"> สมรส</label>
                 <label class="custom-radio-label"><input type="radio" name="status" value="หม้าย"> หม้าย</label>
                 <label class="custom-radio-label"><input type="radio" name="status" value="หย่า"> หย่า</label>
@@ -264,7 +273,7 @@
         <div class="question-row">
             <div class="question-text">6. รายได้เฉลี่ย/เดือน (บาท)</div>
             <div class="options-grid">
-                <label class="custom-radio-label"><input type="radio" name="income" value="< 15,000"> น้อยกว่า 15,000</label>
+                <label class="custom-radio-label"><input type="radio" name="income" value="< 15,000" required> น้อยกว่า 15,000</label>
                 <label class="custom-radio-label"><input type="radio" name="income" value="15,000 - 30,000"> 15,000 - 30,000</label>
                 <label class="custom-radio-label"><input type="radio" name="income" value="> 30,000"> มากกว่า 30,000</label>
                 <label class="custom-radio-label"><input type="radio" name="income" value="ไม่มีรายได้"> ไม่มีรายได้</label>
@@ -273,21 +282,22 @@
 
         <div class="question-row">
             <div class="question-text">7. โรคประจำตัว</div>
-            <input type="text" name="disease" placeholder="ระบุโรคประจำตัว (ถ้าไม่มีใส่ - )" class="form-control">
+            <input type="text" name="disease" placeholder="ระบุโรคประจำตัว (ถ้าไม่มีใส่ - )" class="form-control" required>
         </div>
 
         <div class="question-row">
             <div class="question-text">8. ดัชนีมวลกาย (BMI)</div>
-            <input type="text" name="bmi" placeholder="ระบุ BMI (เช่น 22.5)" class="form-control" inputmode="decimal">
+            <input type="text" name="bmi" placeholder="ระบุ BMI (เช่น 22.5)" class="form-control" inputmode="decimal" required>
         </div>
 
         <div class="question-row">
             <div class="question-text">9. การสูบบุหรี่</div>
-            <input type="number" name="smoking" placeholder="จำนวนมวน/วัน (ถ้าไม่สูบใส่ 0)" class="form-control" inputmode="decimal">
+            <input type="number" name="smoking" placeholder="จำนวนมวน/วัน (ถ้าไม่สูบใส่ 0)" class="form-control" inputmode="decimal" required>
         </div>
 
         <div class="section-title">ตอนที่ 2 พฤติกรรมการจัดการภาวะเบาหวาน (24 ข้อ)</div>
 
+        <div class="sub-section-header">1. ด้านการรับประทานยา</div>
         <div class="question-row">
             <div class="question-text">1.1 ท่านรับประทานยารักษาโรคเบาหวานอย่างสม่ำเสมอและถูกต้อง</div>
             <div class="options-inline">
@@ -297,7 +307,6 @@
                 <label><input type="radio" name="q1_1" value="4"> 4</label>
             </div>
         </div>
-        
         <div class="question-row">
             <div class="question-text">1.2 ท่านไม่ลืมรับประทานยารักษาโรคเบาหวาน</div>
             <div class="options-inline">
@@ -308,6 +317,7 @@
             </div>
         </div>
 
+        <div class="sub-section-header">2. ด้านการรับประทานอาหาร</div>
         <div class="question-row">
             <div class="question-text">2.1 ท่านเลือกรับประทานอาหารที่สามารถควบคุมระดับน้ำตาลในเลือด</div>
             <div class="options-inline">
@@ -363,6 +373,7 @@
             </div>
         </div>
 
+        <div class="sub-section-header">3. ด้านการจัดการกับระดับน้ำตาลในเลือด</div>
         <div class="question-row">
             <div class="question-text">3.1 ท่านตรวจวัดระดับน้ำตาลในเลือดอย่างเคร่งครัด</div>
             <div class="options-inline">
@@ -400,6 +411,7 @@
             </div>
         </div>
 
+        <div class="sub-section-header">4. ด้านการออกกำลังกาย</div>
         <div class="question-row">
             <div class="question-text">4.1 ท่านออกกำลังกายอย่างสม่ำเสมอ เพื่อควบคุมโรคเบาหวาน</div>
             <div class="options-inline">
@@ -428,6 +440,7 @@
             </div>
         </div>
 
+        <div class="sub-section-header">5. ด้านการใช้บริการทางด้านสุขภาพ</div>
         <div class="question-row">
             <div class="question-text">5.1 ท่านไปพบแพทย์เป็นประจำ</div>
             <div class="options-inline">
@@ -465,6 +478,7 @@
             </div>
         </div>
 
+        <div class="sub-section-header">6. ด้านการจัดการกับความเจ็บป่วย</div>
         <div class="question-row">
             <div class="question-text">6.1 ท่านสามารถปรับปรุงการดูแลตนเองเพื่อควบคุมโรคได้</div>
             <div class="options-inline">
@@ -550,7 +564,8 @@
     async function handleCalculateScore() {
         const form = document.getElementById('postTestForm');
         
-        if (!form.checkValidity()) {
+        // เช็ค Validation: ตรวจสอบว่ากรอกข้อมูลครบตาม attribute 'required' หรือไม่
+        if (!form.reportValidity()) {
             Swal.fire({
                 icon: 'warning',
                 title: 'ข้อมูลไม่ครบถ้วน',
