@@ -11,7 +11,7 @@
             --primary-color: #2e7d32;
             --secondary-color: #f1f8e9;
             --text-color: #333;
-            --border-color: #e0e0e0;
+            --border-color: #cccccc; /* ปรับให้เข้มขึ้นเล็กน้อยเพื่อให้เห็นขอบชัด */
             --white: #ffffff;
         }
 
@@ -20,7 +20,7 @@
             background-color: #f5f5f5;
             color: var(--text-color);
             margin: 0;
-            padding: 15px; /* ปรับให้เหมาะกับมือถือ */
+            padding: 15px;
             line-height: 1.6;
         }
 
@@ -36,7 +36,7 @@
         h1 {
             color: var(--primary-color);
             text-align: center;
-            font-size: 26px; /* ใหญ่ขึ้นสำหรับผู้สูงอายุ */
+            font-size: 26px;
             margin-bottom: 10px;
         }
 
@@ -46,7 +46,7 @@
             border-radius: 8px;
             border-left: 5px solid var(--primary-color);
             margin-bottom: 30px;
-            font-size: 18px; /* อ่านง่ายขึ้น */
+            font-size: 18px;
         }
 
         .section-title {
@@ -60,60 +60,92 @@
         }
 
         .question-row {
-            border-bottom: 1px solid var(--border-color);
+            border-bottom: 1px solid #eeeeee;
             padding: 20px 0;
         }
 
         .question-text {
             margin-bottom: 15px;
-            font-weight: 400;
-            font-size: 19px; /* ขยายขนาดคำถาม */
+            font-weight: 600; /* ปรับให้หนาขึ้นเพื่อให้แยกจากตัวเลือกชัดเจน */
+            font-size: 20px; 
             color: #000;
         }
 
+        /* ปรับปรุง Radio แบบปุ่มกดสำหรับผู้สูงอายุ */
         .options-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            gap: 12px;
+        }
+
+        .custom-radio-label {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            background: #ffffff;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 19px;
+            font-weight: 500;
+        }
+
+        .custom-radio-label:has(input:checked) {
+            border-color: var(--primary-color);
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+        }
+
+        /* ปรับปรุง Input และ Select ให้ดูทันสมัยและตัวใหญ่ */
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            box-sizing: border-box;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 19px;
+            background-color: #fcfcfc;
+            appearance: none; /* สำหรับ select ในมือถือ */
+        }
+
+        select.form-control {
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%232e7d32' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            padding-right: 45px;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            background-color: #fff;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.1);
         }
 
         .options-inline {
             display: flex;
             justify-content: space-between;
             max-width: 100%;
-            background: #fafafa;
+            background: #f9f9f9;
             padding: 15px;
-            border-radius: 10px;
-        }
-
-        .form-control {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid var(--border-color);
-            border-radius: 8px;
-            box-sizing: border-box;
-            font-family: 'Sarabun', sans-serif;
-            font-size: 18px;
-        }
-
-        .form-control:focus {
-            border-color: var(--primary-color);
-            outline: none;
+            border-radius: 12px;
+            border: 1px solid #eee;
         }
 
         label {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             cursor: pointer;
-            font-size: 18px;
-            font-weight: 500;
+            font-size: 19px;
         }
 
         input[type="radio"] {
             accent-color: var(--primary-color);
-            width: 25px; /* ใหญ่ขึ้นเพื่อให้กดง่าย */
-            height: 25px;
+            width: 28px;
+            height: 28px;
         }
 
         .footer {
@@ -125,21 +157,21 @@
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 18px 50px;
-            font-size: 22px;
+            padding: 20px 50px;
+            font-size: 24px;
             font-weight: bold;
-            border-radius: 40px;
+            border-radius: 50px;
             cursor: pointer;
             width: 100%;
-            transition: transform 0.2s, background 0.3s;
-            box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.3);
         }
 
         .btn-submit:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
+            box-shadow: 0 2px 10px rgba(46, 125, 50, 0.2);
         }
 
-        /* สำหรับหน้าต่างสรุปผล */
         .swal-big-button {
             padding: 15px 30px !important;
             font-size: 20px !important;
@@ -150,6 +182,7 @@
             .container { padding: 15px; }
             .options-grid { grid-template-columns: 1fr; }
             .options-inline { flex-wrap: wrap; justify-content: space-around; }
+            .question-text { font-size: 19px; }
         }
     </style>
 </head>
@@ -168,26 +201,32 @@
         <div class="question-row">
             <div class="question-text">1. เพศ</div>
             <div class="options-grid">
-                <label><input type="radio" name="sex" value="ชาย" required> ชาย</label>
-                <label><input type="radio" name="sex" value="หญิง"> หญิง</label>
+                <label class="custom-radio-label"><input type="radio" name="sex" value="ชาย" required> ชาย</label>
+                <label class="custom-radio-label"><input type="radio" name="sex" value="หญิง"> หญิง</label>
             </div>
         </div>
 
         <div class="question-row">
             <div class="question-text">2. อายุ</div>
-            <div style="display: flex; gap: 10px;">
-                <input type="number" name="age_year" placeholder="ปี" class="form-control" inputmode="decimal" required>
-                <input type="number" name="age_month" placeholder="เดือน" class="form-control" inputmode="decimal" required>
+            <div style="display: flex; gap: 15px;">
+                <div style="flex: 1;">
+                    <span style="font-size: 14px; color: #666;">ระบุปี</span>
+                    <input type="number" name="age_year" placeholder="ปี" class="form-control" inputmode="decimal" required>
+                </div>
+                <div style="flex: 1;">
+                    <span style="font-size: 14px; color: #666;">ระบุเดือน</span>
+                    <input type="number" name="age_month" placeholder="เดือน" class="form-control" inputmode="decimal" required>
+                </div>
             </div>
         </div>
 
         <div class="question-row">
             <div class="question-text">3. สถานภาพ</div>
             <div class="options-grid">
-                <label><input type="radio" name="status" value="โสด"> โสด</label>
-                <label><input type="radio" name="status" value="สมรส"> สมรส</label>
-                <label><input type="radio" name="status" value="หม้าย"> หม้าย</label>
-                <label><input type="radio" name="status" value="หย่า"> หย่า</label>
+                <label class="custom-radio-label"><input type="radio" name="status" value="โสด"> โสด</label>
+                <label class="custom-radio-label"><input type="radio" name="status" value="สมรส"> สมรส</label>
+                <label class="custom-radio-label"><input type="radio" name="status" value="หม้าย"> หม้าย</label>
+                <label class="custom-radio-label"><input type="radio" name="status" value="หย่า"> หย่า</label>
             </div>
         </div>
 
@@ -195,7 +234,7 @@
             <div class="question-text">4. ระดับการศึกษาสูงสุด</div>
             <select name="education" class="form-control">
                 <option value="ไม่ได้ศึกษา">ไม่ได้ศึกษา</option>
-                <option value="ประถมศึกษา">ประถมศึกษา</option>
+                <option value="ประถมศึกษา" selected>ประถมศึกษา</option>
                 <option value="มัธยมศึกษา">มัธยมศึกษา</option>
                 <option value="ปวช./ปวส.">ปวช./ปวส.</option>
                 <option value="ปริญญาตรี">ปริญญาตรี</option>
@@ -218,10 +257,10 @@
         <div class="question-row">
             <div class="question-text">6. รายได้เฉลี่ย/เดือน (บาท)</div>
             <div class="options-grid">
-                <label><input type="radio" name="income" value="< 15,000"> น้อยกว่า 15,000</label>
-                <label><input type="radio" name="income" value="15,000 - 30,000"> 15,000 - 30,000</label>
-                <label><input type="radio" name="income" value="> 30,000"> มากกว่า 30,000</label>
-                <label><input type="radio" name="income" value="ไม่มีรายได้"> ไม่มีรายได้</label>
+                <label class="custom-radio-label"><input type="radio" name="income" value="< 15,000"> น้อยกว่า 15,000</label>
+                <label class="custom-radio-label"><input type="radio" name="income" value="15,000 - 30,000"> 15,000 - 30,000</label>
+                <label class="custom-radio-label"><input type="radio" name="income" value="> 30,000"> มากกว่า 30,000</label>
+                <label class="custom-radio-label"><input type="radio" name="income" value="ไม่มีรายได้"> ไม่มีรายได้</label>
             </div>
         </div>
 
@@ -232,7 +271,7 @@
 
         <div class="question-row">
             <div class="question-text">8. ดัชนีมวลกาย (BMI)</div>
-            <input type="text" name="bmi" placeholder="ระบุ BMI (ถ้าทราบ)" class="form-control">
+            <input type="text" name="bmi" placeholder="ระบุ BMI (เช่น 22.5)" class="form-control">
         </div>
 
         <div class="question-row">
@@ -251,6 +290,7 @@
                 <label><input type="radio" name="q1_1" value="4"> 4</label>
             </div>
         </div>
+        
         <div class="question-row">
             <div class="question-text">1.2 ท่านไม่ลืมรับประทานยารักษาโรคเบาหวาน</div>
             <div class="options-inline">
@@ -474,6 +514,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+    // ส่วน Script ทั้งหมดคงเดิมจากโค้ดที่คุณให้มาเพื่อให้ระบบทำงานได้สมบูรณ์
     let lineId = "";
     let lineName = "";
 
@@ -528,7 +569,7 @@
         let totalSum = 0;
         let totalCount = 0;
         let resultsForSheet = {}; 
-        let swalHtml = "";         
+        let swalHtml = "";          
 
         for (let i = 1; i <= 6; i++) {
             let sectionSum = 0;
