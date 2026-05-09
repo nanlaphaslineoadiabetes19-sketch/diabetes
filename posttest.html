@@ -243,11 +243,26 @@
             <div style="display: flex; gap: 15px;">
                 <div style="flex: 1;">
                     <span style="font-size: 14px; color: #666;">ระบุปี</span>
-                    <input type="number" name="age_year" placeholder="ปี" class="form-control" inputmode="decimal" required>
+                    <select name="age_year" class="form-control" required>
+                        <option value="" disabled selected>เลือกปี</option>
+                        <script>
+                            for (let i = 0; i <= 100; i++) {
+                                document.write(`<option value="${i}">${i} ปี</option>`);
+                            }
+                        </script>
+                    </select>
                 </div>
                 <div style="flex: 1;">
                     <span style="font-size: 14px; color: #666;">ระบุเดือน</span>
-                    <input type="number" name="age_month" placeholder="เดือน" class="form-control" inputmode="decimal" required>
+                    <select name="age_month" class="form-control" required>
+                        <option value="" disabled selected>เลือกเดือน</option>
+                        <script>
+                            // โดยปกติอายุจะเริ่มที่ 0-11 เดือน
+                            for (let i = 0; i <= 11; i++) {
+                                document.write(`<option value="${i}">${i} เดือน</option>`);
+                            }
+                        </script>
+                    </select>
                 </div>
             </div>
         </div>
@@ -277,12 +292,16 @@
         <div class="question-row">
             <div class="question-text">5. อาชีพ</div>
             <div class="options-grid">
-                <label class="custom-radio-label"><input type="radio" name="occupation" value="ไม่ได้ทำงาน" required> ไม่ได้ทำงาน</label>
-                <label class="custom-radio-label"><input type="radio" name="occupation" value="เกษตรกรรม"> เกษตรกรรม</label>
-                <label class="custom-radio-label"><input type="radio" name="occupation" value="รับจ้าง"> รับจ้าง</label>
-                <label class="custom-radio-label"><input type="radio" name="occupation" value="ค้าขาย"> ค้าขาย</label>
-                <label class="custom-radio-label"><input type="radio" name="occupation" value="ธุรกิจส่วนตัว"> ธุรกิจส่วนตัว</label>
-                <label class="custom-radio-label"><input type="radio" name="occupation" value="รับราชการ/รัฐวิสาหกิจ"> รับราชการ/รัฐวิสาหกิจ</label>
+                <label class="custom-radio-label"><input type="radio" name="occupation" value="ไม่ได้ทำงาน" onclick="toggleOccupationDetail(false)" required> ไม่ได้ทำงาน</label>
+                <label class="custom-radio-label"><input type="radio" name="occupation" value="เกษตรกรรม" onclick="toggleOccupationDetail(false)"> เกษตรกรรม</label>
+                <label class="custom-radio-label"><input type="radio" name="occupation" value="รับจ้าง" onclick="toggleOccupationDetail(false)"> รับจ้าง</label>
+                <label class="custom-radio-label"><input type="radio" name="occupation" value="ค้าขาย" onclick="toggleOccupationDetail(false)"> ค้าขาย</label>
+                <label class="custom-radio-label"><input type="radio" name="occupation" value="ธุรกิจส่วนตัว" onclick="toggleOccupationDetail(false)"> ธุรกิจส่วนตัว</label>
+                <label class="custom-radio-label"><input type="radio" name="occupation" value="รับราชการ/รัฐวิสาหกิจ" onclick="toggleOccupationDetail(false)"> รับราชการ/รัฐวิสาหกิจ</label>
+                <label class="custom-radio-label"><input type="radio" name="occupation" value="อื่นๆ" onclick="toggleOccupationDetail(true)"> 7. อื่นๆ (ระบุ)</label>
+            </div>
+            <div id="occupation_detail_container" style="display: none; margin-top: 10px;">
+                <input type="text" id="occupation_detail" name="occupation_detail" placeholder="โปรดระบุอาชีพของท่าน" class="form-control">
             </div>
         </div>
 
@@ -298,17 +317,45 @@
 
         <div class="question-row">
             <div class="question-text">7. โรคประจำตัว</div>
-            <input type="text" name="disease" placeholder="ระบุโรคประจำตัว (ถ้าไม่มีใส่ - )" class="form-control" required>
+            <div class="options-grid" style="margin-bottom: 10px;">
+                <label class="custom-radio-label">
+                    <input type="radio" name="disease" value="ไม่มี" onclick="toggleDiseaseDetail(false)" required> 1. ไม่มี
+                </label>
+                <label class="custom-radio-label">
+                    <input type="radio" name="disease" value="มี" onclick="toggleDiseaseDetail(true)"> 2. มี ระบุ...
+                </label>
+            </div>
+            <div id="disease_detail_container" style="display: none; margin-top: 10px;">
+                <input type="text" id="disease_detail" name="disease_detail" placeholder="ระบุชื่อโรคประจำตัว" class="form-control">
+            </div>
         </div>
 
         <div class="question-row">
             <div class="question-text">8. ดัชนีมวลกาย (BMI)</div>
-            <input type="text" name="bmi" placeholder="ระบุ BMI (เช่น 22.5)" class="form-control" inputmode="decimal" required>
+            <div style="display: flex; gap: 15px;">
+                <div style="flex: 1;">
+                    <span style="font-size: 14px; color: #666;">น้ำหนัก (กก.)</span>
+                    <input type="number" name="weight" placeholder="เช่น 65" class="form-control" step="0.1" inputmode="decimal" required>
+                </div>
+                <div style="flex: 1;">
+                    <span style="font-size: 14px; color: #666;">ส่วนสูง (ซม.)</span>
+                    <input type="number" name="height" placeholder="เช่น 170" class="form-control" step="0.1" inputmode="decimal" required>
+                </div>
+            </div>
         </div>
 
         <div class="question-row">
             <div class="question-text">9. การสูบบุหรี่</div>
-            <input type="number" name="smoking" placeholder="จำนวนมวน/วัน (ถ้าไม่สูบใส่ 0)" class="form-control" inputmode="decimal" required>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <select name="smoking" class="form-control" style="flex: 1;" required>
+                    <option value="" disabled selected>กรุณาเลือกจำนวนมวน/วัน</option>
+                    <script>
+                        for (let i = 0; i <= 99; i++) {
+                            document.write(`<option value="${i}">${i} มวน/วัน ${i === 0 ? '(ไม่สูบ)' : ''}</option>`);
+                        }
+                    </script>
+                </select>
+            </div>
         </div>
 
         <div class="section-title">ตอนที่ 2 แบบแบบประเมินพฤติกรรมการจัดการภาวะเบาหวานด้วยตนเอง</div>
@@ -586,10 +633,25 @@
         return "น้อย";
     }
 
+    function toggleOccupationDetail(show) {
+        const container = document.getElementById('occupation_detail_container');
+        const input = document.getElementById('occupation_detail');
+        if (show) {
+            container.style.display = 'block';
+            input.required = true;
+            input.value = ''; // ล้างค่าเดิมเพื่อให้ผู้ใช้กรอกใหม่
+        } else {
+            container.style.display = 'none';
+            input.required = false;
+            input.value = '-'; // กำหนดค่าเป็น - ตามเงื่อนไขเมื่อเลือกอาชีพปกติ
+        }
+    }
+
     async function handleCalculateScore() {
+        // 1. ดึง Element ฟอร์มออกมาก่อน
         const form = document.getElementById('postTestForm');
-        
-        // เช็ค Validation: ตรวจสอบว่ากรอกข้อมูลครบตาม attribute 'required' หรือไม่
+    
+        // 2. เช็ค Validation ทันที: ถ้ากรอกไม่ครบให้หยุดทำงาน (Return)
         if (!form.reportValidity()) {
             Swal.fire({
                 icon: 'warning',
@@ -599,10 +661,28 @@
             });
             return;
         }
-
+    
+        // 3. เมื่อข้อมูลครบแล้ว จึงสร้างตัวแปร formData เพื่อรวบรวมค่า
         const formData = new FormData(form);
-        const scriptURL = 'https://script.google.com/macros/s/AKfycbxTB8k2qKX8E8sM5pekLsy8i4uUWhrrmR5MgqiIPsUJQ1iesquTlR80CboO1utPmGl7/exec'; 
+    
+        // 4. --- จัดการ Logic พิเศษสำหรับ โรคประจำตัว และ อาชีพ ---
 
+        // จัดการโรคประจำตัว
+        const diseaseVal = formData.get('disease');
+        if (diseaseVal === 'ไม่มี') {
+            formData.set('disease_detail', '-');
+        }
+    
+        // จัดการอาชีพ (เพิ่มส่วนนี้เข้าไป)
+        const occVal = formData.get('occupation');
+        if (occVal !== 'อื่นๆ') {
+            formData.set('occupation_detail', '-');
+        }
+    
+        // --------------------------------------------------
+    
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxTB8k2qKX8E8sM5pekLsy8i4uUWhrrmR5MgqiIPsUJQ1iesquTlR80CboO1utPmGl7/exec'; 
+    
         const sections = {
             s1: { title: "ด้านการรับประทานยา", questions: ["q1_1", "q1_2"] },
             s2: { title: "ด้านการรับประทานอาหาร", questions: ["q2_1", "q2_2", "q2_3", "q2_4", "q2_5", "q2_6"] },
@@ -611,12 +691,13 @@
             s5: { title: "ด้านการใช้บริการทางด้านสุขภาพ", questions: ["q5_1", "q5_2", "q5_3", "q5_4"] },
             s6: { title: "ด้านการจัดการกับความเจ็บป่วย", questions: ["q6_1", "q6_2", "q6_3", "q6_4", "q6_5"] }
         };
-
+    
         let totalSum = 0;
         let totalCount = 0;
         let resultsForSheet = {}; 
         let swalHtml = "";          
-
+    
+        // วนลูปคำนวณคะแนนแต่ละด้าน
         for (let i = 1; i <= 6; i++) {
             let sectionSum = 0;
             let sectionQuestions = sections[`s${i}`].questions;
@@ -631,7 +712,7 @@
                     totalCount++;
                 }
             });
-
+    
             const avg = (sectionSum / sectionCount).toFixed(2);
             const level = getLevel(avg);
             resultsForSheet[`result${i}`] = avg; 
@@ -642,10 +723,11 @@
                     <span style="font-size: 18px; font-weight: 600;">เท่ากับ ${avg} <span style="color: #2e7d32;">(ระดับ ${level})</span></span>
                 </div>`;
         }
-
+    
         const totalAvg = (totalSum / 24).toFixed(2);
         const totalLevel = getLevel(totalAvg);
-
+    
+        // แสดงหน้าสรุปผลเพื่อให้กดยืนยันการส่ง
         const result = await Swal.fire({
             title: '<span style="font-size: 26px; color: #2e7d32;">สรุปผลการประเมิน (Post-test)</span>',
             html: `
@@ -664,22 +746,31 @@
             showCancelButton: true,
             confirmButtonColor: '#2e7d32',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'ยืนยันและส่งข้อมูล',
-            cancelButtonText: 'แก้ไขข้อมูล',
+            confirmButtonText: 'ใช่, ส่งข้อมูล',
+            cancelButtonText: 'ตรวจสอบอีกครั้ง',
             customClass: {
                 confirmButton: 'swal-big-button',
                 cancelButton: 'swal-big-button'
             }
         });
-
+    
+        // ถ้ากดยืนยัน (ใช่, ส่งข้อมูล)
         if (result.isConfirmed) {
             Swal.fire({
                 title: 'กำลังบันทึกข้อมูล...',
                 allowOutsideClick: false,
                 didOpen: () => { Swal.showLoading(); }
             });
-
-            const finalData = new URLSearchParams(formData);
+    
+            // เตรียมข้อมูลชุดสุดท้ายสำหรับส่ง (ใช้ค่าจาก formData ที่เราเซต Logic ไว้ด้านบนแล้ว)
+            const finalData = new URLSearchParams();
+            
+            // กวาดข้อมูลทั้งหมดใน formData เข้าสู่ URLSearchParams
+            for (const [key, value] of formData.entries()) {
+                finalData.append(key, value);
+            }
+    
+            // เพิ่มข้อมูลส่วนที่เหลือ
             finalData.append("line_id", lineId);
             finalData.append("line_name", lineName);
             finalData.append("type", "post");
@@ -687,7 +778,7 @@
             for(let i=1; i<=6; i++) {
                 finalData.append(`result${i}`, resultsForSheet[`result${i}`]);
             }
-
+    
             try {
                 await fetch(scriptURL, { method: 'POST', body: finalData, mode: 'no-cors' });
                 await Swal.fire({
@@ -702,6 +793,20 @@
             }
         }
     }
+
+    function toggleDiseaseDetail(show) {
+        const container = document.getElementById('disease_detail_container');
+        const input = document.getElementById('disease_detail');
+        if (show) {
+            container.style.display = 'block';
+            input.required = true; // บังคับให้กรอกถ้าเลือก "มี"
+        } else {
+            container.style.display = 'none';
+            input.required = false;
+            input.value = '-'; // ใส่ค่าเริ่มต้นเป็น - ถ้าเลือก "ไม่มี"
+        }
+    }
+    
 </script>
 
 </body>
