@@ -346,12 +346,21 @@
 
         <div class="question-row">
             <div class="question-text">9. การสูบบุหรี่</div>
-            <div style="display: flex; align-items: center; gap: 10px;">
-                <select name="smoking" class="form-control" style="flex: 1;" required>
+            <div class="options-grid" style="margin-bottom: 10px;">
+                <label class="custom-radio-label">
+                    <input type="radio" name="smoking" value="ไม่สูบ" onclick="toggleSmokingDetail(false)" required> ไม่สูบ
+                </label>
+                <label class="custom-radio-label">
+                    <input type="radio" name="smoking" value="สูบ" onclick="toggleSmokingDetail(true)"> สูบ (ระบุ มวน/วัน)
+                </label>
+            </div>
+            <div id="smoking_detail_container" style="display: none; margin-top: 10px;">
+                <span style="font-size: 14px; color: #666;">ระบุจำนวนมวนต่อวัน:</span>
+                <select id="smoking_detail" name="smoking_detail" class="form-control">
                     <option value="" disabled selected>กรุณาเลือกจำนวนมวน/วัน</option>
                     <script>
-                        for (let i = 0; i <= 99; i++) {
-                            document.write(`<option value="${i}">${i} มวน/วัน ${i === 0 ? '(ไม่สูบ)' : ''}</option>`);
+                        for (let i = 1; i <= 99; i++) {
+                            document.write(`<option value="${i}">${i} มวน/วัน</option>`);
                         }
                     </script>
                 </select>
@@ -673,10 +682,16 @@
             formData.set('disease_detail', '-');
         }
     
-        // จัดการอาชีพ (เพิ่มส่วนนี้เข้าไป)
+        // จัดการอาชีพ 
         const occVal = formData.get('occupation');
         if (occVal !== 'อื่นๆ') {
             formData.set('occupation_detail', '-');
+        }
+
+        // จัดการสูบบุหรี่
+        const smokingVal = formData.get('smoking');
+        if (smokingVal === 'ไม่สูบ') {
+            formData.set('smoking_detail', '0');
         }
     
         // --------------------------------------------------
@@ -804,6 +819,20 @@
             container.style.display = 'none';
             input.required = false;
             input.value = '-'; // ใส่ค่าเริ่มต้นเป็น - ถ้าเลือก "ไม่มี"
+        }
+    }
+
+    function toggleSmokingDetail(show) {
+        const container = document.getElementById('smoking_detail_container');
+        const select = document.getElementById('smoking_detail');
+        if (show) {
+            container.style.display = 'block';
+            select.required = true;
+            if (select.value === '0') select.value = ''; // ล้างค่า 0 ออกถ้าจะให้เลือกใหม่
+        } else {
+            container.style.display = 'none';
+            select.required = false;
+            select.value = '0'; // กำหนดค่าเป็น 0 ทันทีถ้าเลือก "ไม่สูบ"
         }
     }
     
