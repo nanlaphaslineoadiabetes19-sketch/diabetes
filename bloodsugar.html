@@ -57,16 +57,17 @@
         }
 
         .main-wrapper {
-            max-width: 500px;
-            width: 100%; /* ปรับให้เต็มจอในมือถือเพื่อความสวยงาม */
-            background: rgba(255, 255, 255, 0.98);
-            box-shadow: 0 20px 50px var(--shadow);
-            border-radius: 0 0 30px 30px; /* มนเฉพาะด้านล่างเพื่อให้ด้านบนชิดขอบ */
-            padding: 15px 25px 40px; /* ปรับ padding ตัวแรกให้เหลือน้อย เพื่อให้เนื้อหาดันขึ้นบนสุด */
+            width: 100%;
+            background: white;
+            box-shadow: 0 0 40px rgba(0,0,0,0.05);
+            border-radius: 0 0 30px 30px;
+            overflow: hidden;
             text-align: center;
-            margin: 0; /* ขยับขึ้นบนสุด */
+            display: flex;
+            flex-direction: column;
+            text-align: center;
+            min-height: 100vh;
             box-sizing: border-box;
-            min-height: 100vh; /* ให้สีขาวลากยาวลงมาจนสุดหน้าจอ */
         }
 
         .icon-header {
