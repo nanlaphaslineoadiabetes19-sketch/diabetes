@@ -246,7 +246,7 @@
                     <select name="age_year" class="form-control" required>
                         <option value="" disabled selected>เลือกปี</option>
                         <script>
-                            for (let i = 0; i <= 100; i++) {
+                            for (let i = 30; i <= 65; i++) {
                                 document.write(`<option value="${i}">${i} ปี</option>`);
                             }
                         </script>
@@ -257,8 +257,8 @@
                     <select name="age_month" class="form-control" required>
                         <option value="" disabled selected>เลือกเดือน</option>
                         <script>
-                            // โดยปกติอายุจะเริ่มที่ 0-11 เดือน
-                            for (let i = 0; i <= 11; i++) {
+                            // โดยปกติอายุจะเริ่มที่ 1-12 เดือน
+                            for (let i = 1; i <= 12; i++) {
                                 document.write(`<option value="${i}">${i} เดือน</option>`);
                             }
                         </script>
@@ -359,7 +359,7 @@
                 <select id="smoking_detail" name="smoking_detail" class="form-control">
                     <option value="" disabled selected>กรุณาเลือกจำนวนมวน/วัน</option>
                     <script>
-                        for (let i = 1; i <= 99; i++) {
+                        for (let i = 1; i <= 40; i++) {
                             document.write(`<option value="${i}">${i} มวน/วัน</option>`);
                         }
                     </script>
