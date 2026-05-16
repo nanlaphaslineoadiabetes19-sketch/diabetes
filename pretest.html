@@ -645,13 +645,15 @@
 
             try {
                 await fetch(scriptURL, { method: 'POST', body: finalData, mode: 'no-cors' });
-                await Swal.fire({
+                Swal.fire({
                     icon: 'success',
                     title: 'บันทึกข้อมูลสำเร็จ',
                     text: 'ขอบคุณที่ตอบแบบประเมินค่ะ',
-                    confirmButtonColor: '#2e7d32'
-                });
+                    confirmButtonColor: '#2e7d32',
+                    allowOutsideClick: false
+                }).then(() => {
                 liff.closeWindow(); 
+                });
             } catch (error) {
                 Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', confirmButtonColor: '#d33' });
             }
