@@ -11,7 +11,7 @@
             --primary-color: #2e7d32;
             --secondary-color: #f1f8e9;
             --text-color: #333;
-            --border-color: #cccccc; /* ปรับให้เส้นขอบเข้มคมชัดขึ้นเท่า posttest */
+            --border-color: #cccccc; 
             --white: #ffffff;
         }
 
@@ -20,7 +20,7 @@
             background-color: #f5f5f5;
             color: var(--text-color);
             margin: 0;
-            padding: 20px;
+            padding: 15px;
             line-height: 1.6;
         }
 
@@ -28,7 +28,7 @@
             max-width: 800px;
             background: var(--white);
             margin: 0 auto;
-            padding: 40px;
+            padding: 30px;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
@@ -36,7 +36,7 @@
         h1 {
             color: var(--primary-color);
             text-align: center;
-            font-size: 24px;
+            font-size: 26px;
             margin-bottom: 10px;
         }
 
@@ -46,7 +46,7 @@
             border-radius: 8px;
             border-left: 5px solid var(--primary-color);
             margin-bottom: 30px;
-            font-size: 15px;
+            font-size: 18px;
         }
 
         .scoring-guide {
@@ -68,24 +68,35 @@
         .section-title {
             background-color: var(--primary-color);
             color: var(--white);
-            padding: 10px 20px;
+            padding: 12px 20px;
             border-radius: 6px;
-            margin: 30px 0 15px 0;
+            margin: 35px 0 15px 0;
             font-weight: 600;
+            font-size: 20px;
+        }
+
+        /* สไตล์สำหรับหัวข้อย่อย 1-6 */
+        .sub-section-header {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            padding: 10px 15px;
+            border-radius: 5px;
+            margin: 25px 0 10px 0;
+            font-weight: 600;
+            font-size: 20px;
+            border-left: 4px solid #2e7d32;
         }
 
         .question-row {
-            border-bottom: 1px solid var(--border-color);
-            padding: 15px 0;
-            display: flex;
-            flex-direction: column;
+            border-bottom: 1px solid #eeeeee;
+            padding: 20px 0;
         }
 
         .question-text {
-            font-size: 18px;
-            font-weight: 600;
             margin-bottom: 15px;
-            color: var(--text-color);
+            font-weight: 600;
+            font-size: 20px; 
+            color: #000;
         }
 
         .options-grid {
@@ -127,17 +138,46 @@
             box-shadow: 0 4px 10px rgba(46, 125, 50, 0.1);
         }
 
-        /* ตอบสนองบนหน้าจอมือถือที่แคบมากๆ ให้ปุ่มขยายตัวพอดี */
-        @media (max-width: 600px) {
-            .container { padding: 15px; }
-            .options-grid { 
-                grid-template-columns: repeat(4, 1fr); 
-                gap: 8px; 
-            }
-            .custom-radio-label {
-                padding: 10px 5px;
-                font-size: 15px;
-            }
+        .form-control {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            box-sizing: border-box;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 19px;
+            background-color: #fcfcfc;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            background-color: #fff;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.1);
+        }
+
+        .options-inline {
+            display: flex;
+            justify-content: space-between;
+            max-width: 100%;
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 12px;
+            border: 1px solid #eee;
+        }
+
+        .options-inline label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 19px;
+        }
+
+        .options-inline input[type="radio"] {
+            accent-color: var(--primary-color);
+            width: 28px;
+            height: 28px;
         }
 
         .footer {
@@ -145,26 +185,37 @@
             text-align: center;
         }
 
-        button {
+        .btn-submit {
             background-color: var(--primary-color);
             color: white;
             border: none;
-            padding: 12px 40px;
-            font-size: 18px;
-            border-radius: 30px;
+            padding: 20px 50px;
+            font-size: 24px;
+            font-weight: bold;
+            border-radius: 50px;
             cursor: pointer;
-            transition: transform 0.2s, background 0.3s;
+            width: 100%;
+            transition: all 0.3s;
+            box-shadow: 0 6px 20px rgba(46, 125, 50, 0.3);
         }
 
-        button:hover {
-            background-color: #1b5e20;
-            transform: translateY(-2px);
+        .btn-submit:active {
+            transform: scale(0.97);
+            box-shadow: 0 2px 10px rgba(46, 125, 50, 0.2);
         }
 
-        .swal2-popup {
-            font-family: 'Sarabun', sans-serif !important;
+        .swal-big-button {
+            padding: 15px 30px !important;
+            font-size: 20px !important;
+            border-radius: 30px !important;
         }
 
+        @media (max-width: 600px) {
+            .container { padding: 15px; }
+            .options-grid { grid-template-columns: 1fr; }
+            .options-inline { flex-wrap: wrap; justify-content: space-around; }
+            .question-text { font-size: 19px; }
+        }
     </style>
 </head>
 <body>
@@ -183,14 +234,14 @@
     </div>
 
     <form id="assessmentForm">
-        <div class="section-title">1. การรับประทานยา</div>
+        <div class="sub-section-header">1. การรับประทานยา</div>
         <div class="question-row">
             <div class="question-text">1) ท่านรับประทานยารักษาโรคเบาหวานอย่างสม่ำเสมอและถูกต้อง</div>
-            <div class="options-grid">
-                <label class="custom-radio-label"><input type="radio" name="q1_1" value="1" required> 1</label>
-                <label class="custom-radio-label"><input type="radio" name="q1_1" value="2"> 2</label>
-                <label class="custom-radio-label"><input type="radio" name="q1_1" value="3"> 3</label>
-                <label class="custom-radio-label"><input type="radio" name="q1_1" value="4"> 4</label>
+            <div class="options-inline">
+                <label><input type="radio" name="q1_1" value="1" required> 1</label>
+                <label><input type="radio" name="q1_1" value="2"> 2</label>
+                <label><input type="radio" name="q1_1" value="3"> 3</label>
+                <label><input type="radio" name="q1_1" value="4"> 4</label>
             </div>
         </div>
         <div class="question-row">
