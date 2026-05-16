@@ -158,8 +158,13 @@
             transform: translateX(5px);
         }
 
-        .image-gallery {
-            font-size: 0; /* ลบช่องว่างระหว่างภาพ */
+        .image-gallery img {
+            width: 100%;          /* บังคับให้รูปกว้างเต็มกรอบสีขาว 100% พอดี */
+            max-width: 100%;      /* ป้องกันไม่ให้รูปขยายเกินสัดส่วน */
+            height: auto;         /* คงสัดส่วนแนวตั้งตามจริง รูปจะไม่เบี้ยว */
+            border-radius: 15px;  /* ทำมุมมนให้เข้ากับหน้าต่างแอปพลิเคชัน */
+            display: block;       /* เคลียร์ช่องไฟด้านล่าง */
+            margin: 0 auto;       /* สั่งให้อยู่ตรงกลางเสมอ */
         }
 
         footer {
@@ -173,19 +178,19 @@
 <body>
     <div class="container">
         <div class="main-wrapper">
-            <div class="image-gallery">
+            <div class="image-gallery" style="margin-top: 10px;">
               <img src="https://drive.google.com/thumbnail?id=1SqaE54zK0BquoEkwKb8C22yW02UiRPpg&sz=w1000">
             </div>
         
             <div class="menu-container">
                 <div class="menu-item">
-                    <div class="menu-header" onclick="goTo('pretest.html')">
+                    <div class="menu-header" onclick="goTo('pretest')">
                         ก่อนเข้าร่วมโปรแกรม <span class="arrow-circle">➜</span>
                     </div>
                 </div>
                 
                 <div class="menu-item">
-                    <div class="menu-header" onclick="goTo('posttest.html')">
+                    <div class="menu-header" onclick="goTo('posttest')">
                         หลังก่อนเข้าร่วมโปรแกรม <span class="arrow-circle">➜</span>
                     </div>
                 </div>
