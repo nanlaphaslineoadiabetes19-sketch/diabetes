@@ -11,7 +11,7 @@
             --primary-color: #2e7d32;
             --secondary-color: #f1f8e9;
             --text-color: #333;
-            --border-color: #e0e0e0;
+            --border-color: #cccccc; /* ปรับให้เส้นขอบเข้มคมชัดขึ้นเท่า posttest */
             --white: #ffffff;
         }
 
@@ -82,8 +82,10 @@
         }
 
         .question-text {
-            margin-bottom: 12px;
-            font-weight: 400;
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            color: var(--text-color);
         }
 
         .options {
@@ -103,6 +105,18 @@
             accent-color: var(--primary-color);
             width: 18px;
             height: 18px;
+        }
+
+        .custom-radio-label {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px; /* เพิ่มพื้นที่ปุ่มให้กดง่ายและใหญ่ขึ้น */
+            background: #f9f9f9;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 16px; 
         }
 
         .footer {
