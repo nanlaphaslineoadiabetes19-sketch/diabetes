@@ -258,10 +258,13 @@
 
 <div class="container">
     <br><br>
-    <h1>แบบประเมินพฤติกรรมการจัดการภาวะเบาหวาน</h1>
+    <h1>แบบประเมินพฤติกรรมการจัดการภาวะเบาหวานด้วยตนเอง</h1>
     
     <div class="instruction-box">
-        <strong>คำชี้แจง:</strong> แบบประเมินนี้ประกอบด้วย 2 ส่วน คือ ข้อมูลส่วนบุคคล 10 ข้อ และพฤติกรรมการจัดการตนเอง 24 ข้อ โปรดตอบตามความเป็นจริงมากที่สุด
+        แบบประเมินนี้ประกอบด้วย 2 ส่วน ดังนี้<br>
+        ตอนที่ 1 แบบสอบถามข้อมูลส่วนบุคคลของผู้ป่วย จำนวน 10 ข้อ<br>
+        ตอนที่ 2 แบบประเมินพฤติกรรมการจัดการภาวะเบาหวานด้วยตนเอง จำนวน 24 ข้อ<br>
+        โปรดตอบตามความเป็นจริงมากที่สุด
     </div>
 
     <form id="postTestForm">
@@ -335,7 +338,7 @@
                 <label class="custom-radio-label"><input type="radio" name="occupation" value="ค้าขาย" onclick="toggleOccupationDetail(false)"> ค้าขาย</label>
                 <label class="custom-radio-label"><input type="radio" name="occupation" value="ธุรกิจส่วนตัว" onclick="toggleOccupationDetail(false)"> ธุรกิจส่วนตัว</label>
                 <label class="custom-radio-label"><input type="radio" name="occupation" value="รับราชการ/รัฐวิสาหกิจ" onclick="toggleOccupationDetail(false)"> รับราชการ/รัฐวิสาหกิจ</label>
-                <label class="custom-radio-label"><input type="radio" name="occupation" value="อื่นๆ" onclick="toggleOccupationDetail(true)"> 7. อื่นๆ (ระบุ)</label>
+                <label class="custom-radio-label"><input type="radio" name="occupation" value="อื่นๆ" onclick="toggleOccupationDetail(true)"> อื่นๆ (ระบุ)</label>
             </div>
             <div id="occupation_detail_container" style="display: none; margin-top: 10px;">
                 <input type="text" id="occupation_detail" name="occupation_detail" placeholder="โปรดระบุอาชีพของท่าน" class="form-control">
@@ -356,10 +359,10 @@
             <div class="question-text">7. โรคประจำตัว</div>
             <div class="options-grid" style="margin-bottom: 10px;">
                 <label class="custom-radio-label">
-                    <input type="radio" name="disease" value="ไม่มี" onclick="toggleDiseaseDetail(false)" required> 1. ไม่มี
+                    <input type="radio" name="disease" value="ไม่มี" onclick="toggleDiseaseDetail(false)" required> ไม่มี
                 </label>
                 <label class="custom-radio-label">
-                    <input type="radio" name="disease" value="มี" onclick="toggleDiseaseDetail(true)"> 2. มี ระบุ...
+                    <input type="radio" name="disease" value="มี" onclick="toggleDiseaseDetail(true)"> มี ระบุ...
                 </label>
             </div>
             <div id="disease_detail_container" style="display: none; margin-top: 10px;">
@@ -404,14 +407,14 @@
             </div>
         </div>
 
-        <div class="section-title">ตอนที่ 2 แบบแบบประเมินพฤติกรรมการจัดการภาวะเบาหวานด้วยตนเอง</div>
+        <div class="section-title">ตอนที่ 2 แบบประเมินพฤติกรรมการจัดการภาวะเบาหวานด้วยตนเอง</div>
         <div class="instruction-box">
-            <strong>คำชี้แจง:</strong> แบบประเมินนี้เป็นแบบประเมินพฤติกรรมการจัดการภาวะเบาหวานด้วยตนเอง โดยคำตอบของท่านจะเป็นความลับและนำเสนอโดยภาพรวม ซึ่งจะไม่มีผลต่อผู้ป่วยแต่อย่างใด แต่ละข้อไม่มีคำตอบถูกหรือผิด โดยคำตอบที่ดีที่สุดคือ คำตอบที่ตรงกับความรู้สึกของท่านมากที่สุด เพียงคำตอบเดียว
+            <strong>คำชี้แจง:</strong> แบบประเมินนี้เป็นแบบประเมินพฤติกรรมการจัดการภาวะเบาหวานด้วยตนเอง โดยคำตอบของท่านจะเป็นความลับและนำเสนอโดยภาพรวม ซึ่งจะไม่มีผลต่อผู้ป่วยแต่อย่างใด แต่ละข้อไม่มีคำตอบถูกหรือผิด โดยคำตอบที่ดีที่สุดคือ คำตอบที่ตรงกับความรู้สึกของท่านมากที่สุดเพียงคำตอบเดียว มีเกณฑ์การให้คะแนน ดังนี้
             <div class="scoring-guide">
-                <div class="score-item"><strong>4 คะแนน:</strong> ปฏิบัติสม่ำเสมอ (3 ครั้งขึ้นไป/สัปดาห์)</div>
-                <div class="score-item"><strong>3 คะแนน:</strong> ปฏิบัติบ่อยครั้ง (2 ครั้งขึ้นไป/สัปดาห์)</div>
-                <div class="score-item"><strong>2 คะแนน:</strong> นานๆ ครั้ง (1 ครั้งขึ้นไป/สัปดาห์)</div>
-                <div class="score-item"><strong>1 คะแนน:</strong> ไม่ปฏิบัติเลย</div>
+                <div class="score-item"> ปฏิบัติสม่ำเสมอ หมายถึง ปฏิบัติกิจกรรมการจัดการตนเองที่ระบุไว้ได้ทุกครั้ง หรืออย่างสม่ำเสมอ 3 ครั้งขึ้นไปต่อสัปดาห์<strong> ให้คะแนนเท่ากับ 4</strong></div>
+                <div class="score-item"> ปฏิบัติบ่อยครั้ง หมายถึง ปฏิบัติกิจกรรมการจัดการตนเองที่ระบุไว้ได้บ่อยครั้ง หรืออย่างสม่ำเสมอ 2 ครั้งขึ้นไปต่อสัปดาห์<strong> ให้คะแนนเท่ากับ 3</strong></div>
+                <div class="score-item"> ปฏิบัตินานๆครั้ง หมายถึง ปฏิบัติกิจกรรมการจัดการตนเองที่ระบุไว้ได้นานๆ ครั้ง หรืออย่างสม่ำเสมอ 1 ครั้งขึ้นไปต่อสัปดาห์<strong> ให้คะแนนเท่ากับ 2</strong></div>
+                <div class="score-item"> ไม่ปฏิบัติเลย หมายถึง ไม่ปฏิบัติกิจกรรมการจัดการตนเองที่ระบุไว้เลย<strong> ให้คะแนนเท่ากับ 1</strong></div>
             </div>
         </div>
 
@@ -446,7 +449,7 @@
             </div>
         </div>
         <div class="question-row">
-            <div class="question-text">2) ท่านหลีกเลี่ยงรับประทานขนมหวานหรืออาหารที่มีคาร์โบไฮเดรตสูง ในปริมาณมาก เช่น ข้าวเหนียว เผือก มัน ถั่วลันเตา และเครื่องดื่ม ที่มีรสหวาน เป็นต้น</div>
+            <div class="question-text">2) ท่านหลีกเลี่ยงรับประทานขนมหวานหรืออาหารที่มีคาร์โบไฮเดรตสูง ในปริมาณมาก เช่น ข้าวเหนียว เผือก มัน ถั่วลันเตา และเครื่องดื่มที่มีรสหวาน เป็นต้น</div>
             <div class="options-inline">
                 <label><input type="radio" name="q2_2" value="1" required> 1</label>
                 <label><input type="radio" name="q2_2" value="2"> 2</label>
@@ -540,7 +543,7 @@
             </div>
         </div>
         <div class="question-row">
-            <div class="question-text">2) ท่านไม่ค่อยหลีกเลี่ยงการออกกำลังกายแม้ว่าการออกกำลังกายจะเป็นประโยชน์ต่อการควบโรคเบาหวาน</div>
+            <div class="question-text">2) ท่านไม่ค่อยหลีกเลี่ยงการออกกำลังกายแม้ว่าการออกกำลังกายจะเป็นประโยชน์ต่อการควบคุมโรคเบาหวาน</div>
             <div class="options-inline">
                 <label><input type="radio" name="q4_2" value="1" required> 1</label>
                 <label><input type="radio" name="q4_2" value="2"> 2</label>
