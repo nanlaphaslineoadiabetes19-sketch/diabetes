@@ -843,7 +843,11 @@
                     confirmButtonColor: '#2e7d32',
                     allowOutsideClick: false // ล็อกไว้ไม่ให้กดคลิกพื้นหลังหลุด
                 }).then(() => {
-                    liff.closeWindow(); 
+                    // ตรวจสอบการปิดหน้าต่างให้รัดกุมขึ้น
+                    if (liff.isInClient()) {
+                        // ถ้าเปิดในแอป LINE (ในมือถือ) สั่งปิดหน้าต่าง LIFF ทันที
+                        liff.closeWindow(); 
+                    }
                 });
             } catch (error) {
                 Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'ไม่สามารถบันทึกได้ กรุณาลองใหม่อีกครั้ง', confirmButtonColor: '#d33' });
