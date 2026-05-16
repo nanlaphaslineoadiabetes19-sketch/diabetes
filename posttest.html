@@ -836,13 +836,15 @@
     
             try {
                 await fetch(scriptURL, { method: 'POST', body: finalData, mode: 'no-cors' });
-                await Swal.fire({
+                Swal.fire({
                     icon: 'success',
                     title: 'บันทึกสำเร็จ',
                     text: 'ขอบคุณที่ให้ความร่วมมือในการทำแบบประเมินค่ะ',
-                    confirmButtonColor: '#2e7d32'
+                    confirmButtonColor: '#2e7d32',
+                    allowOutsideClick: false // ล็อกไว้ไม่ให้กดคลิกพื้นหลังหลุด
+                }).then(() => {
+                    liff.closeWindow(); 
                 });
-                liff.closeWindow(); 
             } catch (error) {
                 Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'ไม่สามารถบันทึกได้ กรุณาลองใหม่อีกครั้ง', confirmButtonColor: '#d33' });
             }
