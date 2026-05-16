@@ -97,33 +97,34 @@
         .custom-radio-label {
             display: flex;
             align-items: center;
-            justify-content: center; /* จัดตัวอักษรให้อยู่ตรงกลางปุ่ม */
-            padding: 12px 10px;
-            background: #f9f9f9;
-            border: 1px solid var(--border-color);
-            border-radius: 8px;
+            padding: 15px;
+            background: #ffffff;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
             cursor: pointer;
-            transition: all 0.2s ease;
-            font-size: 16px; 
-            font-weight: 600;
+            transition: all 0.2s;
+            font-size: 19px;
+            font-weight: 500;
+            position: relative;
         }
 
-        /* ซ่อนวงกลม Radio แบบดั้งเดิม */
         .custom-radio-label input[type="radio"] {
-            display: none;
+            margin-right: 12px;
+            width: 22px;
+            height: 22px;
+            cursor: pointer;
+            accent-color: var(--primary-color);
         }
 
-        /* เอฟเฟกต์เมื่อเมาส์ชี้ (Hover) */
         .custom-radio-label:hover {
-            background: #f0f0f0;
-            border-color: #999;
+            background-color: #f9f9f9;
         }
 
-        /* เอฟเฟกต์เมื่อกดเลือกตัวเลือกนั้นๆ */
-        .custom-radio-label:has(input[type="radio"]:checked) {
-            background-color: var(--secondary-color);
+        .custom-radio-label:has(input:checked) {
             border-color: var(--primary-color);
+            background-color: var(--secondary-color);
             color: var(--primary-color);
+            box-shadow: 0 4px 10px rgba(46, 125, 50, 0.1);
         }
 
         /* ตอบสนองบนหน้าจอมือถือที่แคบมากๆ ให้ปุ่มขยายตัวพอดี */
