@@ -255,7 +255,7 @@
         ⬅ ย้อนกลับ
     </button>
 </div>
-    
+    <br>
 <div class="container">
     <h1>แบบประเมินพฤติกรรมการจัดการภาวะเบาหวานด้วยตนเอง</h1>
     
@@ -654,6 +654,14 @@
         }
     }
 </script>
+
+    <script>
+        function goBack() {
+            var currentPath = window.location.pathname;
+            var directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+            location.href = directoryPath + '/questionnaire.html';
+        }
+    </script>
 
 </body>
 </html>
