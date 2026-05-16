@@ -75,6 +75,36 @@
             font-size: 20px;
         }
 
+        .nav-bar {
+            position: fixed !important;
+            top: 15px !important;
+            left: 15px !important;
+            z-index: 99999 !important;
+        }
+
+        .btn-back {
+            padding: 10px 22px;
+            background-color: rgba(255, 255, 255, 0.85);
+            color: #555;
+            border: 1px solid #ddd;
+            border-radius: 50px;
+            cursor: pointer;
+            font-family: 'Sarabun', sans-serif;
+            font-size: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            backdrop-filter: blur(8px);
+            transition: 0.3s;
+        }
+
+        .btn-back:hover {
+            background-color: white;
+            transform: scale(1.05);
+        }
+        
         /* สไตล์สำหรับหัวข้อย่อย 1-6 */
         .sub-section-header {
             background-color: #e8f5e9;
@@ -220,6 +250,12 @@
 </head>
 <body>
 
+<div class="nav-bar">
+    <button class="btn-back" onclick="goBack()">
+        ⬅ ย้อนกลับ
+    </button>
+</div>
+    
 <div class="container">
     <h1>แบบประเมินพฤติกรรมการจัดการภาวะเบาหวานด้วยตนเอง</h1>
     
