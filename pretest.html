@@ -652,7 +652,19 @@
                     confirmButtonColor: '#2e7d32',
                     allowOutsideClick: false
                 }).then(() => {
-                liff.closeWindow(); 
+                    // 3. ตรวจสอบการปิดหน้าต่างให้รัดกุมขึ้น
+                    if (liff.isInClient()) {
+                        // ถ้าเปิดในแอป LINE (ในมือถือ) สั่งปิดหน้าต่าง LIFF ทันที
+                        liff.closeWindow(); 
+                    } else {
+                        // ถ้าเปิดในบราวเซอร์อื่น (เช่น Chrome, Safari) ให้เปลี่ยนหน้าไปหน้าอื่น หรือแจ้งให้ปิดแท็บ
+                        Swal.fire({
+                            title: 'ส่งข้อมูลเรียบร้อยแล้วค่ะ',
+                            text: 'คุณสามารถปิดหน้าต่างเบราว์เซอร์นี้ได้เลยค่ะ',
+                            icon: 'success',
+                            confirmButtonColor: '#2e7d32'
+                        });
+                    }
                 });
             } catch (error) {
                 Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', confirmButtonColor: '#d33' });
