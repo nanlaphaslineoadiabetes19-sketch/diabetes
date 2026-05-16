@@ -27,9 +27,9 @@
         .container {
             max-width: 800px;
             background: var(--white);
-            margin: 0 auto;
-            padding: 30px;
-            border-radius: 12px;
+            padding: 15px;
+            margin: 0 auto;        /* 1. มั่นใจว่า margin ด้านบนและล่างเป็น 0 */
+            border-radius: 0;      /* 2. เปลี่ยนมุมมนด้านบนให้เป็นเหลี่ยม จะได้ชิดขอบบนได้สนิทและสวยงาม */
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
 
@@ -202,6 +202,9 @@
             gap: 12px;
             cursor: pointer;
             font-size: 19px;
+            flex-wrap: wrap; 
+            justify-content: 
+            space-around;
         }
 
         .options-inline input[type="radio"] {
@@ -255,8 +258,9 @@
         ⬅ ย้อนกลับ
     </button>
 </div>
-    <br>
+    
 <div class="container">
+    <br><br>
     <h1>แบบประเมินพฤติกรรมการจัดการภาวะเบาหวานด้วยตนเอง</h1>
     
     <div class="instruction-box">
@@ -659,7 +663,7 @@
         function goBack() {
             var currentPath = window.location.pathname;
             var directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
-            location.href = directoryPath + '/questionnaire.html';
+            location.href = directoryPath + '/self.html';
         }
     </script>
 
