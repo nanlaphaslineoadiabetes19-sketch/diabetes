@@ -56,6 +56,12 @@
             transform: scale(1.05);
         }
 
+        .container {
+            width: 100%;
+            max-width: 500px;
+            margin: 0; /* ชิดบนสุด */
+        }
+
         .main-wrapper {
             max-width: 500px;
             width: 100%; /* ปรับให้เต็มจอในมือถือเพื่อความสวยงาม */
@@ -162,11 +168,12 @@
     </style>
 </head>
 <body>
-    <div class="main-wrapper">
-        <div class="image-gallery">
-          <img src="https://drive.google.com/thumbnail?id=1SqaE54zK0BquoEkwKb8C22yW02UiRPpg&sz=w1000">
+    <div class="container">
+        <div class="main-wrapper">
+            <div class="image-gallery">
+              <img src="https://drive.google.com/thumbnail?id=1SqaE54zK0BquoEkwKb8C22yW02UiRPpg&sz=w1000">
+            </div>
         </div>
-        <h1>การออกกำลังกาย</h1>
         
         <div class="menu-container">
             <div class="menu-item">
