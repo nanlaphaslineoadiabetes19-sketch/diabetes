@@ -128,12 +128,6 @@
     </style>
 </head>
 <body>
-    <div class="nav-bar">
-        <button class="btn-back" onclick="goBack()">
-            <span style="font-size: 18px;">⬅</span> ย้อนกลับ
-        </button>
-    </div>
-
     <div class="container">
           <div class="main-wrapper">
             <br><br>
@@ -146,14 +140,6 @@
           </footer>
         </div>
     </div>
-
-    <script>
-        function goBack() {
-            var currentPath = window.location.pathname;
-            var directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
-            location.href = directoryPath + '/diabetes.html';
-        }
-    </script>
     
 </body>
 </html>
