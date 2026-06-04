@@ -205,8 +205,11 @@
                 await fetch(SCRIPT_URL, { 
                     method: 'POST', 
                     body: formData,
-                    mode: 'no-cors'
                 });
+
+                // เพิ่มการเช็กผลลัพธ์
+                if (!response.ok) throw new Error('Network response was not ok');
+                const resultText = await response.text(); // หรือ response.json() แล้วแต่ที่ return ใน gs
 
                 await Swal.fire({
                     icon: 'success',
@@ -219,6 +222,7 @@
                 select.value = '';
 
             } catch (error) {
+                console.error(error); // เพื่อดู Error จริงๆ ใน Console
                 Swal.fire({
                     icon: 'error',
                     title: 'เกิดข้อผิดพลาด',
