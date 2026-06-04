@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>กราฟแสดงระดับน้ำตาลในเลือดสะสม</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    
+    <style>
+        :root {
+            --primary-color: #ff5252; /* สีแดงส้มตามภาพร่าง */
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+        }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .chart-container {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 600px;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            position: relative;
+        }
+
+        .header-title {
+            text-align: center;
+            color: var(--text-main);
+            font-size: 22px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+        /* หน้าจอโหลด */
+        #loading {
+            text-align: center;
+            color: #666;
+            padding: 40px 0;
+            font-size: 16px;
+        }
+
+        #no-data {
+            display: none;
+            text-align: center;
+            color: #ff5252;
+            padding: 30px 0;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="chart-container">
+        <div class="header-title">กราฟแสดงระดับน้ำตาลในเลือดสะสม</div>
+        
+        <div id="loading">กำลังโหลดข้อมูลของคุณ...</div>
+        <div id="no-data">ยังไม่มีข้อมูลการบันทึกค่าน้ำตาลในเลือดของคุณ</div>
+        
+        <canvas id="bloodSugarChart" style="display: none;"></canvas>
+    </div>
+
+    <script>
+        // *** 1. นำ Web App URL ของ Google Apps Script มาใส่ ***
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxTB8k2qKX8E8sM5pekLsy8i4uUWhrrmR5MgqiIPsUJQ1iesquTlR80CboO1utPmGl7/exec';
+        
+        // *** 2. นำ LIFF ID จาก LINE Developers มาใส่ ***
+        const LIFF_ID = 'YOUR_LIFF_ID'; 
+
+        // ฟังก์ชันเริ่มต้น (Initialize LIFF)
+        async function main() {
+            try {
+                await liff.init({ liffId: LIFF_ID });
+                if (liff.isLoggedIn()) {
+                    const profile = await liff.getProfile();
+                    fetchDataAndDrawChart(profile.userId); // ส่ง line_id ไปดึงข้อมูล
+                } else {
+                    liff.login(); // บังคับล็อกอินถ้าเปิดในเบราว์เซอร์นอก LINE
+                }
+            } catch (err) {
+                console.error('LIFF Init Error:', err);
+                document.getElementById('loading').innerText = 'เกิดข้อผิดพลาดในการเชื่อมต่อระบบ LINE';
+            }
+        }
+
+        // ฟังก์ชันดึงข้อมูลจาก Sheet และวาดกราฟ
+        async function fetchDataAndDrawChart(lineId) {
+            try {
+                // เรียก API ส่ง type=getGraphData พร้อมแนบ line_id
+                const response = await fetch(`${SCRIPT_URL}?type=getGraphData&line_id=${lineId}`);
+                const data = await response.json();
+
+                document.getElementById('loading').style.display = 'none';
+
+                if (data.length === 0) {
+                    // ถ้ายังไม่เคยมีข้อมูลโชว์ข้อความแจ้งเตือน
+                    document.getElementById('no-data').style.display = 'block';
+                    return;
+                }
+
+                // แยกข้อมูลแกน X (วันที่) และแกน Y (ค่าน้ำตาล)
+                const labels = data.map(item => item.date);
+                const values = data.map(item => item.value);
+
+                document.getElementById('bloodSugarChart').style.display = 'block';
+                drawChart(labels, values);
+
+            } catch (error) {
+                document.getElementById('loading').innerText = 'ไม่สามารถดึงข้อมูลได้';
+            }
+        }
+
+        // ฟังก์ชันตั้งค่าและวาดกราฟด้วย Chart.js
+        function drawChart(labels, values) {
+            const ctx = document.getElementById('bloodSugarChart').getContext('2d');
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels, // แกน X (วันที่)
+                    datasets: [{
+                        label: 'ระดับน้ำตาล (%)',
+                        data: values, // แกน Y (ค่าน้ำตาล)
+                        borderColor: '#ff5252', // สีเส้นกราฟตามแบบร่าง
+                        backgroundColor: 'rgba(255, 82, 82, 0.1)', // สีใต้เส้น
+                        borderWidth: 2,
+                        pointBackgroundColor: '#ff5252',
+                        pointBorderColor: '#ffffff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        fill: true,
+                        tension: 0.3 // ความโค้งมนของเส้น
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false } // ซ่อนกล่องอธิบายด้านบนเพื่อให้ดูคลีน
+                    },
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'วันที่',
+                                font: { family: 'Sarabun', size: 16, weight: 'bold' },
+                                color: '#333'
+                            },
+                            grid: { display: false }
+                        },
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'ระดับน้ำตาลในเลือดสะสม (%)',
+                                font: { family: 'Sarabun', size: 16, weight: 'bold' },
+                                color: '#ff5252'
+                            },
+                            beginAtZero: true,
+                            suggestedMax: Math.max(...values) + 2, // เผื่อขอบบนของกราฟให้ดูสวย
+                            grid: { borderDash: [5, 5] } // เส้นกริดประบางๆ
+                        }
+                    }
+                }
+            });
+        }
+
+        // เริ่มต้นการทำงาน
+        main();
+    </script>
+</body>
+</html>
