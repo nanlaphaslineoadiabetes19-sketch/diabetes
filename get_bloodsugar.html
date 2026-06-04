@@ -146,25 +146,24 @@
 
     <script>
         // *** นำ URL ของ Web App ที่ได้จาก Google Apps Script มาใส่ที่นี่ ***
-        const SCRIPT_URL = 'YOUR_GOOGLE_WEB_APP_URL'; 
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxTB8k2qKX8E8sM5pekLsy8i4uUWhrrmR5MgqiIPsUJQ1iesquTlR80CboO1utPmGl7/exec'; 
 
         document.addEventListener('DOMContentLoaded', loadUsers);
 
         // ฟังก์ชันดึงรายชื่อจาก Sheet pretest
         async function loadUsers() {
             try {
-                const response = await fetch(`${SCRIPT_URL}?action=getUsers`);
+                // ส่ง type=getUsers เพื่อเข้าเงื่อนไขใน doGet
+                const response = await fetch(`${SCRIPT_URL}?type=getUsers`);
                 const users = await response.json();
                 
                 const select = document.getElementById('userSelect');
                 select.innerHTML = '<option value="" disabled selected>-- กรุณาเลือกชื่อผู้ป่วย --</option>';
                 
-                // นำรายชื่อมาใส่ใน Dropdown โดยเก็บ line_id ไว้ใน value
                 users.forEach(user => {
                     const option = document.createElement('option');
                     option.value = user.line_id;
                     option.textContent = user.line_name;
-                    // เก็บ line_name ไว้ใน attribute เพื่อดึงไปใช้งานตอนส่ง
                     option.setAttribute('data-name', user.line_name); 
                     select.appendChild(option);
                 });
@@ -189,16 +188,15 @@
             const lineName = selectedOption.getAttribute('data-name');
             const bloodsugar = document.getElementById('bloodsugar').value;
 
-            // แสดงหน้าจอโหลด
             Swal.fire({
                 title: 'กำลังบันทึกข้อมูล...',
                 allowOutsideClick: false,
                 didOpen: () => { Swal.showLoading(); }
             });
 
-            // เตรียมข้อมูลเพื่อส่ง
+            // ส่งข้อมูลพร้อมระบุ type เป็น bloodsugar เพื่อเข้าเงื่อนไขใน doPost
             const formData = new URLSearchParams();
-            formData.append('action', 'saveBloodSugar');
+            formData.append('type', 'bloodsugar'); 
             formData.append('line_id', lineId);
             formData.append('line_name', lineName);
             formData.append('bloodsugar', bloodsugar);
@@ -207,7 +205,7 @@
                 await fetch(SCRIPT_URL, { 
                     method: 'POST', 
                     body: formData,
-                    mode: 'no-cors' // สำคัญสำหรับ Google Apps Script เพื่อไม่ให้ติดเรื่อง CORS
+                    mode: 'no-cors'
                 });
 
                 await Swal.fire({
@@ -217,7 +215,6 @@
                     confirmButtonColor: '#2e7d32'
                 });
 
-                // ล้างช่องกรอกค่าน้ำตาลหลังบันทึกเสร็จ แต่ยังคงรายชื่อไว้ให้เลือกคนต่อไปได้ง่าย
                 document.getElementById('bloodsugar').value = '';
                 select.value = '';
 
