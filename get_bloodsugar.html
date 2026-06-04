@@ -191,13 +191,15 @@
 
         document.getElementById('bloodSugarForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-
             const select = document.getElementById('userSelect');
             const selectedOption = select.options[select.selectedIndex];
             
             const lineId = selectedOption.value;
-            const lineName = selectedOption.dataset.name;
+            const lineName = selectedOption.getAttribute('data-name'); // ดึงชื่อจาก data-name
             const bloodsugar = document.getElementById('bloodsugar').value;
+
+            // ตรวจสอบค่าก่อนส่ง
+            console.log("Saving:", lineId, lineName, bloodsugar);
 
             Swal.fire({
                 title: 'กำลังบันทึกข้อมูล...',
