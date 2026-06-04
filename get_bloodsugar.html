@@ -157,7 +157,7 @@
                 
                 const rows = data.split('\n');
                 const users = [];
-                const seenIds = new Set(); // ใช้ Set เพื่อเก็บ ID ที่เคยเจอแล้ว
+                const seenNames = new Set(); // ใช้ Set กรองชื่อซ้ำ
                 
                 for(let i = 1; i < rows.length; i++) {
                     const cols = rows[i].split(',');
@@ -165,10 +165,10 @@
                         const lineId = cols[1].trim();
                         const lineName = cols[2].trim();
                         
-                        // กรองเฉพาะ ID ที่ยังไม่เคยเห็น (ไม่ซ้ำ)
-                        if(lineId && !seenIds.has(lineId)) {
+                        // กรองชื่อที่ไม่ซ้ำ
+                        if(lineName && !seenNames.has(lineName)) {
                             users.push({ line_id: lineId, line_name: lineName });
-                            seenIds.add(lineId);
+                            seenNames.add(lineName);
                         }
                     }
                 }
@@ -177,9 +177,8 @@
                 select.innerHTML = '<option value="" disabled selected>-- กรุณาเลือกชื่อผู้ป่วย --</option>';
                 users.forEach(user => {
                     const option = document.createElement('option');
-                    option.value = user.line_id;
-                    option.textContent = user.line_name;
-                    option.dataset.name = user.line_name; // เก็บชื่อไว้ใน dataset
+                    option.value = user.line_id; // เก็บ ID ไว้ที่ value เพื่อส่งค่า
+                    option.textContent = user.line_name; // แสดงชื่อที่นี่
                     select.appendChild(option);
                 });
             } catch (error) {
