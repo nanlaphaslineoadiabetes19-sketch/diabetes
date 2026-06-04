@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
         :root {
-            --primary-color: #2e7d32; /* โทนสีเขียวการแพทย์ */
+            --primary-color: #2e7d32; 
             --primary-hover: #1b5e20;
             --bg-color: #f4f7f6;
             --card-bg: #ffffff;
@@ -88,7 +88,6 @@
             box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.1);
         }
 
-        /* ซ่อนลูกศรใน input number */
         input::-webkit-outer-spin-button,
         input::-webkit-inner-spin-button {
             -webkit-appearance: none;
@@ -149,59 +148,39 @@
 
         document.addEventListener('DOMContentLoaded', loadUsers);
 
+        // เปลี่ยนวิธีโหลดรายชื่อ: เรียกผ่านตัวระบบ API ตรงๆ ไม่ผ่าน CSV เพื่อไม่ให้คอลัมน์เลื่อน
         async function loadUsers() {
-            const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS9Jd0t8U6WgihZjufXeXU6pZ-xe695svLtYbGXcFD2lGgEIdTin9KyeFMgfxpfWJwiXG5Yx8fGPlXo/pub?gid=0&single=true&output=csv';
+            const select = document.getElementById('userSelect');
             try {
-                const response = await fetch(csvUrl);
-                const data = await response.text();
+                const response = await fetch(SCRIPT_URL + '?type=getUsers');
+                if (!response.ok) throw new Error('Network response was not ok');
+                const users = await response.json();
                 
-                const rows = data.split('\n');
-                const users = [];
-                const seenNames = new Set(); // ใช้ Set กรองชื่อซ้ำ
-                
-                for(let i = 1; i < rows.length; i++) {
-                    const cols = rows[i].split(',');
-                    if(cols.length >= 3) {
-                        const lineId = cols[1].trim();
-                        const lineName = cols[2].trim();
-                        
-                        // กรองชื่อที่ไม่ซ้ำ
-                        if(lineName && !seenNames.has(lineName)) {
-                            users.push({ line_id: lineId, line_name: lineName });
-                            seenNames.add(lineName);
-                        }
-                    }
-                }
-                
-                const select = document.getElementById('userSelect');
                 select.innerHTML = '<option value="" disabled selected>-- กรุณาเลือกชื่อผู้ป่วย --</option>';
                 
-                // แก้ไขฟังก์ชัน loadUsers ในส่วนของ forEach
                 users.forEach(user => {
                     const option = document.createElement('option');
-                    // เก็บเป็น string JSON เพื่อให้ดึงกลับมาใช้ได้ง่าย
-                    option.value = JSON.stringify({ id: user.line_id, name: user.line_name }); 
-                    option.textContent = user.line_name; // แสดงชื่อให้ผู้ใช้เห็น
+                    option.value = user.line_id;         // ค่า Value เป็น LINE ID จริงๆ
+                    option.textContent = user.line_name; // หน้าจอแสดงเป็น ชื่อ-นามสกุล จริงๆ
+                    option.setAttribute('data-name', user.line_name); // ฝังชื่อแท้ไว้ดึงตอนกดบันทึก
                     select.appendChild(option);
                 });
             } catch (error) {
-                console.error("Error loading CSV:", error);
+                console.error("Error loading users:", error);
+                select.innerHTML = '<option value="" disabled selected>เกิดข้อผิดพลาดในการโหลดรายชื่อ</option>';
             }
         }
 
+        // ฟังก์ชันจัดการตอนกดบันทึก ข้อมูลลงตรงช่องแน่นอน
         document.getElementById('bloodSugarForm').addEventListener('submit', async function(e) {
             e.preventDefault();
-        
-            const select = document.getElementById('userSelect');
-            // ดึงค่า object ที่เราเก็บไว้ใน value
-            const userData = JSON.parse(select.value); 
-            
-            const lineId = userData.id;      // ได้ ID ที่ถูกต้อง
-            const lineName = userData.name;  // ได้ชื่อที่ถูกต้อง
-            const bloodsugar = document.getElementById('bloodsugar').value;
 
-            // ตรวจสอบค่าก่อนส่ง
-            console.log("Saving:", lineId, lineName, bloodsugar);
+            const select = document.getElementById('userSelect');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            const lineId = selectedOption.value;
+            const lineName = selectedOption.getAttribute('data-name');
+            const bloodsugar = document.getElementById('bloodsugar').value;
 
             Swal.fire({
                 title: 'กำลังบันทึกข้อมูล...',
@@ -216,13 +195,10 @@
             formData.append('bloodsugar', bloodsugar);
 
             try {
-                // แก้ไขจุดนี้: เก็บ response ไว้ในตัวแปรเพื่อเช็ค .ok
-                const response = await fetch(SCRIPT_URL, { 
+                await fetch(SCRIPT_URL, { 
                     method: 'POST', 
-                    body: formData,
+                    body: formData
                 });
-
-                if (!response.ok) throw new Error('Network response was not ok');
 
                 await Swal.fire({
                     icon: 'success',
