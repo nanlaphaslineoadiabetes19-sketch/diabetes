@@ -175,13 +175,13 @@
                 
                 const select = document.getElementById('userSelect');
                 select.innerHTML = '<option value="" disabled selected>-- กรุณาเลือกชื่อผู้ป่วย --</option>';
-                // ในฟังก์ชัน loadUsers
+                
+                // แก้ไขฟังก์ชัน loadUsers ในส่วนของ forEach
                 users.forEach(user => {
                     const option = document.createElement('option');
-                    option.value = user.line_id; // เก็บ ID ไว้ที่ value เพื่อส่งค่า
-                    option.textContent = user.line_name; // แสดงชื่อที่นี่
-                    // สำคัญ: ต้องเพิ่มบรรทัดนี้เพื่อให้ตอน Submit สามารถดึงชื่อไปเก็บได้
-                    option.setAttribute('data-name', user.line_name); 
+                    // เก็บเป็น string JSON เพื่อให้ดึงกลับมาใช้ได้ง่าย
+                    option.value = JSON.stringify({ id: user.line_id, name: user.line_name }); 
+                    option.textContent = user.line_name; // แสดงชื่อให้ผู้ใช้เห็น
                     select.appendChild(option);
                 });
             } catch (error) {
@@ -191,11 +191,13 @@
 
         document.getElementById('bloodSugarForm').addEventListener('submit', async function(e) {
             e.preventDefault();
+        
             const select = document.getElementById('userSelect');
-            const selectedOption = select.options[select.selectedIndex];
+            // ดึงค่า object ที่เราเก็บไว้ใน value
+            const userData = JSON.parse(select.value); 
             
-            const lineId = selectedOption.value;
-            const lineName = selectedOption.getAttribute('data-name'); // ดึงชื่อจาก data-name
+            const lineId = userData.id;      // ได้ ID ที่ถูกต้อง
+            const lineName = userData.name;  // ได้ชื่อที่ถูกต้อง
             const bloodsugar = document.getElementById('bloodsugar').value;
 
             // ตรวจสอบค่าก่อนส่ง
