@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>บันทึกค่าน้ำตาลในเลือด</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        :root {
+            --primary-color: #2e7d32; /* โทนสีเขียวการแพทย์ */
+            --primary-hover: #1b5e20;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-muted: #666666;
+            --border-color: #e0e0e0;
+        }
+
+        body {
+            font-family: 'Sarabun', sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .form-card {
+            background-color: var(--card-bg);
+            width: 100%;
+            max-width: 450px;
+            padding: 40px 30px;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .header h2 {
+            margin: 0;
+            color: var(--primary-color);
+            font-weight: 600;
+            font-size: 24px;
+        }
+
+        .header p {
+            margin: 5px 0 0;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        select, input[type="number"] {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 16px;
+            font-family: 'Sarabun', sans-serif;
+            color: var(--text-main);
+            background-color: #fafafa;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        select:focus, input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            background-color: #fff;
+            box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.1);
+        }
+
+        /* ซ่อนลูกศรใน input number */
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 16px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            font-family: 'Sarabun', sans-serif;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.1s ease;
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
+        }
+
+        .btn-submit:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-submit:active {
+            transform: translateY(2px);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="form-card">
+        <div class="header">
+            <h2>บันทึกค่าน้ำตาลในเลือด</h2>
+            <p>ระบบติดตามข้อมูลผู้ป่วยเบาหวาน</p>
+        </div>
+
+        <form id="bloodSugarForm">
+            <div class="form-group">
+                <label for="userSelect">ชื่อ-นามสกุล ผู้เข้าร่วมโครงการ</label>
+                <select id="userSelect" required>
+                    <option value="" disabled selected>กำลังโหลดรายชื่อ...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="bloodsugar">ค่าน้ำตาลในเลือด (mg/dL)</label>
+                <input type="number" id="bloodsugar" placeholder="ระบุตัวเลขค่าน้ำตาล" required min="1">
+            </div>
+
+            <button type="submit" class="btn-submit">บันทึกข้อมูล</button>
+        </form>
+    </div>
+
+    <script>
+        // *** นำ URL ของ Web App ที่ได้จาก Google Apps Script มาใส่ที่นี่ ***
+        const SCRIPT_URL = 'YOUR_GOOGLE_WEB_APP_URL'; 
+
+        document.addEventListener('DOMContentLoaded', loadUsers);
+
+        // ฟังก์ชันดึงรายชื่อจาก Sheet pretest
+        async function loadUsers() {
+            try {
+                const response = await fetch(`${SCRIPT_URL}?action=getUsers`);
+                const users = await response.json();
+                
+                const select = document.getElementById('userSelect');
+                select.innerHTML = '<option value="" disabled selected>-- กรุณาเลือกชื่อผู้ป่วย --</option>';
+                
+                // นำรายชื่อมาใส่ใน Dropdown โดยเก็บ line_id ไว้ใน value
+                users.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.line_id;
+                    option.textContent = user.line_name;
+                    // เก็บ line_name ไว้ใน attribute เพื่อดึงไปใช้งานตอนส่ง
+                    option.setAttribute('data-name', user.line_name); 
+                    select.appendChild(option);
+                });
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'ดึงข้อมูลล้มเหลว',
+                    text: 'ไม่สามารถโหลดรายชื่อได้ กรุณารีเฟรชหน้าเว็บอีกครั้ง',
+                    confirmButtonColor: '#2e7d32'
+                });
+            }
+        }
+
+        // ฟังก์ชันจัดการตอนกดบันทึก
+        document.getElementById('bloodSugarForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const select = document.getElementById('userSelect');
+            const selectedOption = select.options[select.selectedIndex];
+            
+            const lineId = selectedOption.value;
+            const lineName = selectedOption.getAttribute('data-name');
+            const bloodsugar = document.getElementById('bloodsugar').value;
+
+            // แสดงหน้าจอโหลด
+            Swal.fire({
+                title: 'กำลังบันทึกข้อมูล...',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+
+            // เตรียมข้อมูลเพื่อส่ง
+            const formData = new URLSearchParams();
+            formData.append('action', 'saveBloodSugar');
+            formData.append('line_id', lineId);
+            formData.append('line_name', lineName);
+            formData.append('bloodsugar', bloodsugar);
+
+            try {
+                await fetch(SCRIPT_URL, { 
+                    method: 'POST', 
+                    body: formData,
+                    mode: 'no-cors' // สำคัญสำหรับ Google Apps Script เพื่อไม่ให้ติดเรื่อง CORS
+                });
+
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'บันทึกสำเร็จ',
+                    text: `บันทึกค่าน้ำตาล ${bloodsugar} mg/dL ของคุณ ${lineName} เรียบร้อยแล้ว`,
+                    confirmButtonColor: '#2e7d32'
+                });
+
+                // ล้างช่องกรอกค่าน้ำตาลหลังบันทึกเสร็จ แต่ยังคงรายชื่อไว้ให้เลือกคนต่อไปได้ง่าย
+                document.getElementById('bloodsugar').value = '';
+                select.value = '';
+
+            } catch (error) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด',
+                    text: 'ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่อีกครั้ง',
+                    confirmButtonColor: '#d33'
+                });
+            }
+        });
+    </script>
+</body>
+</html>
