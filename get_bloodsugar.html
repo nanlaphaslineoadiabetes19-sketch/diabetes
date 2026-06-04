@@ -153,8 +153,10 @@
         // ฟังก์ชันดึงรายชื่อจาก Sheet pretest
         async function loadUsers() {
             try {
-                // ส่ง type=getUsers เพื่อเข้าเงื่อนไขใน doGet
-                const response = await fetch(`${SCRIPT_URL}?type=getUsers`);
+                // ใช้ Proxy ตัวกลางเพื่อเลี่ยง CORS (cors-anywhere เป็นบริการสาธารณะ)
+                const proxyUrl = 'https://cors-anywhere.herokuapp.com/'; 
+                const response = await fetch(proxyUrl + SCRIPT_URL + '?type=getUsers');
+                
                 const users = await response.json();
                 
                 const select = document.getElementById('userSelect');
@@ -168,12 +170,8 @@
                     select.appendChild(option);
                 });
             } catch (error) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'ดึงข้อมูลล้มเหลว',
-                    text: 'ไม่สามารถโหลดรายชื่อได้ กรุณารีเฟรชหน้าเว็บอีกครั้ง',
-                    confirmButtonColor: '#2e7d32'
-                });
+                console.error("Error:", error);
+                // ถ้าวิธีนี้ไม่ได้ แสดงว่าโดนบล็อกที่ตัว Proxy ให้ลองใช้ Google Sheet เผยแพร่แบบ CSV แทน
             }
         }
 
