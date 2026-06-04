@@ -10,7 +10,7 @@
     
     <style>
         :root {
-            --primary-color: #ff5252; /* สีแดงส้มตามภาพร่าง */
+            --primary-color: #ff5252;
             --bg-color: #f4f7f6;
             --card-bg: #ffffff;
             --text-main: #333333;
@@ -31,7 +31,7 @@
             background-color: var(--card-bg);
             width: 100%;
             max-width: 600px;
-            padding: 25px;
+            padding: 30px 20px;
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
             position: relative;
@@ -42,76 +42,102 @@
             color: var(--text-main);
             font-size: 22px;
             font-weight: 600;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
 
-        /* หน้าจอโหลด */
+        /* สถานะกำลังโหลด */
         #loading {
             text-align: center;
             color: #666;
-            padding: 40px 0;
-            font-size: 16px;
+            padding: 50px 0;
+            font-size: 18px;
+            display: block;
         }
 
+        /* สถานะไม่มีข้อมูล */
         #no-data {
             display: none;
             text-align: center;
-            color: #ff5252;
-            padding: 30px 0;
+            padding: 40px 15px;
+        }
+
+        #no-data svg {
+            width: 80px;
+            height: 80px;
+            fill: #cccccc;
+            margin-bottom: 15px;
+        }
+
+        #no-data h3 {
+            color: var(--primary-color);
+            margin: 0 0 10px 0;
+            font-size: 20px;
             font-weight: 600;
+        }
+
+        #no-data p {
+            color: #888888;
+            margin: 0;
+            font-size: 15px;
         }
     </style>
 </head>
 <body>
 
     <div class="chart-container">
-        <div class="header-title">กราฟแสดงระดับน้ำตาลในเลือดสะสม</div>
+        <div class="header-title">ระดับน้ำตาลในเลือดสะสม</div>
         
-        <div id="loading">กำลังโหลดข้อมูลของคุณ...</div>
-        <div id="no-data">ยังไม่มีข้อมูลการบันทึกค่าน้ำตาลในเลือดของคุณ</div>
+        <div id="loading">กำลังประมวลผลข้อมูล...</div>
+        
+        <div id="no-data">
+            <svg viewBox="0 0 24 24">
+                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+            </svg>
+            <h3>คุณยังไม่ได้รับการตรวจระดับน้ำตาลในเลือด</h3>
+            <p>ข้อมูลจะแสดงผลเมื่อพยาบาลทำการบันทึกข้อมูลเข้าระบบเรียบร้อยแล้ว</p>
+        </div>
         
         <canvas id="bloodSugarChart" style="display: none;"></canvas>
     </div>
 
     <script>
-        // *** 1. นำ Web App URL ของ Google Apps Script มาใส่ ***
+        // 🛑 URL ของ Google Apps Script 
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxTB8k2qKX8E8sM5pekLsy8i4uUWhrrmR5MgqiIPsUJQ1iesquTlR80CboO1utPmGl7/exec';
         
-        // *** 2. นำ LIFF ID จาก LINE Developers มาใส่ ***
-        const LIFF_ID = 'YOUR_LIFF_ID'; 
+        // 🛑 LIFF ID ของหน้ากราฟนี้
+        const LIFF_ID = '2010014768-MW1xWNz2'; 
 
-        // ฟังก์ชันเริ่มต้น (Initialize LIFF)
         async function main() {
             try {
                 await liff.init({ liffId: LIFF_ID });
                 if (liff.isLoggedIn()) {
                     const profile = await liff.getProfile();
-                    fetchDataAndDrawChart(profile.userId); // ส่ง line_id ไปดึงข้อมูล
+                    // ได้ line_id มาแล้ว ส่งไปเช็กกับฐานข้อมูล
+                    fetchDataAndDrawChart(profile.userId); 
                 } else {
-                    liff.login(); // บังคับล็อกอินถ้าเปิดในเบราว์เซอร์นอก LINE
+                    liff.login(); 
                 }
             } catch (err) {
                 console.error('LIFF Init Error:', err);
-                document.getElementById('loading').innerText = 'เกิดข้อผิดพลาดในการเชื่อมต่อระบบ LINE';
+                document.getElementById('loading').innerHTML = '<span style="color:red;">เกิดข้อผิดพลาดในการเชื่อมต่อระบบ LINE</span>';
             }
         }
 
-        // ฟังก์ชันดึงข้อมูลจาก Sheet และวาดกราฟ
         async function fetchDataAndDrawChart(lineId) {
             try {
-                // เรียก API ส่ง type=getGraphData พร้อมแนบ line_id
                 const response = await fetch(`${SCRIPT_URL}?type=getGraphData&line_id=${lineId}`);
                 const data = await response.json();
 
+                // ซ่อนข้อความกำลังโหลด
                 document.getElementById('loading').style.display = 'none';
 
-                if (data.length === 0) {
-                    // ถ้ายังไม่เคยมีข้อมูลโชว์ข้อความแจ้งเตือน
+                // *** ตรวจสอบว่ามีข้อมูลหรือไม่ (ถ้าไม่มีหรืออาร์เรย์ว่าง ให้แสดงหน้า "ยังไม่ได้รับการตรวจ") ***
+                if (!data || data.length === 0) {
                     document.getElementById('no-data').style.display = 'block';
                     return;
                 }
 
-                // แยกข้อมูลแกน X (วันที่) และแกน Y (ค่าน้ำตาล)
+                // ถ้ามีข้อมูล ให้ดึงแกน X (วันที่) และ Y (ค่าน้ำตาล) มาแสดง
                 const labels = data.map(item => item.date);
                 const values = data.map(item => item.value);
 
@@ -119,45 +145,49 @@
                 drawChart(labels, values);
 
             } catch (error) {
-                document.getElementById('loading').innerText = 'ไม่สามารถดึงข้อมูลได้';
+                console.error('Fetch Error:', error);
+                document.getElementById('loading').innerHTML = '<span style="color:red;">ไม่สามารถดึงข้อมูลได้ในขณะนี้ กรุณาลองใหม่ภายหลัง</span>';
             }
         }
 
-        // ฟังก์ชันตั้งค่าและวาดกราฟด้วย Chart.js
         function drawChart(labels, values) {
             const ctx = document.getElementById('bloodSugarChart').getContext('2d');
             
             new Chart(ctx, {
                 type: 'line',
                 data: {
-                    labels: labels, // แกน X (วันที่)
+                    labels: labels, 
                     datasets: [{
                         label: 'ระดับน้ำตาล (%)',
-                        data: values, // แกน Y (ค่าน้ำตาล)
-                        borderColor: '#ff5252', // สีเส้นกราฟตามแบบร่าง
-                        backgroundColor: 'rgba(255, 82, 82, 0.1)', // สีใต้เส้น
-                        borderWidth: 2,
-                        pointBackgroundColor: '#ff5252',
-                        pointBorderColor: '#ffffff',
+                        data: values, 
+                        borderColor: '#ff5252',
+                        backgroundColor: 'rgba(255, 82, 82, 0.1)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#ffffff',
+                        pointBorderColor: '#ff5252',
                         pointBorderWidth: 2,
-                        pointRadius: 5,
-                        pointHoverRadius: 7,
+                        pointRadius: 6,
+                        pointHoverRadius: 8,
                         fill: true,
-                        tension: 0.3 // ความโค้งมนของเส้น
+                        tension: 0.2
                     }]
                 },
                 options: {
                     responsive: true,
                     plugins: {
-                        legend: { display: false } // ซ่อนกล่องอธิบายด้านบนเพื่อให้ดูคลีน
+                        legend: { display: false },
+                        tooltip: {
+                            titleFont: { family: 'Sarabun', size: 14 },
+                            bodyFont: { family: 'Sarabun', size: 14 }
+                        }
                     },
                     scales: {
                         x: {
                             title: {
                                 display: true,
-                                text: 'วันที่',
-                                font: { family: 'Sarabun', size: 16, weight: 'bold' },
-                                color: '#333'
+                                text: 'วันที่ตรวจ',
+                                font: { family: 'Sarabun', size: 15, weight: 'bold' },
+                                color: '#666'
                             },
                             grid: { display: false }
                         },
@@ -165,19 +195,19 @@
                             title: {
                                 display: true,
                                 text: 'ระดับน้ำตาลในเลือดสะสม (%)',
-                                font: { family: 'Sarabun', size: 16, weight: 'bold' },
+                                font: { family: 'Sarabun', size: 15, weight: 'bold' },
                                 color: '#ff5252'
                             },
                             beginAtZero: true,
-                            suggestedMax: Math.max(...values) + 2, // เผื่อขอบบนของกราฟให้ดูสวย
-                            grid: { borderDash: [5, 5] } // เส้นกริดประบางๆ
+                            suggestedMax: Math.max(...values) + 2, 
+                            grid: { borderDash: [4, 4] }
                         }
                     }
                 }
             });
         }
 
-        // เริ่มต้นการทำงาน
+        // เริ่มต้นการทำงานทันที
         main();
     </script>
 </body>
