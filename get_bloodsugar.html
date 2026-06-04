@@ -188,11 +188,10 @@
                 didOpen: () => { Swal.showLoading(); }
             });
 
-            const formData = new URLSearchParams();
-            formData.append('type', 'bloodsugar'); 
-            formData.append('line_id', lineId);
-            formData.append('line_name', lineName);
-            formData.append('bloodsugar', bloodsugar);
+            let formData = new URLSearchParams();
+            formData.append('line_id', userLineId);
+            formData.append('line_name', userLineName);
+            formData.append('bloodsugar', sugarValue);
 
             try {
                 await fetch(SCRIPT_URL, { 
