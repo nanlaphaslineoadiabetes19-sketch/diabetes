@@ -19,66 +19,40 @@
         body {
             font-family: 'Sarabun', sans-serif;
             background-color: var(--bg-color);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            margin: 0; padding: 20px;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; box-sizing: border-box;
         }
 
         .chart-container {
-            background-color: var(--card-bg);
-            width: 100%;
-            max-width: 600px;
-            padding: 30px 20px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
-            position: relative;
+            background-color: var(--card-bg); width: 100%; max-width: 600px;
+            padding: 30px 20px; border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); position: relative;
         }
 
         .header-title {
-            text-align: center;
-            color: var(--text-main);
-            font-size: 22px;
-            font-weight: 600;
-            margin-bottom: 25px;
+            text-align: center; color: var(--text-main);
+            font-size: 22px; font-weight: 600; margin-bottom: 25px;
         }
 
-        /* สถานะกำลังโหลด */
         #loading {
-            text-align: center;
-            color: #666;
-            padding: 50px 0;
-            font-size: 18px;
-            display: block;
+            text-align: center; color: #666; padding: 50px 0; font-size: 18px; display: block;
         }
 
-        /* สถานะไม่มีข้อมูล */
         #no-data {
-            display: none;
-            text-align: center;
-            padding: 40px 15px;
+            display: none; text-align: center; padding: 40px 15px;
         }
 
         #no-data svg {
-            width: 80px;
-            height: 80px;
-            fill: #cccccc;
-            margin-bottom: 15px;
+            width: 80px; height: 80px; fill: #cccccc; margin-bottom: 15px;
         }
 
         #no-data h3 {
-            color: var(--primary-color);
-            margin: 0 0 10px 0;
-            font-size: 20px;
-            font-weight: 600;
+            color: var(--primary-color); margin: 0 0 10px 0; font-size: 20px; font-weight: 600;
         }
 
         #no-data p {
-            color: #888888;
-            margin: 0;
-            font-size: 15px;
+            color: #888888; margin: 0; font-size: 15px;
         }
     </style>
 </head>
@@ -101,10 +75,8 @@
     </div>
 
     <script>
-        // 🛑 URL ของ Google Apps Script 
+        // 🛑 นำ URL ใหม่จากข้อแรกมาอัปเดตตรงนี้ครับ
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec';
-        
-        // 🛑 LIFF ID ของหน้ากราฟนี้
         const LIFF_ID = '2009966517-3xJurBfY'; 
 
         async function main() {
@@ -112,7 +84,6 @@
                 await liff.init({ liffId: LIFF_ID });
                 if (liff.isLoggedIn()) {
                     const profile = await liff.getProfile();
-                    // ได้ line_id มาแล้ว ส่งไปเช็กกับฐานข้อมูล
                     fetchDataAndDrawChart(profile.userId); 
                 } else {
                     liff.login(); 
@@ -125,21 +96,27 @@
 
         async function fetchDataAndDrawChart(lineId) {
             try {
-                // เปลี่ยนส่วนการ fetch ในฟังก์ชัน fetchDataAndDrawChart เป็นแบบนี้
                 const response = await fetch(`${SCRIPT_URL}?type=getGraphData&line_id=${lineId}`);
                 if (!response.ok) throw new Error("Network response was not ok");
                 const data = await response.json();
 
-                // ซ่อนข้อความกำลังโหลด
+                // ซ่อนตัวโหลดก่อนเป็นอันดับแรก
                 document.getElementById('loading').style.display = 'none';
 
-                // *** ตรวจสอบว่ามีข้อมูลหรือไม่ (ถ้าไม่มีหรืออาร์เรย์ว่าง ให้แสดงหน้า "ยังไม่ได้รับการตรวจ") ***
-                if (!data || data.length === 0) {
+                // แก้ไขปัญหา: ตรวจจับกรณีฝั่งหลังบ้านส่ง Error กลับมาแทนอาร์เรย์
+                if (data && data.error) {
+                    document.getElementById('loading').innerHTML = `<span style="color:red;">เกิดข้อผิดพลาด: ${data.error}</span>`;
+                    document.getElementById('loading').style.display = 'block';
+                    return;
+                }
+
+                // ตรวจสอบความถูกต้องของอาเรย์ข้อมูล
+                if (!Array.isArray(data) || data.length === 0) {
                     document.getElementById('no-data').style.display = 'block';
                     return;
                 }
 
-                // ถ้ามีข้อมูล ให้ดึงแกน X (วันที่) และ Y (ค่าน้ำตาล) มาแสดง
+                // แมปค่าแกน X และ Y ออกมาใช้งาน
                 const labels = data.map(item => item.date);
                 const values = data.map(item => item.value);
 
@@ -148,12 +125,17 @@
 
             } catch (error) {
                 console.error('Fetch Error:', error);
+                document.getElementById('loading').innerHTML = '<span style="color:red;">ไม่สามารถดึงข้อมูลกราฟได้ในขณะนี้</span>';
+                document.getElementById('loading').style.display = 'block';
             }
         }
 
         function drawChart(labels, values) {
             const ctx = document.getElementById('bloodSugarChart').getContext('2d');
             
+            // ป้องกันกราฟเอเรอร์กรณีค่าสูงเกินไป
+            const maxVal = values.length > 0 ? Math.max(...values) : 10;
+
             new Chart(ctx, {
                 type: 'line',
                 data: {
@@ -200,7 +182,7 @@
                                 color: '#ff5252'
                             },
                             beginAtZero: true,
-                            suggestedMax: Math.max(...values) + 2, 
+                            suggestedMax: maxVal + 2, 
                             grid: { borderDash: [4, 4] }
                         }
                     }
@@ -208,7 +190,6 @@
             });
         }
 
-        // เริ่มต้นการทำงานทันที
         main();
     </script>
 </body>
