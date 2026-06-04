@@ -16,7 +16,6 @@
             --text-muted: #666666;
             --border-color: #e0e0e0;
         }
-
         body {
             font-family: 'Sarabun', sans-serif;
             background-color: var(--bg-color);
@@ -28,7 +27,6 @@
             padding: 20px;
             box-sizing: border-box;
         }
-
         .form-card {
             background-color: var(--card-bg);
             width: 100%;
@@ -37,85 +35,30 @@
             border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
         }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .header h2 {
-            margin: 0;
-            color: var(--primary-color);
-            font-weight: 600;
-            font-size: 24px;
-        }
-
-        .header p {
-            margin: 5px 0 0;
-            color: var(--text-muted);
-            font-size: 14px;
-        }
-
-        .form-group {
-            margin-bottom: 24px;
-        }
-
-        label {
-            display: block;
-            margin-bottom: 8px;
-            color: var(--text-main);
-            font-weight: 600;
-            font-size: 15px;
-        }
-
+        .header { text-align: center; margin-bottom: 30px; }
+        .header h2 { margin: 0; color: var(--primary-color); font-weight: 600; font-size: 24px; }
+        .header p { margin: 5px 0 0; color: var(--text-muted); font-size: 14px; }
+        .form-group { margin-bottom: 24px; }
+        label { display: block; margin-bottom: 8px; color: var(--text-main); font-weight: 600; font-size: 15px; }
         select, input[type="number"] {
-            width: 100%;
-            padding: 14px 16px;
-            border: 1.5px solid var(--border-color);
-            border-radius: 10px;
-            font-size: 16px;
-            font-family: 'Sarabun', sans-serif;
-            color: var(--text-main);
-            background-color: #fafafa;
-            box-sizing: border-box;
+            width: 100%; padding: 14px 16px; border: 1.5px solid var(--border-color);
+            border-radius: 10px; font-size: 16px; font-family: 'Sarabun', sans-serif;
+            color: var(--text-main); background-color: #fafafa; box-sizing: border-box;
             transition: all 0.3s ease;
         }
-
         select:focus, input[type="number"]:focus {
-            outline: none;
-            border-color: var(--primary-color);
-            background-color: #fff;
+            outline: none; border-color: var(--primary-color); background-color: #fff;
             box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.1);
         }
-
-        input::-webkit-outer-spin-button,
-        input::-webkit-inner-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
-        }
-
         .btn-submit {
-            width: 100%;
-            padding: 16px;
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 18px;
-            font-weight: 600;
-            font-family: 'Sarabun', sans-serif;
-            cursor: pointer;
+            width: 100%; padding: 16px; background-color: var(--primary-color); color: white;
+            border: none; border-radius: 10px; font-size: 18px; font-weight: 600;
+            font-family: 'Sarabun', sans-serif; cursor: pointer;
             transition: background-color 0.3s ease, transform 0.1s ease;
             box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
         }
-
-        .btn-submit:hover {
-            background-color: var(--primary-hover);
-        }
-
-        .btn-submit:active {
-            transform: translateY(2px);
-        }
+        .btn-submit:hover { background-color: var(--primary-hover); }
+        .btn-submit:active { transform: translateY(2px); }
     </style>
 </head>
 <body>
@@ -148,30 +91,33 @@
 
         document.addEventListener('DOMContentLoaded', loadUsers);
 
-        // โหลดรายชื่อผู้ใช้งานจากหน้าชีต pretest
         async function loadUsers() {
             const select = document.getElementById('userSelect');
             try {
                 const response = await fetch(SCRIPT_URL + '?type=getUsers');
-                if (!response.ok) throw new Error('Network response was not ok');
+                if (!response.ok) throw new Error('Network response error');
                 const users = await response.json();
                 
                 select.innerHTML = '<option value="" disabled selected>-- กรุณาเลือกชื่อผู้ป่วย --</option>';
                 
+                if(users.error) {
+                    select.innerHTML = `<option value="" disabled selected>${users.error}</option>`;
+                    return;
+                }
+
                 users.forEach(user => {
                     const option = document.createElement('option');
-                    option.value = user.line_id;         // เก็บ LINE ID เป็นค่า value
-                    option.textContent = user.line_name; // แสดงชื่อบน dropdown
-                    option.setAttribute('data-name', user.line_name); // ฝังชื่อแท้เอาไว้ใช้ส่งข้อมูล
+                    option.value = user.line_id;
+                    option.textContent = user.line_name; // ดึงชื่อไปโชว์ที่หน้าจอ
+                    option.setAttribute('data-name', user.line_name);
                     select.appendChild(option);
                 });
             } catch (error) {
-                console.error("Error loading users:", error);
+                console.error("Error:", error);
                 select.innerHTML = '<option value="" disabled selected>เกิดข้อผิดพลาดในการโหลดรายชื่อ</option>';
             }
         }
 
-        // ฟังก์ชันจัดการตอนกดบันทึกข้อมูล
         document.getElementById('bloodSugarForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -188,9 +134,9 @@
                 didOpen: () => { Swal.showLoading(); }
             });
 
-            // แก้ไขจุดนี้: มัดรวมข้อมูลส่งไปฝั่ง Apps Script ให้ถูกต้อง
+            // ผูกข้อมูลมัดรวมส่งไปหลังบ้านแบบระบุตัวแปรชัดเจน ไม่สลับช่องแน่นอน
             let formData = new URLSearchParams();
-            formData.append('type', 'bloodsugar');  // ส่งไปบอกชีตว่ารอบนี้ให้ลงชีต bloodsugar
+            formData.append('type', 'bloodsugar');
             formData.append('line_id', lineId);
             formData.append('line_name', lineName);
             formData.append('bloodsugar', bloodsugarValue);
@@ -210,20 +156,17 @@
                         text: `บันทึกค่าน้ำตาล ${bloodsugarValue} mg/dL ของคุณ ${lineName} เรียบร้อยแล้ว`,
                         confirmButtonColor: '#2e7d32'
                     });
-
-                    // ล้างค่าในฟอร์มเพื่อให้พร้อมบันทึกคนต่อไป
                     document.getElementById('bloodsugar').value = '';
                     select.selectedIndex = 0;
                 } else {
                     throw new Error(result.message || 'Server error');
                 }
-
             } catch (error) {
                 console.error(error);
                 Swal.fire({
                     icon: 'error',
                     title: 'เกิดข้อผิดพลาด',
-                    text: 'ไม่สามารถบันทึกข้อมูลได้ เนื่องจากหาชีตปลายทางไม่พบหรือระบบขัดข้อง',
+                    text: 'ไม่สามารถบันทึกข้อมูลได้ กรุณาตรวจสอบการตั้งค่าสิทธิ์ของระบบ',
                     confirmButtonColor: '#d33'
                 });
             }
