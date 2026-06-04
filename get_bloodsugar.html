@@ -152,26 +152,35 @@
 
         // ฟังก์ชันดึงรายชื่อจาก Sheet pretest
         async function loadUsers() {
+            const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS9Jd0t8U6WgihZjufXeXU6pZ-xe695svLtYbGXcFD2lGgEIdTin9KyeFMgfxpfWJwiXG5Yx8fGPlXo/pub?gid=0&single=true&output=csv'; // ลิงก์ที่ได้จาก Publish to web
             try {
-                // ใช้ Proxy ตัวกลางเพื่อเลี่ยง CORS (cors-anywhere เป็นบริการสาธารณะ)
-                const proxyUrl = 'https://cors-anywhere.herokuapp.com/'; 
-                const response = await fetch(proxyUrl + SCRIPT_URL + '?type=getUsers');
+                const response = await fetch(csvUrl);
+                const data = await response.text();
                 
-                const users = await response.json();
+                // แปลง CSV เป็น JSON
+                const rows = data.split('\n');
+                const headers = rows[0].split(',');
+                const users = [];
                 
+                for(let i = 1; i < rows.length; i++) {
+                    const cols = rows[i].split(',');
+                    if(cols.length >= 2) {
+                        // สมมติว่า line_id อยู่คอลัมน์ 1 และ line_name อยู่คอลัมน์ 2
+                        users.push({ line_id: cols[1], line_name: cols[2] });
+                    }
+                }
+                
+                // นำไปแสดงผลใน <select> ตามปกติ
                 const select = document.getElementById('userSelect');
                 select.innerHTML = '<option value="" disabled selected>-- กรุณาเลือกชื่อผู้ป่วย --</option>';
-                
                 users.forEach(user => {
                     const option = document.createElement('option');
                     option.value = user.line_id;
                     option.textContent = user.line_name;
-                    option.setAttribute('data-name', user.line_name); 
                     select.appendChild(option);
                 });
             } catch (error) {
-                console.error("Error:", error);
-                // ถ้าวิธีนี้ไม่ได้ แสดงว่าโดนบล็อกที่ตัว Proxy ให้ลองใช้ Google Sheet เผยแพร่แบบ CSV แทน
+                console.error("Error loading CSV:", error);
             }
         }
 
