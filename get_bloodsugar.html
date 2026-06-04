@@ -148,7 +148,7 @@
 
         document.addEventListener('DOMContentLoaded', loadUsers);
 
-        // เปลี่ยนวิธีโหลดรายชื่อ: เรียกผ่านตัวระบบ API ตรงๆ ไม่ผ่าน CSV เพื่อไม่ให้คอลัมน์เลื่อน
+        // โหลดรายชื่อผู้ใช้งานจากหน้าชีต pretest
         async function loadUsers() {
             const select = document.getElementById('userSelect');
             try {
@@ -160,9 +160,9 @@
                 
                 users.forEach(user => {
                     const option = document.createElement('option');
-                    option.value = user.line_id;         // ค่า Value เป็น LINE ID จริงๆ
-                    option.textContent = user.line_name; // หน้าจอแสดงเป็น ชื่อ-นามสกุล จริงๆ
-                    option.setAttribute('data-name', user.line_name); // ฝังชื่อแท้ไว้ดึงตอนกดบันทึก
+                    option.value = user.line_id;         // เก็บ LINE ID เป็นค่า value
+                    option.textContent = user.line_name; // แสดงชื่อบน dropdown
+                    option.setAttribute('data-name', user.line_name); // ฝังชื่อแท้เอาไว้ใช้ส่งข้อมูล
                     select.appendChild(option);
                 });
             } catch (error) {
@@ -171,7 +171,7 @@
             }
         }
 
-        // ฟังก์ชันจัดการตอนกดบันทึก ข้อมูลลงตรงช่องแน่นอน
+        // ฟังก์ชันจัดการตอนกดบันทึกข้อมูล
         document.getElementById('bloodSugarForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -180,7 +180,7 @@
             
             const lineId = selectedOption.value;
             const lineName = selectedOption.getAttribute('data-name');
-            const bloodsugar = document.getElementById('bloodsugar').value;
+            const bloodsugarValue = document.getElementById('bloodsugar').value;
 
             Swal.fire({
                 title: 'กำลังบันทึกข้อมูล...',
@@ -188,33 +188,42 @@
                 didOpen: () => { Swal.showLoading(); }
             });
 
+            // แก้ไขจุดนี้: มัดรวมข้อมูลส่งไปฝั่ง Apps Script ให้ถูกต้อง
             let formData = new URLSearchParams();
-            formData.append('line_id', userLineId);
-            formData.append('line_name', userLineName);
-            formData.append('bloodsugar', sugarValue);
+            formData.append('type', 'bloodsugar');  // ส่งไปบอกชีตว่ารอบนี้ให้ลงชีต bloodsugar
+            formData.append('line_id', lineId);
+            formData.append('line_name', lineName);
+            formData.append('bloodsugar', bloodsugarValue);
 
             try {
-                await fetch(SCRIPT_URL, { 
+                const response = await fetch(SCRIPT_URL, { 
                     method: 'POST', 
                     body: formData
                 });
+                
+                const result = await response.json();
 
-                await Swal.fire({
-                    icon: 'success',
-                    title: 'บันทึกสำเร็จ',
-                    text: `บันทึกค่าน้ำตาล ${bloodsugar} mg/dL ของคุณ ${lineName} เรียบร้อยแล้ว`,
-                    confirmButtonColor: '#2e7d32'
-                });
+                if (result.status === 'success') {
+                    await Swal.fire({
+                        icon: 'success',
+                        title: 'บันทึกสำเร็จ',
+                        text: `บันทึกค่าน้ำตาล ${bloodsugarValue} mg/dL ของคุณ ${lineName} เรียบร้อยแล้ว`,
+                        confirmButtonColor: '#2e7d32'
+                    });
 
-                document.getElementById('bloodsugar').value = '';
-                select.selectedIndex = 0;
+                    // ล้างค่าในฟอร์มเพื่อให้พร้อมบันทึกคนต่อไป
+                    document.getElementById('bloodsugar').value = '';
+                    select.selectedIndex = 0;
+                } else {
+                    throw new Error(result.message || 'Server error');
+                }
 
             } catch (error) {
                 console.error(error);
                 Swal.fire({
                     icon: 'error',
                     title: 'เกิดข้อผิดพลาด',
-                    text: 'ไม่สามารถบันทึกข้อมูลได้ กรุณาลองใหม่อีกครั้ง',
+                    text: 'ไม่สามารถบันทึกข้อมูลได้ เนื่องจากหาชีตปลายทางไม่พบหรือระบบขัดข้อง',
                     confirmButtonColor: '#d33'
                 });
             }
