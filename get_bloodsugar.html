@@ -177,8 +177,9 @@
                 select.innerHTML = '<option value="" disabled selected>-- กรุณาเลือกชื่อผู้ป่วย --</option>';
                 users.forEach(user => {
                     const option = document.createElement('option');
-                    option.value = user.line_id; // เก็บ ID ไว้ที่ value เพื่อส่งค่า
-                    option.textContent = user.line_name; // แสดงชื่อที่นี่
+                    option.value = user.line_id; // ค่าที่จะบันทึกลง Database
+                    option.textContent = user.line_name; // แสดงชื่อให้ผู้ใช้เห็น
+                    option.dataset.name = user.line_name; // <--- เก็บชื่อไว้ใช้ตอน Submit
                     select.appendChild(option);
                 });
             } catch (error) {
