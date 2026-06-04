@@ -145,38 +145,41 @@
     </div>
 
     <script>
-        // *** นำ URL ของ Web App ที่ได้จาก Google Apps Script มาใส่ที่นี่ ***
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec'; 
 
         document.addEventListener('DOMContentLoaded', loadUsers);
 
-        // ฟังก์ชันดึงรายชื่อจาก Sheet pretest
         async function loadUsers() {
-            const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS9Jd0t8U6WgihZjufXeXU6pZ-xe695svLtYbGXcFD2lGgEIdTin9KyeFMgfxpfWJwiXG5Yx8fGPlXo/pub?gid=0&single=true&output=csv'; // ลิงก์ที่ได้จาก Publish to web
+            const csvUrl = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS9Jd0t8U6WgihZjufXeXU6pZ-xe695svLtYbGXcFD2lGgEIdTin9KyeFMgfxpfWJwiXG5Yx8fGPlXo/pub?gid=0&single=true&output=csv';
             try {
                 const response = await fetch(csvUrl);
                 const data = await response.text();
                 
-                // แปลง CSV เป็น JSON
                 const rows = data.split('\n');
-                const headers = rows[0].split(',');
                 const users = [];
+                const seenIds = new Set(); // ใช้ Set เพื่อเก็บ ID ที่เคยเจอแล้ว
                 
                 for(let i = 1; i < rows.length; i++) {
                     const cols = rows[i].split(',');
-                    if(cols.length >= 2) {
-                        // สมมติว่า line_id อยู่คอลัมน์ 1 และ line_name อยู่คอลัมน์ 2
-                        users.push({ line_id: cols[1], line_name: cols[2] });
+                    if(cols.length >= 3) {
+                        const lineId = cols[1].trim();
+                        const lineName = cols[2].trim();
+                        
+                        // กรองเฉพาะ ID ที่ยังไม่เคยเห็น (ไม่ซ้ำ)
+                        if(lineId && !seenIds.has(lineId)) {
+                            users.push({ line_id: lineId, line_name: lineName });
+                            seenIds.add(lineId);
+                        }
                     }
                 }
                 
-                // นำไปแสดงผลใน <select> ตามปกติ
                 const select = document.getElementById('userSelect');
                 select.innerHTML = '<option value="" disabled selected>-- กรุณาเลือกชื่อผู้ป่วย --</option>';
                 users.forEach(user => {
                     const option = document.createElement('option');
                     option.value = user.line_id;
                     option.textContent = user.line_name;
+                    option.dataset.name = user.line_name; // เก็บชื่อไว้ใน dataset
                     select.appendChild(option);
                 });
             } catch (error) {
@@ -184,7 +187,6 @@
             }
         }
 
-        // ฟังก์ชันจัดการตอนกดบันทึก
         document.getElementById('bloodSugarForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -192,7 +194,7 @@
             const selectedOption = select.options[select.selectedIndex];
             
             const lineId = selectedOption.value;
-            const lineName = selectedOption.getAttribute('data-name');
+            const lineName = selectedOption.dataset.name;
             const bloodsugar = document.getElementById('bloodsugar').value;
 
             Swal.fire({
@@ -201,7 +203,6 @@
                 didOpen: () => { Swal.showLoading(); }
             });
 
-            // ส่งข้อมูลพร้อมระบุ type เป็น bloodsugar เพื่อเข้าเงื่อนไขใน doPost
             const formData = new URLSearchParams();
             formData.append('type', 'bloodsugar'); 
             formData.append('line_id', lineId);
@@ -209,14 +210,13 @@
             formData.append('bloodsugar', bloodsugar);
 
             try {
-                await fetch(SCRIPT_URL, { 
+                // แก้ไขจุดนี้: เก็บ response ไว้ในตัวแปรเพื่อเช็ค .ok
+                const response = await fetch(SCRIPT_URL, { 
                     method: 'POST', 
                     body: formData,
                 });
 
-                // เพิ่มการเช็กผลลัพธ์
                 if (!response.ok) throw new Error('Network response was not ok');
-                const resultText = await response.text(); // หรือ response.json() แล้วแต่ที่ return ใน gs
 
                 await Swal.fire({
                     icon: 'success',
@@ -226,10 +226,10 @@
                 });
 
                 document.getElementById('bloodsugar').value = '';
-                select.value = '';
+                select.selectedIndex = 0;
 
             } catch (error) {
-                console.error(error); // เพื่อดู Error จริงๆ ใน Console
+                console.error(error);
                 Swal.fire({
                     icon: 'error',
                     title: 'เกิดข้อผิดพลาด',
