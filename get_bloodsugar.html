@@ -13,38 +13,26 @@
             --bg-color: #f4f7f6;
             --card-bg: #ffffff;
             --text-main: #333333;
-            --text-muted: #666666;
             --border-color: #e0e0e0;
         }
         body {
-            font-family: 'Sarabun', sans-serif;
-            background-color: var(--bg-color);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-            box-sizing: border-box;
+            font-family: 'Sarabun', sans-serif; background-color: var(--bg-color);
+            margin: 0; display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; padding: 20px; box-sizing: border-box;
         }
         .form-card {
-            background-color: var(--card-bg);
-            width: 100%;
-            max-width: 450px;
-            padding: 40px 30px;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            background-color: var(--card-bg); width: 100%; max-width: 450px;
+            padding: 40px 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
         }
         .header { text-align: center; margin-bottom: 30px; }
         .header h2 { margin: 0; color: var(--primary-color); font-weight: 600; font-size: 24px; }
-        .header p { margin: 5px 0 0; color: var(--text-muted); font-size: 14px; }
+        .header p { margin: 5px 0 0; color: #666; font-size: 14px; }
         .form-group { margin-bottom: 24px; }
         label { display: block; margin-bottom: 8px; color: var(--text-main); font-weight: 600; font-size: 15px; }
         select, input[type="number"] {
             width: 100%; padding: 14px 16px; border: 1.5px solid var(--border-color);
             border-radius: 10px; font-size: 16px; font-family: 'Sarabun', sans-serif;
-            color: var(--text-main); background-color: #fafafa; box-sizing: border-box;
-            transition: all 0.3s ease;
+            box-sizing: border-box; background-color: #fafafa; transition: all 0.3s ease;
         }
         select:focus, input[type="number"]:focus {
             outline: none; border-color: var(--primary-color); background-color: #fff;
@@ -54,11 +42,9 @@
             width: 100%; padding: 16px; background-color: var(--primary-color); color: white;
             border: none; border-radius: 10px; font-size: 18px; font-weight: 600;
             font-family: 'Sarabun', sans-serif; cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.1s ease;
-            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2);
+            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2); transition: all 0.3s ease;
         }
         .btn-submit:hover { background-color: var(--primary-hover); }
-        .btn-submit:active { transform: translateY(2px); }
     </style>
 </head>
 <body>
@@ -87,6 +73,7 @@
     </div>
 
     <script>
+        // ใช้ URL ของเว็บแอปพลิเคชันที่คุณ Deploy ได้จาก Google Apps Script
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec'; 
 
         document.addEventListener('DOMContentLoaded', loadUsers);
@@ -107,8 +94,8 @@
 
                 users.forEach(user => {
                     const option = document.createElement('option');
-                    option.value = user.line_id;
-                    option.textContent = user.line_name; // ดึงชื่อไปโชว์ที่หน้าจอ
+                    option.value = user.line_id; // เก็บ ID ไว้เบื้องหลังตอนส่งฟอร์ม
+                    option.textContent = user.line_name; // ดึงชื่อคนจริงๆ มาแสดงผลในดรอปดาวน์
                     option.setAttribute('data-name', user.line_name);
                     select.appendChild(option);
                 });
@@ -134,9 +121,8 @@
                 didOpen: () => { Swal.showLoading(); }
             });
 
-            // ผูกข้อมูลมัดรวมส่งไปหลังบ้านแบบระบุตัวแปรชัดเจน ไม่สลับช่องแน่นอน
+            // มัดรวมตัวแปรส่งแบบระบุชื่อชัดเจน ป้องกันการบันทึกสลับช่องในตารางชีต
             let formData = new URLSearchParams();
-            formData.append('type', 'bloodsugar');
             formData.append('line_id', lineId);
             formData.append('line_name', lineName);
             formData.append('bloodsugar', bloodsugarValue);
@@ -166,7 +152,7 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'เกิดข้อผิดพลาด',
-                    text: 'ไม่สามารถบันทึกข้อมูลได้ กรุณาตรวจสอบการตั้งค่าสิทธิ์ของระบบ',
+                    text: 'ไม่สามารถบันทึกข้อมูลได้ กรุณาตรวจสอบการตั้งค่าสิทธิ์บนระบบ Google Apps Script',
                     confirmButtonColor: '#d33'
                 });
             }
