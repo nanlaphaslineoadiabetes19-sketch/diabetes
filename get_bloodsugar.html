@@ -65,7 +65,7 @@
 
             <div class="form-group">
                 <label for="bloodsugar">ค่าน้ำตาลในเลือด (mg/dL)</label>
-                <input type="number" id="bloodsugar" placeholder="ระบุตัวเลขค่าน้ำตาล" required min="1">
+                <input type="number" id="bloodsugar" placeholder="ระบุค่าน้ำตาล (เช่น 95.5 หรือ 120)" required min="0.1" step="any">
             </div>
 
             <button type="submit" class="btn-submit">บันทึกข้อมูล</button>
@@ -73,7 +73,6 @@
     </div>
 
     <script>
-        // ใช้ URL ของเว็บแอปพลิเคชันที่คุณ Deploy ได้จาก Google Apps Script
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec'; 
 
         document.addEventListener('DOMContentLoaded', loadUsers);
@@ -94,8 +93,8 @@
 
                 users.forEach(user => {
                     const option = document.createElement('option');
-                    option.value = user.line_id; // เก็บ ID ไว้เบื้องหลังตอนส่งฟอร์ม
-                    option.textContent = user.line_name; // ดึงชื่อคนจริงๆ มาแสดงผลในดรอปดาวน์
+                    option.value = user.line_id;
+                    option.textContent = user.line_name;
                     option.setAttribute('data-name', user.line_name);
                     select.appendChild(option);
                 });
@@ -121,7 +120,6 @@
                 didOpen: () => { Swal.showLoading(); }
             });
 
-            // มัดรวมตัวแปรส่งแบบระบุชื่อชัดเจน ป้องกันการบันทึกสลับช่องในตารางชีต
             let formData = new URLSearchParams();
             formData.append('line_id', lineId);
             formData.append('line_name', lineName);
