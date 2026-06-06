@@ -35,12 +35,15 @@
         .header p { margin: 5px 0 0; color: #666; font-size: 13px; }
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; color: var(--text-main); font-weight: 600; font-size: 15px; }
-        select, input[type="number"] {
+        
+        /* 🌟 ปรับปรุงการสไตล์สำหรับช่องเลือกวันเวลาด้วย */
+        select, input[type="number"], input[type="datetime-local"] {
             width: 100%; padding: 14px 16px; border: 1.5px solid var(--border-color);
             border-radius: 10px; font-size: 16px; font-family: 'Sarabun', sans-serif;
             box-sizing: border-box; background-color: #fafafa; transition: all 0.3s ease;
+            color: #333;
         }
-        select:focus, input[type="number"]:focus {
+        select:focus, input[type="number"]:focus, input[type="datetime-local"]:focus {
             outline: none; border-color: var(--primary-color); background-color: #fff;
             box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.1);
         }
@@ -52,17 +55,14 @@
         }
         .btn-submit:hover { background-color: var(--primary-hover); }
         
-        /* 🌟 ส่วนตกแต่งโมเดลการ์ดประวัติ (Mobile-First Card Layout) */
+        /* ส่วนตกแต่งโมเดลการ์ดประวัติ (Card Layout) */
         .history-section { display: none; padding-top: 25px; } 
         .section-title {
             font-size: 17px; font-weight: 600; color: #333; margin-top: 0; margin-bottom: 18px;
             border-left: 4px solid var(--primary-color); padding-left: 10px;
         }
-        #cards-container {
-            display: flex; flex-direction: column; gap: 14px;
-        }
+        #cards-container { display: flex; flex-direction: column; gap: 14px; }
         
-        /* กล่องบันทึกข้อมูลแต่ละรายการ */
         .log-card {
             border: 1px solid #edf2f0; background: #fff; border-radius: 12px;
             padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);
@@ -70,7 +70,6 @@
         }
         .log-card:active { transform: scale(0.99); }
         
-        /* แถวบน: ลำดับ และ วันเวลา */
         .log-header {
             display: flex; justify-content: space-between; align-items: center;
             margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px dashed #eee;
@@ -81,21 +80,15 @@
         }
         .log-time { font-size: 12px; color: #757575; font-weight: 400; }
         
-        /* แถวกลาง: ชื่อผู้ป่วย และ ตัวเลขค่าน้ำตาลเด่นๆ */
         .log-body {
             display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;
         }
         .log-name { font-size: 15px; font-weight: 600; color: #2c3e50; }
         .log-sugar-wrapper { text-align: right; }
-        .log-sugar-val {
-            font-size: 22px; font-weight: 600; color: var(--primary-color); line-height: 1;
-        }
+        .log-sugar-val { font-size: 22px; font-weight: 600; color: var(--primary-color); line-height: 1; }
         .log-sugar-unit { font-size: 11px; color: #888; display: block; margin-top: 2px; }
         
-        /* แถวล่าง: ปุ่มกดแอคชันขนาดใหญ่ กดง่ายด้วยนิ้วโป้ง */
-        .log-footer {
-            display: flex; gap: 10px;
-        }
+        .log-footer { display: flex; gap: 10px; }
         .btn-action {
             flex: 1; padding: 10px; border: none; border-radius: 8px;
             font-size: 14px; font-weight: 600; font-family: 'Sarabun', sans-serif;
@@ -129,8 +122,13 @@
                 </div>
 
                 <div class="form-group">
+                    <label for="customDate">วัน-เวลาที่ตรวจ <span style="font-weight: normal; color: #777; font-size: 13px;">(หากไม่ระบุ จะบันทึกเป็นเวลาปัจจุบัน)</span></label>
+                    <input type="datetime-local" id="customDate">
+                </div>
+
+                <div class="form-group">
                     <label for="bloodsugar">ค่าน้ำตาลในเลือด (mg/dL)</label>
-                    <input type="number" id="bloodsugar" placeholder="ระบุค่าน้ำตาล" required min="0.1" step="any">
+                    <input type="number" id="bloodsugar" placeholder="ระบุค่าน้ำตาล (เช่น 95.5 หรือ 120)" required min="0.1" step="any">
                 </div>
 
                 <button type="submit" class="btn-submit">บันทึกข้อมูล</button>
@@ -146,6 +144,7 @@
     </div>
 
     <script>
+        // ⚠️ อย่าลืมใส่ URL Deployment ของคุณตรงนี้
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec'; 
 
         document.addEventListener('DOMContentLoaded', loadUsers);
@@ -178,7 +177,6 @@
             }
         }
 
-        // 🌟 เปลี่ยนการทำงานจากสร้างตาราง มารังสรรค์เป็นการ์ดข้อมูลไร้รอยต่อ
         async function loadHistoryCards(lineId) {
             const section = document.getElementById('historyCard');
             const loading = document.getElementById('table-loading');
@@ -198,7 +196,6 @@
                     return;
                 }
 
-                // สรรสร้างกล่องการ์ดประวัติ (Card Item)
                 data.forEach((item, index) => {
                     const card = document.createElement('div');
                     card.className = 'log-card';
@@ -231,7 +228,6 @@
             }
         }
 
-        // 🌟 ระบบ Popup ฟอร์มแก้ไขข้อมูลคงเดิม ปลอดภัย และเสถียร
         async function openEditModal(row, isoDate, currentSugar, name) {
             const lineId = document.getElementById('userSelect').value;
 
@@ -277,7 +273,7 @@
                     const result = await response.json();
                     if(result.status === 'success') {
                         Swal.fire('สำเร็จ!', 'แก้ไขข้อมูลเรียบร้อยแล้ว', 'success');
-                        loadHistoryCards(lineId); // รีเฟรชข้อมูลการ์ดใหม่
+                        loadHistoryCards(lineId);
                     } else {
                         throw new Error(result.message);
                     }
@@ -287,7 +283,6 @@
             }
         }
 
-        // 🌟 ระบบยืนยันก่อนลบข้อมูลอย่างปลอดภัย
         function openDeleteModal(row, name, sugar) {
             const lineId = document.getElementById('userSelect').value;
 
@@ -314,7 +309,7 @@
                         const result = await response.json();
                         if(result.status === 'success') {
                             Swal.fire('ลบสำเร็จ!', 'ลบรายการข้อมูลเรียบร้อยแล้ว', 'success');
-                            loadHistoryCards(lineId); // รีโหลดการ์ดใหม่
+                            loadHistoryCards(lineId);
                         } else {
                             throw new Error(result.message);
                         }
@@ -325,7 +320,7 @@
             });
         }
 
-        // ระบบส่งฟอร์มบันทึกค่าใหม่
+        // ระบบส่งฟอร์มบันทึกข้อมูล
         document.getElementById('bloodSugarForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const select = document.getElementById('userSelect');
@@ -333,6 +328,7 @@
             const lineId = selectedOption.value;
             const lineName = selectedOption.getAttribute('data-name');
             const bloodsugarValue = document.getElementById('bloodsugar').value;
+            const customDateValue = document.getElementById('customDate').value; // 🌟 ดึงค่าวันเวลาที่เลือก (ถ้ามี)
 
             Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
@@ -340,6 +336,7 @@
             formData.append('line_id', lineId);
             formData.append('line_name', lineName);
             formData.append('bloodsugar', bloodsugarValue);
+            formData.append('custom_date', customDateValue); // 🌟 ส่งข้อมูลวันเวลาข้ามไปยัง Sheets
 
             try {
                 const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
@@ -352,8 +349,12 @@
                         text: `บันทึกค่าน้ำตาล ${bloodsugarValue} mg/dL ของคุณ ${lineName} เรียบร้อยแล้ว`,
                         confirmButtonColor: '#2e7d32'
                     });
+                    
+                    // เคลียร์ค่าในช่องฟอร์มหลังบันทึกสำเร็จ
                     document.getElementById('bloodsugar').value = '';
-                    loadHistoryCards(lineId); // โหลดการ์ดซ้ำทันทีเพื่อให้ข้อมูลอัปเดตตรงหน้าตาผู้ใช้
+                    document.getElementById('customDate').value = ''; // 🌟 เคลียร์ค่าช่องเลือกวันเวลา
+                    
+                    loadHistoryCards(lineId); // โหลดรายการการ์ดใหม่
                 } else {
                     throw new Error(result.message || 'Server error');
                 }
