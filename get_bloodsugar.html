@@ -174,7 +174,7 @@
             }
         }
 
-        // 🌟 ปรับปรุงฟังก์ชันโหลดการ์ดให้เรียงลำดับตาม วัน-เวลา ล่าสุดขึ้นก่อน
+        // 🌟 ฟังก์ชันโหลดประวัติที่ปรับปรุงเรื่องการเรียงลำดับและรันเลขรายการใหม่แบบเรียง 1 ถึง n จากบนลงล่าง
         async function loadHistoryCards(lineId) {
             const section = document.getElementById('historyCard');
             const loading = document.getElementById('table-loading');
@@ -194,22 +194,17 @@
                     return;
                 }
 
-                // 1. ผูกลำดับรายการเดิม (1, 2, 3...) ไว้กับตัวข้อมูลก่อนทำการเรียงลำดับ
+                // 1. เรียงลำดับตามความต่อเนื่องของวันเวลา (เปรียบเทียบ isoDate จากเก่าไปใหม่)
+                // [หมายเหตุ]: หากต้องการให้รายการล่าสุดอยู่บนสุด ให้เปลี่ยนเครื่องหมายเป็น b.isoDate.localeCompare(a.isoDate) ครับ
+                data.sort((a, b) => a.isoDate.localeCompare(b.isoDate));
+
+                // 2. นำข้อมูลที่เรียงเวลาแล้วมาแสดงผล และรันลำดับ 1 ถึง n ตามการจัดเรียงจริง
                 data.forEach((item, index) => {
-                    item.originalIndex = index + 1;
-                });
-
-                // 2. ทำการเรียงลำดับตาม isoDate จากใหม่ล่าสุดไปเก่าสุด (Newest First)
-                // หากต้องการเปลี่ยนเป็นเก่าสุดขึ้นก่อน ให้สลับตำแหน่งเป็น: a.isoDate.localeCompare(b.isoDate)
-                data.sort((a, b) => b.isoDate.localeCompare(a.isoDate));
-
-                // 3. แสดงผลการ์ดที่จัดเรียงเรียบร้อยแล้วบนหน้าจอ
-                data.forEach((item) => {
                     const card = document.createElement('div');
                     card.className = 'log-card';
                     card.innerHTML = `
                         <div class="log-header">
-                            <span class="log-no">รายการที่ ${item.originalIndex}</span>
+                            <span class="log-no">รายการที่ ${index + 1}</span>
                             <span class="log-time">${item.dateTime} น.</span>
                         </div>
                         <div class="log-body">
