@@ -7,9 +7,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <style>
-        /* 🌟 ประกาศควบคุมขนาดครอบจักรวาล ป้องกันปัญหากล่องดันทะลุขอบบนมือถือ */
+        /* 🌟 บังคับคำนวณขนาดกล่องรวม Border และ Padding ทั้งหน้าเว็บ */
         * {
-            box-sizing: border-box;
+            box-sizing: border-box !important;
         }
 
         :root {
@@ -40,9 +40,9 @@
         .form-group { margin-bottom: 20px; width: 100%; }
         label { display: block; margin-bottom: 8px; color: var(--text-main); font-weight: 600; font-size: 15px; }
         
-        /* 🌟 ล็อคขนาดและจัดรูปแบบสำหรับปุ่ม/ช่องกรอกข้อมูลให้อยู่ในขอบเขต 100% เสมอ */
+        /* 🌟 ปรับแต่งอินพุตพื้นฐาน และใส่ min-width: 0 ป้องกันการขยายตัวเกินขอบเขต */
         select, input[type="number"], input[type="datetime-local"] {
-            display: block; width: 100%; max-width: 100%;
+            display: block; width: 100%; max-width: 100%; min-width: 0;
             padding: 14px 16px; border: 1.5px solid var(--border-color);
             border-radius: 10px; font-size: 16px; font-family: 'Sarabun', sans-serif;
             background-color: #fafafa; transition: all 0.3s ease; color: #333;
@@ -105,6 +105,23 @@
         .btn-delete:hover { background-color: var(--delete-color); color: #fff; }
         
         #table-loading { text-align: center; color: #888; padding: 20px 0; font-size: 14px; }
+
+        /* 🌟 [เพิ่มชุดคำสั่งแก้ล้น] สำหรับหน้าจอมือถือขนาดเล็กทั่วไป (เช่น iPhone, Android ทั่วไป) 🌟 */
+        @media (max-width: 440px) {
+            body {
+                padding: 15px 10px;
+            }
+            .form-card, .history-section {
+                padding: 22px 14px; /* ลด padding ซ้ายขวาของการ์ดลงเพื่อให้กล่องอินพุตมีพื้นที่เพิ่มขึ้น */
+            }
+            select, input[type="number"], input[type="datetime-local"] {
+                padding: 12px 10px; /* บีบพื้นที่ในกล่องให้แคบลงเล็กน้อย */
+                font-size: 14px; /* ย่อขนาดตัวอักษรลงเล็กน้อยเพื่อไม่ให้ข้อความวันที่ภาษาไทยดันกล่องล้นขอบ */
+            }
+            label {
+                font-size: 14px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -125,13 +142,13 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="customDate">วัน-เวลาที่ตรวจ <span style="font-weight: normal; color: #777; font-size: 13px;">(หากไม่ระบุ จะบันทึกเป็นเวลาปัจจุบัน)</span></label>
+                    <label for="customDate">วัน-เวลาที่ตรวจ <span style="font-weight: normal; color: #777; font-size: 12px;">(หากไม่ระบุ จะเป็นเวลาปัจจุบัน)</span></label>
                     <input type="datetime-local" id="customDate">
                 </div>
 
                 <div class="form-group">
                     <label for="bloodsugar">ค่าน้ำตาลในเลือด (mg/dL)</label>
-                    <input type="number" id="bloodsugar" placeholder="ระบุค่าน้ำตาล (เช่น 95.5 หรือ 120)" required min="0.1" step="any">
+                    <input type="number" id="bloodsugar" placeholder="ระบุค่าน้ำตาล" required min="0.1" step="any">
                 </div>
 
                 <button type="submit" class="btn-submit">บันทึกข้อมูล</button>
@@ -198,10 +215,10 @@
                     return;
                 }
 
-                // 1. เรียงลำดับตามความต่อเนื่องของวันเวลา (เก่าไปใหม่)
+                // เรียงลำดับตามความต่อเนื่องของวันเวลา (เก่าไปใหม่)
                 data.sort((a, b) => a.isoDate.localeCompare(b.isoDate));
 
-                // 2. แสดงผลและรันเลขรายการใหม่ 1 ถึง n ตามลำดับเวลาจริงจากบนลงล่าง
+                // แสดงผลและรันเลขรายการใหม่ 1 ถึง n จากบนลงล่างอย่างถูกต้อง
                 data.forEach((item, index) => {
                     const card = document.createElement('div');
                     card.className = 'log-card';
@@ -242,7 +259,7 @@
                 text: `คุณ ${name}`,
                 html: `
                     <div style="text-align: left; margin-bottom: 6px;"><label style="font-weight:600; font-size:14px; color:#555;">วัน-เวลาตรวจย้อนหลัง:</label></div>
-                    <input id="swal-date" type="datetime-local" class="swal2-input" style="margin: 0 0 15px 0; width: 85%; font-family: 'Sarabun'; font-size: 15px;" value="${isoDate}">
+                    <input id="swal-date" type="datetime-local" class="swal2-input" style="margin: 0 0 15px 0; width: 85%; font-family: 'Sarabun'; font-size: 14px;" value="${isoDate}">
                     <div style="text-align: left; margin-bottom: 6px;"><label style="font-weight:600; font-size:14px; color:#555;">ค่าน้ำตาลในเลือด (mg/dL):</label></div>
                     <input id="swal-sugar" type="number" step="any" class="swal2-input" style="margin: 0; width: 85%; font-family: 'Sarabun'; font-size: 15px;" value="${currentSugar}">
                 `,
