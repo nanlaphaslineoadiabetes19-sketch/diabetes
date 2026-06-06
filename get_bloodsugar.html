@@ -36,7 +36,6 @@
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; color: var(--text-main); font-weight: 600; font-size: 15px; }
         
-        /* 🌟 ปรับปรุงการสไตล์สำหรับช่องเลือกวันเวลาด้วย */
         select, input[type="number"], input[type="datetime-local"] {
             width: 100%; padding: 14px 16px; border: 1.5px solid var(--border-color);
             border-radius: 10px; font-size: 16px; font-family: 'Sarabun', sans-serif;
@@ -55,7 +54,6 @@
         }
         .btn-submit:hover { background-color: var(--primary-hover); }
         
-        /* ส่วนตกแต่งโมเดลการ์ดประวัติ (Card Layout) */
         .history-section { display: none; padding-top: 25px; } 
         .section-title {
             font-size: 17px; font-weight: 600; color: #333; margin-top: 0; margin-bottom: 18px;
@@ -144,7 +142,6 @@
     </div>
 
     <script>
-        // ⚠️ อย่าลืมใส่ URL Deployment ของคุณตรงนี้
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec'; 
 
         document.addEventListener('DOMContentLoaded', loadUsers);
@@ -177,6 +174,7 @@
             }
         }
 
+        // 🌟 ปรับปรุงฟังก์ชันโหลดการ์ดให้เรียงลำดับตาม วัน-เวลา ล่าสุดขึ้นก่อน
         async function loadHistoryCards(lineId) {
             const section = document.getElementById('historyCard');
             const loading = document.getElementById('table-loading');
@@ -196,12 +194,22 @@
                     return;
                 }
 
+                // 1. ผูกลำดับรายการเดิม (1, 2, 3...) ไว้กับตัวข้อมูลก่อนทำการเรียงลำดับ
                 data.forEach((item, index) => {
+                    item.originalIndex = index + 1;
+                });
+
+                // 2. ทำการเรียงลำดับตาม isoDate จากใหม่ล่าสุดไปเก่าสุด (Newest First)
+                // หากต้องการเปลี่ยนเป็นเก่าสุดขึ้นก่อน ให้สลับตำแหน่งเป็น: a.isoDate.localeCompare(b.isoDate)
+                data.sort((a, b) => b.isoDate.localeCompare(a.isoDate));
+
+                // 3. แสดงผลการ์ดที่จัดเรียงเรียบร้อยแล้วบนหน้าจอ
+                data.forEach((item) => {
                     const card = document.createElement('div');
                     card.className = 'log-card';
                     card.innerHTML = `
                         <div class="log-header">
-                            <span class="log-no">รายการที่ ${index + 1}</span>
+                            <span class="log-no">รายการที่ ${item.originalIndex}</span>
                             <span class="log-time">${item.dateTime} น.</span>
                         </div>
                         <div class="log-body">
@@ -320,7 +328,6 @@
             });
         }
 
-        // ระบบส่งฟอร์มบันทึกข้อมูล
         document.getElementById('bloodSugarForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const select = document.getElementById('userSelect');
@@ -328,7 +335,7 @@
             const lineId = selectedOption.value;
             const lineName = selectedOption.getAttribute('data-name');
             const bloodsugarValue = document.getElementById('bloodsugar').value;
-            const customDateValue = document.getElementById('customDate').value; // 🌟 ดึงค่าวันเวลาที่เลือก (ถ้ามี)
+            const customDateValue = document.getElementById('customDate').value; 
 
             Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
@@ -336,7 +343,7 @@
             formData.append('line_id', lineId);
             formData.append('line_name', lineName);
             formData.append('bloodsugar', bloodsugarValue);
-            formData.append('custom_date', customDateValue); // 🌟 ส่งข้อมูลวันเวลาข้ามไปยัง Sheets
+            formData.append('custom_date', customDateValue); 
 
             try {
                 const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
@@ -350,11 +357,10 @@
                         confirmButtonColor: '#2e7d32'
                     });
                     
-                    // เคลียร์ค่าในช่องฟอร์มหลังบันทึกสำเร็จ
                     document.getElementById('bloodsugar').value = '';
-                    document.getElementById('customDate').value = ''; // 🌟 เคลียร์ค่าช่องเลือกวันเวลา
+                    document.getElementById('customDate').value = ''; 
                     
-                    loadHistoryCards(lineId); // โหลดรายการการ์ดใหม่
+                    loadHistoryCards(lineId); 
                 } else {
                     throw new Error(result.message || 'Server error');
                 }
