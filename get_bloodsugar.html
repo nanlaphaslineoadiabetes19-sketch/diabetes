@@ -20,19 +20,19 @@
         body {
             font-family: 'Sarabun', sans-serif; background-color: var(--bg-color);
             margin: 0; display: flex; justify-content: center; align-items: flex-start;
-            min-height: 100vh; padding: 30px 20px; box-sizing: border-box;
+            min-height: 100vh; padding: 20px 15px; box-sizing: border-box;
         }
         .container {
-            width: 100%; max-width: 750px; display: flex; flex-direction: column; gap: 25px;
+            width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 20px;
         }
-        .form-card, .history-card {
+        .form-card, .history-section {
             background-color: var(--card-bg); width: 100%;
-            padding: 35px 30px; border-radius: 16px; box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+            padding: 30px 20px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
             box-sizing: border-box;
         }
         .header { text-align: center; margin-bottom: 25px; }
-        .header h2 { margin: 0; color: var(--primary-color); font-weight: 600; font-size: 24px; }
-        .header p { margin: 5px 0 0; color: #666; font-size: 14px; }
+        .header h2 { margin: 0; color: var(--primary-color); font-weight: 600; font-size: 22px; }
+        .header p { margin: 5px 0 0; color: #666; font-size: 13px; }
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; color: var(--text-main); font-weight: 600; font-size: 15px; }
         select, input[type="number"] {
@@ -52,36 +52,63 @@
         }
         .btn-submit:hover { background-color: var(--primary-hover); }
         
-        /* 🌟 ส่วนตกแต่งตารางประวัติระดับมืออาชีพ */
-        .history-card { display: none; } /* ซ่อนไว้ก่อนจนกว่าจะเลือกผู้ป่วย */
-        .card-title {
-            font-size: 18px; font-weight: 600; color: #333; margin-top: 0; margin-bottom: 20px;
+        /* 🌟 ส่วนตกแต่งโมเดลการ์ดประวัติ (Mobile-First Card Layout) */
+        .history-section { display: none; padding-top: 25px; } 
+        .section-title {
+            font-size: 17px; font-weight: 600; color: #333; margin-top: 0; margin-bottom: 18px;
             border-left: 4px solid var(--primary-color); padding-left: 10px;
         }
-        .table-responsive { width: 100%; overflow-x: auto; border-radius: 8px; border: 1px solid #eee; }
-        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 15px; min-width: 550px; }
-        th { background-color: #f8f9fa; color: #555; font-weight: 600; padding: 14px 16px; border-bottom: 2px solid #eee; }
-        td { padding: 14px 16px; border-bottom: 1px solid #eee; color: #444; vertical-align: middle; }
-        tr:hover { background-color: #fcfdfc; }
-        
-        .sugar-badge {
-            background-color: #edf7ed; color: var(--primary-color); font-weight: 600;
-            padding: 4px 10px; border-radius: 6px; display: inline-block;
+        #cards-container {
+            display: flex; flex-direction: column; gap: 14px;
         }
-        .time-text { font-size: 12px; color: #777; display: block; margin-top: 2px; }
         
-        /* ปุ่มจัดการระบบ */
-        .btn-action-group { display: flex; gap: 8px; }
+        /* กล่องบันทึกข้อมูลแต่ละรายการ */
+        .log-card {
+            border: 1px solid #edf2f0; background: #fff; border-radius: 12px;
+            padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            transition: transform 0.2s; position: relative;
+        }
+        .log-card:active { transform: scale(0.99); }
+        
+        /* แถวบน: ลำดับ และ วันเวลา */
+        .log-header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px dashed #eee;
+        }
+        .log-no {
+            background-color: #f0f4f1; color: var(--primary-color);
+            font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 6px;
+        }
+        .log-time { font-size: 12px; color: #757575; font-weight: 400; }
+        
+        /* แถวกลาง: ชื่อผู้ป่วย และ ตัวเลขค่าน้ำตาลเด่นๆ */
+        .log-body {
+            display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;
+        }
+        .log-name { font-size: 15px; font-weight: 600; color: #2c3e50; }
+        .log-sugar-wrapper { text-align: right; }
+        .log-sugar-val {
+            font-size: 22px; font-weight: 600; color: var(--primary-color); line-height: 1;
+        }
+        .log-sugar-unit { font-size: 11px; color: #888; display: block; margin-top: 2px; }
+        
+        /* แถวล่าง: ปุ่มกดแอคชันขนาดใหญ่ กดง่ายด้วยนิ้วโป้ง */
+        .log-footer {
+            display: flex; gap: 10px;
+        }
         .btn-action {
-            padding: 6px 12px; border: none; border-radius: 6px; font-size: 13px; font-weight: 600;
-            font-family: 'Sarabun', sans-serif; cursor: pointer; transition: all 0.2s ease;
+            flex: 1; padding: 10px; border: none; border-radius: 8px;
+            font-size: 14px; font-weight: 600; font-family: 'Sarabun', sans-serif;
+            cursor: pointer; display: flex; align-items: center; justify-content: center;
+            gap: 6px; transition: all 0.2s;
         }
-        .btn-edit { background-color: #fff3e0; color: var(--edit-color); }
+        .btn-edit { background-color: #fff3e0; color: var(--edit-color); border: 1px solid #ffe0b2; }
         .btn-edit:hover { background-color: var(--edit-color); color: #fff; }
-        .btn-delete { background-color: #ffebee; color: var(--delete-color); }
+        
+        .btn-delete { background-color: #ffebee; color: var(--delete-color); border: 1px solid #ffcdd2; }
         .btn-delete:hover { background-color: var(--delete-color); color: #fff; }
         
-        #table-loading { text-align: center; color: #888; padding: 20px 0; }
+        #table-loading { text-align: center; color: #888; padding: 20px 0; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -110,23 +137,11 @@
             </form>
         </div>
 
-        <div class="history-card" id="historyCard">
-            <h3 class="card-title">ประวัติการบันทึกค่าน้ำตาล</h3>
+        <div class="history-section" id="historyCard">
+            <h3 class="section-title">ประวัติการบันทึกค่านั่งตาล</h3>
             <div id="table-loading">กำลังโหลดประวัติข้อมูล...</div>
-            <div class="table-responsive" id="tableWrapper" style="display: none;">
-                <table>
-                    <thead>
-                        <tr>
-                            <th style="width: 10%;">No.</th>
-                            <th style="width: 40%;">Line Name / วันเวลา</th>
-                            <th style="width: 25%;">Bloodsugar</th>
-                            <th style="width: 25%; text-align: center;">จัดการข้อมูล</th>
-                        </tr>
-                    </thead>
-                    <tbody id="historyTableBody">
-                        </tbody>
-                </table>
-            </div>
+            <div id="cards-container">
+                </div>
         </div>
     </div>
 
@@ -135,7 +150,7 @@
 
         document.addEventListener('DOMContentLoaded', loadUsers);
         document.getElementById('userSelect').addEventListener('change', function() {
-            loadHistoryTable(this.value);
+            loadHistoryCards(this.value);
         });
 
         async function loadUsers() {
@@ -163,17 +178,15 @@
             }
         }
 
-        // 🌟 ฟังก์ชันโหลดประวัติลงตาราง
-        async function loadHistoryTable(lineId) {
-            const card = document.getElementById('historyCard');
+        // 🌟 เปลี่ยนการทำงานจากสร้างตาราง มารังสรรค์เป็นการ์ดข้อมูลไร้รอยต่อ
+        async function loadHistoryCards(lineId) {
+            const section = document.getElementById('historyCard');
             const loading = document.getElementById('table-loading');
-            const wrapper = document.getElementById('tableWrapper');
-            const tbody = document.getElementById('historyTableBody');
+            const container = document.getElementById('cards-container');
             
-            card.style.display = 'block';
+            section.style.display = 'block';
             loading.style.display = 'block';
-            wrapper.style.display = 'none';
-            tbody.innerHTML = '';
+            container.innerHTML = '';
 
             try {
                 const response = await fetch(`${SCRIPT_URL}?type=getHistoryTable&line_id=${lineId}`);
@@ -181,48 +194,55 @@
                 loading.style.display = 'none';
 
                 if (!Array.isArray(data) || data.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center; color:#999; padding:30px 0;">ไม่พบประวัติการบันทึกข้อมูลของผู้ป่วยรายนี้</td></tr>';
-                    wrapper.style.display = 'block';
+                    container.innerHTML = '<div style="text-align:center; color:#999; padding:25px 0; font-size:14px;">ไม่พบประวัติการบันทึกข้อมูลของผู้ป่วยรายนี้</div>';
                     return;
                 }
 
+                // สรรสร้างกล่องการ์ดประวัติ (Card Item)
                 data.forEach((item, index) => {
-                    const tr = document.createElement('tr');
-                    tr.innerHTML = `
-                        <td style="font-weight: 600; color:#777;">${index + 1}</td>
-                        <td>
-                            <strong style="color:#222;">${item.name}</strong>
-                            <span class="time-text">${item.dateTime}</span>
-                        </td>
-                        <td><span class="sugar-badge">${item.bloodsugar} mg/dL</span></td>
-                        <td>
-                            <div class="btn-action-group" style="justify-content: center;">
-                                <button class="btn-action btn-edit" onclick="openEditModal(${item.row}, '${item.isoDate}', ${item.bloodsugar}, '${item.name}')">แก้ไข</button>
-                                <button class="btn-action btn-delete" onclick="openDeleteModal(${item.row}, '${item.name}', ${item.bloodsugar})">ลบ</button>
+                    const card = document.createElement('div');
+                    card.className = 'log-card';
+                    card.innerHTML = `
+                        <div class="log-header">
+                            <span class="log-no">รายการที่ ${index + 1}</span>
+                            <span class="log-time">${item.dateTime} น.</span>
+                        </div>
+                        <div class="log-body">
+                            <div class="log-name">${item.name}</div>
+                            <div class="log-sugar-wrapper">
+                                <span class="log-sugar-val">${item.bloodsugar}</span>
+                                <span class="log-sugar-unit">mg/dL</span>
                             </div>
-                        </td>
+                        </div>
+                        <div class="log-footer">
+                            <button class="btn-action btn-edit" onclick="openEditModal(${item.row}, '${item.isoDate}', ${item.bloodsugar}, '${item.name}')">
+                                ✏️ แก้ไข
+                            </button>
+                            <button class="btn-action btn-delete" onclick="openDeleteModal(${item.row}, '${item.name}', ${item.bloodsugar})">
+                                🗑️ ลบ
+                            </button>
+                        </div>
                     `;
-                    tbody.appendChild(tr);
+                    container.appendChild(card);
                 });
-                wrapper.style.display = 'block';
             } catch (error) {
                 console.error(error);
-                loading.innerHTML = '<span style="color:red;">ไม่สามารถโหลดข้อมูลประวัติได้</span>';
+                loading.innerHTML = '<span style="color:red; font-size:14px;">ไม่สามารถโหลดข้อมูลประวัติได้</span>';
             }
         }
 
-        // 🌟 ระบบ Popup ฟอร์มแก้ไขข้อมูล (Edit Modal)
+        // 🌟 ระบบ Popup ฟอร์มแก้ไขข้อมูลคงเดิม ปลอดภัย และเสถียร
         async function openEditModal(row, isoDate, currentSugar, name) {
             const lineId = document.getElementById('userSelect').value;
 
             const { value: formValues } = await Swal.fire({
-                title: 'แก้ไขบันทึกข้อมูล',
-                text: `ผู้ป่วย: คุณ ${name}`,
+                title: 'แก้ไขข้อมูลบันทึก',
+                text: `คุณ ${name}`,
                 html: `
-                    <div style="text-align: left; margin-bottom: 6px;"><label style="font-weight:600; font-size:14px;">วัน-เวลาตรวจย้อนหลัง:</label></div>
-                    <input id="swal-date" type="datetime-local" class="swal2-input" style="margin: 0 0 15px 0; width: 85%; font-family: 'Sarabun';" value="${isoDate}">
-                    <div style="text-align: left; margin-bottom: 6px;"><label style="font-weight:600; font-size:14px;">ค่าน้ำตาลในเลือด (mg/dL):</label></div>
-                    <input id="swal-sugar" type="number" step="any" class="swal2-input" style="margin: 0; width: 85%; font-family: 'Sarabun';" value="${currentSugar}">
+                    <div style="text-align: left; margin-bottom: 6px;"><label style="font-weight:600; font-size:14px; color:#555;">วัน-เวลาตรวจย้อนหลัง:</label></div>
+                    <input id="swal-date" type="datetime-local" class="swal2-input" style="margin: 0 0 15px 0; width: 85%; font-family: 'Sarabun'; font-size: 15px;" value="${isoDate}">
+                    <div style="text-align: left; margin-bottom: 6px;"><label style="font-weight:600; font-size:14px; color:#555;">ค่าน้ำตาลในเลือด (mg/dL):</label></div>
+                    <input id="swal-sugar" type="number" step="any" class="swal2-input" style="margin: 0; width: 85%; font-family: 'Sarabun'; font-size: 15px;" value="${currentSugar}">
                 `,
                 focusConfirm: false,
                 showCancelButton: true,
@@ -243,7 +263,6 @@
                     return;
                 }
 
-                // สั่งขึ้น Loading รอระบบยิงข้อมูลไป Sheets
                 Swal.fire({ title: 'กำลังปรับปรุงข้อมูล...', didOpen: () => { Swal.showLoading(); } });
 
                 let formData = new URLSearchParams();
@@ -258,7 +277,7 @@
                     const result = await response.json();
                     if(result.status === 'success') {
                         Swal.fire('สำเร็จ!', 'แก้ไขข้อมูลเรียบร้อยแล้ว', 'success');
-                        loadHistoryTable(lineId); // รีโหลดตารางให้เห็นการเปลี่ยนแปลง
+                        loadHistoryCards(lineId); // รีเฟรชข้อมูลการ์ดใหม่
                     } else {
                         throw new Error(result.message);
                     }
@@ -268,7 +287,7 @@
             }
         }
 
-        // 🌟 ระบบถามย้ำเพื่อความแน่ใจก่อนทำการลบ (Delete Modal)
+        // 🌟 ระบบยืนยันก่อนลบข้อมูลอย่างปลอดภัย
         function openDeleteModal(row, name, sugar) {
             const lineId = document.getElementById('userSelect').value;
 
@@ -283,7 +302,7 @@
                 cancelButtonText: 'ยกเลิก'
             }).then(async (result) => {
                 if (result.isConfirmed) {
-                    Swal.fire({ title: 'กำลังลบข้อมูลออกจากระบบ...', didOpen: () => { Swal.showLoading(); } });
+                    Swal.fire({ title: 'กำลังลบข้อมูล...', didOpen: () => { Swal.showLoading(); } });
 
                     let formData = new URLSearchParams();
                     formData.append('action', 'delete');
@@ -295,7 +314,7 @@
                         const result = await response.json();
                         if(result.status === 'success') {
                             Swal.fire('ลบสำเร็จ!', 'ลบรายการข้อมูลเรียบร้อยแล้ว', 'success');
-                            loadHistoryTable(lineId); // รีโหลดตารางใหม่
+                            loadHistoryCards(lineId); // รีโหลดการ์ดใหม่
                         } else {
                             throw new Error(result.message);
                         }
@@ -306,7 +325,7 @@
             });
         }
 
-        // ระบบบันทึกข้อมูลใหม่ (ของเดิม แต่เพิ่มสั่งให้โหลดตารางซ้ำอัตโนมัติเมื่อกดบันทึกสำเร็จ)
+        // ระบบส่งฟอร์มบันทึกค่าใหม่
         document.getElementById('bloodSugarForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const select = document.getElementById('userSelect');
@@ -334,7 +353,7 @@
                         confirmButtonColor: '#2e7d32'
                     });
                     document.getElementById('bloodsugar').value = '';
-                    loadHistoryTable(lineId); // 🌟 จุดเด่น: สั่งโหลดตารางซ้ำทันที ข้อมูลใหม่โผล่ทันตาไม่ต้องกดรีเฟรช
+                    loadHistoryCards(lineId); // โหลดการ์ดซ้ำทันทีเพื่อให้ข้อมูลอัปเดตตรงหน้าตาผู้ใช้
                 } else {
                     throw new Error(result.message || 'Server error');
                 }
