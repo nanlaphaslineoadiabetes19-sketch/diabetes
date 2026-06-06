@@ -45,6 +45,9 @@
             padding: 14px 16px; border: 1.5px solid var(--border-color);
             border-radius: 10px; font-size: 16px; font-family: 'Sarabun', sans-serif;
             background-color: #fafafa; transition: all 0.3s ease; color: #333;
+            /* 🌟 ปลดล็อคการควบคุมสไตล์ของ iOS */
+            -webkit-appearance: none !important;
+            appearance: none !important;
         }
         select:focus, input[type="number"]:focus, input[type="datetime-local"]:focus {
             outline: none; border-color: var(--primary-color); background-color: #fff;
@@ -105,21 +108,27 @@
         
         #table-loading { text-align: center; color: #888; padding: 20px 0; font-size: 14px; }
 
-        /* 🌟 [ชุดคำสั่งป้องกันการล้นขอบสำหรับ iPhone และสมาร์ทโฟนจอเล็ก] 🌟 */
+        /* 🌟 [ทีเด็ดเผด็จศึก iPhone + LINE OA ในหน้าจอโทรศัพท์] 🌟 */
         @media (max-width: 440px) {
             body {
-                padding: 15px 8px;
-            }
-            .container {
-                gap: 15px;
+                padding: 12px 6px;
             }
             .form-card, .history-section {
-                padding: 22px 12px; /* ลด Padding ของตัวการ์ดลง เพื่อให้ช่องอินพุตมีพื้นที่เพิ่มขึ้น */
+                padding: 22px 12px; /* ขยายพื้นที่ภายในการ์ดให้กว้างขึ้น */
             }
-            select, input[type="number"], input[type="datetime-local"] {
-                padding: 12px 8px; /* บีบพื้นที่ภายในกล่องลงเล็กน้อย */
-                font-size: 13px !important; /* ย่อขนาดตัวอักษรลงเพื่อให้คำว่า "วันพฤหัสบดีที่..." ของ iPhone ไม่ดันกล่องพัง */
-                letter-spacing: -0.4px; /* บีบตัวอักษรให้ชิดกันมากขึ้น ป้องกันข้อความยาวเกินหน้าจอ */
+            select, input[type="number"] {
+                padding: 12px 10px;
+                font-size: 14px;
+            }
+            /* เจาะจงบีบขนาดช่องเลือกวันเวลาของ iPhone โดยเฉพาะ */
+            input[type="datetime-local"] {
+                padding: 12px 4px !important; /* ลด padding ซ้ายขวาเหลือขั้นต่ำ */
+                font-size: 12px !important; /* หดขนาดฟอนต์ภาพรวม */
+                letter-spacing: -0.5px !important; /* บีบตัวอักษรให้ชิดกัน */
+            }
+            /* บังคับแกนข้อความภายในระบบของ WebKit (iOS) ให้ยอมหดตามตัวฟอนต์ */
+            input[type="datetime-local"]::-webkit-datetime-edit {
+                font-size: 12px !important;
             }
             label {
                 font-size: 14px;
@@ -218,10 +227,10 @@
                     return;
                 }
 
-                // เรียงลำดับตามเวลาจริง (เก่าไปใหม่)
+                // เรียงลำดับตามความต่อเนื่องของวันเวลา (เก่าไปใหม่)
                 data.sort((a, b) => a.isoDate.localeCompare(b.isoDate));
 
-                // รันลำดับ 1 ถึง n จากบนลงล่าง
+                // แสดงผลและรันเลขรายการใหม่ 1 ถึง n จากบนลงล่างอย่างถูกต้อง
                 data.forEach((item, index) => {
                     const card = document.createElement('div');
                     card.className = 'log-card';
@@ -262,9 +271,9 @@
                 text: `คุณ ${name}`,
                 html: `
                     <div style="text-align: left; margin-bottom: 6px;"><label style="font-weight:600; font-size:14px; color:#555;">วัน-เวลาตรวจย้อนหลัง:</label></div>
-                    <input id="swal-date" type="datetime-local" class="swal2-input" style="margin: 0 0 15px 0; width: 85%; font-family: 'Sarabun'; font-size: 13px; letter-spacing: -0.3px;" value="${isoDate}">
+                    <input id="swal-date" type="datetime-local" class="swal2-input" style="margin: 0 0 15px 0; width: 90%; padding: 10px 4px; font-family: 'Sarabun'; font-size: 12px; letter-spacing: -0.4px; -webkit-appearance:none;" value="${isoDate}">
                     <div style="text-align: left; margin-bottom: 6px;"><label style="font-weight:600; font-size:14px; color:#555;">ค่าน้ำตาลในเลือด (mg/dL):</label></div>
-                    <input id="swal-sugar" type="number" step="any" class="swal2-input" style="margin: 0; width: 85%; font-family: 'Sarabun'; font-size: 15px;" value="${currentSugar}">
+                    <input id="swal-sugar" type="number" step="any" class="swal2-input" style="margin: 0; width: 90%; font-family: 'Sarabun'; font-size: 15px;" value="${currentSugar}">
                 `,
                 focusConfirm: false,
                 showCancelButton: true,
