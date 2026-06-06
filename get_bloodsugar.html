@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>บันทึกค่าน้ำตาลในเลือด</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -108,27 +108,24 @@
         
         #table-loading { text-align: center; color: #888; padding: 20px 0; font-size: 14px; }
 
-        /* 🌟 [ทีเด็ดเผด็จศึก iPhone + LINE OA ในหน้าจอโทรศัพท์] 🌟 */
+        /* 🌟 [โซนปรับแต่งเพื่อฆ่าบั๊ก Auto-Zoom ของ iPhone] 🌟 */
         @media (max-width: 440px) {
             body {
                 padding: 12px 6px;
             }
             .form-card, .history-section {
-                padding: 22px 12px; /* ขยายพื้นที่ภายในการ์ดให้กว้างขึ้น */
+                padding: 22px 12px; 
             }
-            select, input[type="number"] {
+            /* บังคับฟอนต์ห้ามต่ำกว่า 16px เพื่อไม่ให้ iOS แอบซูมหน้าจอตอนกดจิ้ม */
+            select, input[type="number"], input[type="datetime-local"] {
                 padding: 12px 10px;
-                font-size: 14px;
+                font-size: 16px !important; 
             }
-            /* เจาะจงบีบขนาดช่องเลือกวันเวลาของ iPhone โดยเฉพาะ */
+            /* บีบเฉพาะระยะ Padding ด้านในช่องวันเวลา เพื่อให้แสดงผลในกล่องได้สวยงามไม่ล้น */
             input[type="datetime-local"] {
-                padding: 12px 4px !important; /* ลด padding ซ้ายขวาเหลือขั้นต่ำ */
-                font-size: 12px !important; /* หดขนาดฟอนต์ภาพรวม */
-                letter-spacing: -0.5px !important; /* บีบตัวอักษรให้ชิดกัน */
-            }
-            /* บังคับแกนข้อความภายในระบบของ WebKit (iOS) ให้ยอมหดตามตัวฟอนต์ */
-            input[type="datetime-local"]::-webkit-datetime-edit {
-                font-size: 12px !important;
+                padding-left: 6px !important;
+                padding-right: 6px !important;
+                letter-spacing: -0.3px !important;
             }
             label {
                 font-size: 14px;
@@ -160,7 +157,7 @@
 
                 <div class="form-group">
                     <label for="bloodsugar">ค่าน้ำตาลในเลือด (mg/dL)</label>
-                    <input type="number" id="bloodsugar" placeholder="ระบุค่าน้ำตาล" required min="0.1" step="any">
+                    <input type="number" id="bloodsugar" placeholder="ระบุค่าน้ำตาล" required min="0.1" step="any" inputmode="decimal">
                 </div>
 
                 <button type="submit" class="btn-submit">บันทึกข้อมูล</button>
@@ -227,10 +224,8 @@
                     return;
                 }
 
-                // เรียงลำดับตามความต่อเนื่องของวันเวลา (เก่าไปใหม่)
                 data.sort((a, b) => a.isoDate.localeCompare(b.isoDate));
 
-                // แสดงผลและรันเลขรายการใหม่ 1 ถึง n จากบนลงล่างอย่างถูกต้อง
                 data.forEach((item, index) => {
                     const card = document.createElement('div');
                     card.className = 'log-card';
@@ -271,9 +266,9 @@
                 text: `คุณ ${name}`,
                 html: `
                     <div style="text-align: left; margin-bottom: 6px;"><label style="font-weight:600; font-size:14px; color:#555;">วัน-เวลาตรวจย้อนหลัง:</label></div>
-                    <input id="swal-date" type="datetime-local" class="swal2-input" style="margin: 0 0 15px 0; width: 90%; padding: 10px 4px; font-family: 'Sarabun'; font-size: 12px; letter-spacing: -0.4px; -webkit-appearance:none;" value="${isoDate}">
+                    <input id="swal-date" type="datetime-local" class="swal2-input" style="margin: 0 0 15px 0; width: 90%; padding: 10px 6px; font-family: 'Sarabun'; font-size: 16px !important; -webkit-appearance:none;" value="${isoDate}">
                     <div style="text-align: left; margin-bottom: 6px;"><label style="font-weight:600; font-size:14px; color:#555;">ค่าน้ำตาลในเลือด (mg/dL):</label></div>
-                    <input id="swal-sugar" type="number" step="any" class="swal2-input" style="margin: 0; width: 90%; font-family: 'Sarabun'; font-size: 15px;" value="${currentSugar}">
+                    <input id="swal-sugar" type="number" inputmode="decimal" step="any" class="swal2-input" style="margin: 0; width: 90%; font-family: 'Sarabun'; font-size: 16px !important;" value="${currentSugar}">
                 `,
                 focusConfirm: false,
                 showCancelButton: true,
