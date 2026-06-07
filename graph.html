@@ -5,7 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>กราฟแสดงระดับน้ำตาลในเลือดสะสม</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+    
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     
     <style>
@@ -16,27 +18,32 @@
             --text-main: #333333;
         }
 
+        /* 🌟 ปรับปรุงการคำนวณพื้นที่แบบ Responsive ทั่วทั้งหน้าเว็บ */
+        *, *::before, *::after {
+            box-sizing: border-box;
+        }
+
         body {
             font-family: 'Sarabun', sans-serif;
             background-color: var(--bg-color);
-            margin: 0; padding: 20px;
+            margin: 0; padding: 15px;
             display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; box-sizing: border-box;
+            min-height: 100vh;
         }
 
         .chart-container {
             background-color: var(--card-bg); width: 100%; max-width: 600px;
-            padding: 30px 20px; border-radius: 16px;
+            padding: 25px 15px; border-radius: 16px;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08); position: relative;
         }
 
         .header-title {
             text-align: center; color: var(--text-main);
-            font-size: 22px; font-weight: 600; margin-bottom: 25px;
+            font-size: 20px; font-weight: 600; margin-bottom: 20px;
         }
 
         #loading {
-            text-align: center; color: #666; padding: 50px 0; font-size: 18px; display: block;
+            text-align: center; color: #666; padding: 50px 0; font-size: 17px; display: block;
         }
 
         #no-data {
@@ -48,11 +55,11 @@
         }
 
         #no-data h3 {
-            color: var(--primary-color); margin: 0 0 10px 0; font-size: 20px; font-weight: 600;
+            color: var(--primary-color); margin: 0 0 10px 0; font-size: 18px; font-weight: 600;
         }
 
         #no-data p {
-            color: #888888; margin: 0; font-size: 15px;
+            color: #888888; margin: 0; font-size: 14px;
         }
     </style>
 </head>
@@ -75,9 +82,11 @@
     </div>
 
     <script>
-        // 🛑 นำ URL ใหม่จากข้อแรกมาอัปเดตตรงนี้ครับ
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec';
         const LIFF_ID = '2009966517-3xJurBfY'; 
+
+        // 🌟 ลงทะเบียนปลั๊กอิน DataLabels ให้ระบบ Chart.js รับทราบ
+        Chart.register(ChartDataLabels);
 
         async function main() {
             try {
@@ -100,23 +109,20 @@
                 if (!response.ok) throw new Error("Network response was not ok");
                 const data = await response.json();
 
-                // ซ่อนตัวโหลดก่อนเป็นอันดับแรก
                 document.getElementById('loading').style.display = 'none';
 
-                // แก้ไขปัญหา: ตรวจจับกรณีฝั่งหลังบ้านส่ง Error กลับมาแทนอาร์เรย์
                 if (data && data.error) {
                     document.getElementById('loading').innerHTML = `<span style="color:red;">เกิดข้อผิดพลาด: ${data.error}</span>`;
                     document.getElementById('loading').style.display = 'block';
                     return;
                 }
 
-                // ตรวจสอบความถูกต้องของอาเรย์ข้อมูล
                 if (!Array.isArray(data) || data.length === 0) {
                     document.getElementById('no-data').style.display = 'block';
                     return;
                 }
 
-                // แมปค่าแกน X และ Y ออกมาใช้งาน
+                // ดึงเฉพาะ "วันที่ชอร์ตสั้น" เอาไปทำแกน X เพื่อความสวยงาม (ตัดเลขปีค.ศ. ทิ้งบางส่วนถ้าต้องการ แต่ใช้ค่าเดิมเซฟสุด)
                 const labels = data.map(item => item.date);
                 const values = data.map(item => item.value);
 
@@ -132,8 +138,6 @@
 
         function drawChart(labels, values) {
             const ctx = document.getElementById('bloodSugarChart').getContext('2d');
-            
-            // ป้องกันกราฟเอเรอร์กรณีค่าสูงเกินไป
             const maxVal = values.length > 0 ? Math.max(...values) : 10;
 
             new Chart(ctx, {
@@ -144,24 +148,51 @@
                         label: 'ระดับน้ำตาล (%)',
                         data: values, 
                         borderColor: '#ff5252',
-                        backgroundColor: 'rgba(255, 82, 82, 0.1)',
+                        backgroundColor: 'rgba(255, 82, 82, 0.08)',
                         borderWidth: 3,
                         pointBackgroundColor: '#ffffff',
                         pointBorderColor: '#ff5252',
                         pointBorderWidth: 2,
-                        pointRadius: 6,
-                        pointHoverRadius: 8,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
                         fill: true,
                         tension: 0.2
                     }]
                 },
                 options: {
                     responsive: true,
+                    // 🌟 1. ตั้งค่า Layout Padding ป้องกันตัวอักษรแกน Y และล่างสุดขาดหาย
+                    layout: {
+                        padding: {
+                            left: 20,
+                            right: 15,
+                            top: 25,    // เพิ่มด้านบนเพื่อไม่ให้ตัวเลขเหนือกราฟหลุดขอบ
+                            bottom: 15
+                        }
+                    },
                     plugins: {
                         legend: { display: false },
                         tooltip: {
-                            titleFont: { family: 'Sarabun', size: 14 },
-                            bodyFont: { family: 'Sarabun', size: 14 }
+                            titleFont: { family: 'Sarabun', size: 13 },
+                            bodyFont: { family: 'Sarabun', size: 13 }
+                        },
+                        // 🌟 2. การตั้งค่าแสดงตัวเลข (Data Labels) เหนือจุดวงกลมแต่ละจุด
+                        datalabels: {
+                            align: 'top',
+                            anchor: 'end',
+                            offset: 4,
+                            color: '#333333',
+                            backgroundColor: 'rgba(255, 255, 255, 0.85)', // พื้นหลังสีขาวจางๆ บังเส้น Grid ข้างหลัง
+                            borderRadius: 4,
+                            padding: { top: 2, bottom: 2, left: 4, right: 4 },
+                            font: {
+                                family: 'Sarabun',
+                                size: 12,
+                                weight: 'bold'
+                            },
+                            formatter: function(value) {
+                                return value.toFixed(1); // บังคับทศนิยม 1 ตำแหน่งสวยๆ เหมือนมืออาชีพ
+                            }
                         }
                     },
                     scales: {
@@ -169,21 +200,34 @@
                             title: {
                                 display: true,
                                 text: 'วันที่ตรวจ',
-                                font: { family: 'Sarabun', size: 15, weight: 'bold' },
-                                color: '#666'
+                                font: { family: 'Sarabun', size: 14, weight: 'bold' },
+                                color: '#666',
+                                padding: { top: 10 }
                             },
-                            grid: { display: false }
+                            grid: { display: false },
+                            // 🌟 3. ปรับแต่ง Ticks แกน X ให้ Responsive ไม่ซ้อนกันเวลามือถือตั้งตรง
+                            ticks: {
+                                font: { family: 'Sarabun', size: 10 },
+                                maxRotation: 45,
+                                minRotation: 45,
+                                autoSkip: true,       // เปิดระบบข้ามจุดอัตโนมัติหากหน้าจอแคบเกินไป
+                                maxTicksLimit: 5      // แสดงวันที่บนหน้าจอมากที่สุดไม่เกิน 5 ตัวเพื่อความสบายตา
+                            }
                         },
                         y: {
                             title: {
                                 display: true,
                                 text: 'ระดับน้ำตาลในเลือดสะสม (%)',
-                                font: { family: 'Sarabun', size: 15, weight: 'bold' },
+                                font: { family: 'Sarabun', size: 13, weight: 'bold' },
                                 color: '#ff5252'
                             },
                             beginAtZero: true,
-                            suggestedMax: maxVal + 2, 
-                            grid: { borderDash: [4, 4] }
+                            // 🌟 ขยับเพดานกราฟให้สูงขึ้นอีกนิดนึง เผื่อพื้นที่ให้ตัวเลข Datalabel แปะหัวด้านบนสุด
+                            suggestMax: maxVal + 2, 
+                            grid: { borderDash: [4, 4] },
+                            ticks: {
+                                font: { family: 'Sarabun', size: 11 }
+                            }
                         }
                     }
                 }
