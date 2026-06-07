@@ -39,19 +39,20 @@
 
         .header-title {
             text-align: center; color: var(--text-main);
-            font-size: 20px; font-weight: 600; margin-bottom: 16px;
+            font-size: 20px; font-weight: 600; margin-bottom: 20px;
         }
 
-        /* 🌟 ส่วนระบุหน่วยแกน Y ด้านบนซ้ายตามมาตรฐานสากล (ช่วยเพิ่มพื้นที่หน้าจอด้านข้าง) */
+        /* 🌟 ปรับแต่งชื่อแกน Y แนวนอนไว้มุมซ้ายบน สไตล์มินิมอล อ่านง่าย ไม่รกตา */
         .chart-unit-label {
-            font-size: 12px;
-            color: var(--primary-color);
+            font-size: 13px;
+            color: var(--text-sub);
             font-weight: 600;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
+            padding-left: 4px;
             display: none; /* เปิดแสดงผลพร้อมกราฟใน JS */
         }
 
-        /* 🌟 ตัวควบคุมความสูงกราฟไม่ให้แบนราบเมื่อเจอบนจอมือถือแนวตั้งแคบๆ */
+        /* ตัวควบคุมความสูงกราฟบนหน้าจอมือถือแนวตั้ง */
         .chart-wrapper {
             position: relative;
             width: 100%;
@@ -84,7 +85,7 @@
     <div class="chart-container">
         <div class="header-title">ระดับน้ำตาลในเลือดสะสม</div>
         
-        <div id="chartUnit" class="chart-unit-label">หน่วย: ระดับน้ำตาลในเลือดสะสม (%)</div>
+        <div id="chartUnit" class="chart-unit-label">ระดับน้ำตาล</div>
         
         <div id="loading">กำลังประมวลผลข้อมูล...</div>
         
@@ -142,10 +143,10 @@
                     return;
                 }
 
-                // 🌟 เทคนิคขั้นสูง: แปลงข้อความวันที่ยาวๆ ให้ตัดขึ้นบรรทัดใหม่ตรงช่องว่างเพื่อแยก "วันที่" กับ "เวลา"
+                // แปลงข้อความวันที่ให้ตัดขึ้นบรรทัดใหม่ตรงช่องว่างเพื่อแยก "วันที่" กับ "เวลา"
                 const labels = data.map(item => {
                     if (item.date && item.date.includes(' ')) {
-                        return item.date.split(' '); // ส่งผลให้ออกมาเป็นอาร์เรย์แบบ ['วันที่', 'เวลา'] จะขึ้นบรรทัดใหม่อัตโนมัติใน Chart.js
+                        return item.date.split(' '); 
                     }
                     return item.date;
                 });
@@ -172,7 +173,7 @@
                 data: {
                     labels: labels, 
                     datasets: [{
-                        label: 'ระดับน้ำตาล (%)',
+                        label: 'ระดับน้ำตาล',
                         data: values, 
                         borderColor: '#ff5252',
                         backgroundColor: 'rgba(255, 82, 82, 0.06)',
@@ -188,13 +189,13 @@
                 },
                 options: {
                     responsive: true,
-                    maintainAspectRatio: false, // 🌟 ปิดการล็อกสัดส่วนเดิม เพื่อให้ขยายความสูงเต็มตามค่า Wrapper CSS
+                    maintainAspectRatio: false, 
                     layout: {
                         padding: {
                             left: 5,
                             right: 15,
-                            top: 25,    // เผื่อพื้นที่ด้านบนให้ตัวเลขดึงข้อมูลไม่หลุดกรอบด้านบนสุด
-                            bottom: 5
+                            top: 20,    
+                            bottom: 25 // 🌟 เพิ่มพื้นที่ด้านล่างขอบกราฟ เพื่อป้องกันไม่ให้ข้อความเวลาบรรทัดที่ 2 โดนตัดขาด
                         }
                     },
                     plugins: {
@@ -203,13 +204,12 @@
                             titleFont: { family: 'Sarabun', size: 13 },
                             bodyFont: { family: 'Sarabun', size: 13 }
                         },
-                        // แสดงค่าแต่ละจุดบนกราฟแบบสวยงามเรียบร้อย
                         datalabels: {
                             align: 'top',
                             anchor: 'end',
-                            offset: 3,
+                            offset: 4,
                             color: '#222222',
-                            backgroundColor: 'rgba(255, 255, 255, 0.9)', // กล่องขาวใสซ่อนเส้นตารางหลังตัวเลข
+                            backgroundColor: 'rgba(255, 255, 255, 0.9)', 
                             borderRadius: 4,
                             padding: { top: 2, bottom: 2, left: 5, right: 5 },
                             font: {
@@ -227,15 +227,15 @@
                             grid: { display: false },
                             ticks: {
                                 font: { family: 'Sarabun', size: 10 },
-                                maxRotation: 0, // 🌟 ไม่ต้องหมุนหัวเอียง 45 องศาแล้ว เพราะตัวอักษรแบ่งเป็น 2 บรรทัดแนวดิ่งเรียงลงมาอย่างสวยงาม
+                                maxRotation: 0, // ตั้งตรง ไม่เอียง
                                 minRotation: 0,
-                                autoSkip: true, // ข้ามบางจุดอัตโนมัติหากมีการตรวจถี่เกินไปจนหนาแน่น
-                                maxTicksLimit: 4 // กำหนดให้บนจอมือถือแสดงไม่เกิน 4 ช่วงวันที่เพื่อความไม่แออัด
+                                autoSkip: true, 
+                                maxTicksLimit: 4 
                             }
                         },
                         y: {
                             beginAtZero: true,
-                            suggestMax: maxVal + 1.5, // ดึงเพดานกราฟให้สูงขึ้นหน่อยเพื่อไม่ให้กล่องตัวเลขด้านบนชนเพดาน
+                            suggestMax: maxVal + 1.5, 
                             grid: { borderDash: [4, 4] },
                             ticks: {
                                 font: { family: 'Sarabun', size: 11 }
