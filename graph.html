@@ -42,21 +42,20 @@
             font-size: 20px; font-weight: 600; margin-bottom: 20px;
         }
 
-        /* 🌟 ปรับแต่งชื่อแกน Y แนวนอนไว้มุมซ้ายบน สไตล์มินิมอล อ่านง่าย ไม่รกตา */
         .chart-unit-label {
             font-size: 13px;
             color: var(--text-sub);
             font-weight: 600;
             margin-bottom: 6px;
             padding-left: 4px;
-            display: none; /* เปิดแสดงผลพร้อมกราฟใน JS */
+            display: none; 
         }
 
-        /* ตัวควบคุมความสูงกราฟบนหน้าจอมือถือแนวตั้ง */
+        /* 🌟 ปรับเพิ่มความสูงของ Wrapper เล็กน้อยเพื่อให้กราฟมีพื้นที่หลังจากหักลบข้อความแนวตั้งด้านล่าง */
         .chart-wrapper {
             position: relative;
             width: 100%;
-            height: 320px; 
+            height: 350px; 
         }
 
         #loading {
@@ -106,7 +105,6 @@
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec';
         const LIFF_ID = '2009966517-3xJurBfY'; 
 
-        // ลงทะเบียนปลั๊กอิน DataLabels สำหรับแสดงตัวเลขบนจุดยอดกราฟ
         Chart.register(ChartDataLabels);
 
         async function main() {
@@ -143,14 +141,8 @@
                     return;
                 }
 
-                // แปลงข้อความวันที่ให้ตัดขึ้นบรรทัดใหม่ตรงช่องว่างเพื่อแยก "วันที่" กับ "เวลา"
-                const labels = data.map(item => {
-                    if (item.date && item.date.includes(' ')) {
-                        return item.date.split(' '); 
-                    }
-                    return item.date;
-                });
-                
+                // 🌟 ปรับปรุง: ดึงค่าข้อความวันที่ตรงๆ ไม่ต้องใช้ split() เพื่อให้เรียงเป็นเส้นตรงเส้นเดียวแนวตั้ง 90 องศา
+                const labels = data.map(item => item.date);
                 const values = data.map(item => item.value);
 
                 document.getElementById('chartUnit').style.display = 'block';
@@ -195,7 +187,7 @@
                             left: 5,
                             right: 15,
                             top: 20,    
-                            bottom: 25 // 🌟 เพิ่มพื้นที่ด้านล่างขอบกราฟ เพื่อป้องกันไม่ให้ข้อความเวลาบรรทัดที่ 2 โดนตัดขาด
+                            bottom: 95 // 🌟 ขยายพื้นที่ด้านล่างเพิ่มขึ้นเพื่อรองรับตัวอักษรแนวตั้ง 90 องศา ไม่ให้ตกขอบ
                         }
                     },
                     plugins: {
@@ -227,10 +219,9 @@
                             grid: { display: false },
                             ticks: {
                                 font: { family: 'Sarabun', size: 10 },
-                                maxRotation: 0, // ตั้งตรง ไม่เอียง
-                                minRotation: 0,
-                                autoSkip: true, 
-                                maxTicksLimit: 4 
+                                minRotation: 90, // 🌟 บังคับหมุนแนวตั้ง 90 องศาขั้นต่ำ
+                                maxRotation: 90, // 🌟 บังคับหมุนแนวตั้ง 90 องศาขั้นสูงสุด
+                                autoSkip: false  // 🌟 ปิดระบบการข้ามจุด เพื่อให้แสดงข้อความตรงครบทุกจุดในกราฟแน่นอน
                             }
                         },
                         y: {
