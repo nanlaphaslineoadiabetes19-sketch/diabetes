@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ระบบติดตามผลคนไข้ - สำหรับเจ้าหน้าที่</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.2.0"></script>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --primary-color: #2e7d32;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-main: #333333;
+            --text-sub: #666666;
+            --border: #e0e0e0;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+
+        body {
+            font-family: 'Sarabun', sans-serif; background-color: var(--bg-color);
+            margin: 0; padding: 15px; display: flex; justify-content: center; min-height: 100vh;
+        }
+
+        .container { width: 100%; max-width: 500px; display: none; /* ซ่อนจนกว่าจะผ่าน Admin Check */ }
+
+        /* Security Status Screens */
+        .status-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; height: 80vh; text-align: center; }
+        .spinner { width: 40px; height: 40px; border: 4px solid #ddd; border-top: 4px solid var(--primary-color); border-radius: 50%; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Dashboard Styles */
+        .card {
+            background: var(--card-bg); border-radius: 16px; padding: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.05); margin-bottom: 20px;
+        }
+
+        .header-title { font-size: 20px; font-weight: 600; color: var(--text-main); margin: 0 0 15px 0; display: flex; align-items: center; gap: 10px; }
+        .header-title i { color: var(--primary-color); }
+
+        /* Select Box Styling */
+        .select-group { margin-bottom: 20px; }
+        label { display: block; font-size: 14px; font-weight: 600; color: var(--text-sub); margin-bottom: 8px; }
+        select {
+            width: 100%; padding: 14px; border-radius: 10px; border: 1.5px solid var(--border);
+            font-size: 16px; font-family: 'Sarabun'; background-color: #fafafa; outline: none;
+        }
+
+        /* Chart Area */
+        .chart-unit { font-size: 12px; color: var(--primary-color); font-weight: 600; margin-bottom: 5px; }
+        .chart-wrapper { position: relative; width: 100%; height: 380px; }
+
+        /* History Cards */
+        .history-list { display: flex; flex-direction: column; gap: 12px; }
+        .log-card {
+            border: 1px solid #edf2f0; background: #fff; border-radius: 12px;
+            padding: 15px; position: relative;
+        }
+        .log-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; border-bottom: 1px dashed #eee; padding-bottom: 8px; }
+        .log-time { font-size: 12px; color: #888; }
+        .log-no { font-size: 11px; background: #f0f4f1; color: var(--primary-color); padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+        .log-body { display: flex; justify-content: space-between; align-items: center; }
+        .log-val { font-size: 22px; font-weight: 600; color: var(--primary-color); }
+        .log-unit { font-size: 12px; color: #aaa; margin-left: 4px; }
+        .log-footer { display: flex; gap: 8px; margin-top: 12px; }
+        
+        .btn-action {
+            flex: 1; padding: 10px; border: none; border-radius: 8px;
+            font-size: 14px; font-weight: 600; font-family: 'Sarabun'; cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 6px;
+        }
+        .btn-edit { background: #fff3e0; color: #f57c00; border: 1px solid #ffe0b2; }
+        .btn-delete { background: #ffebee; color: #d32f2f; border: 1px solid #ffcdd2; }
+
+        #loadingData { text-align: center; color: #999; padding: 40px 0; font-size: 14px; display: none; }
+    </style>
+</head>
+<body>
+
+    <div id="checkAdminScreen" class="status-screen">
+        <div class="spinner"></div>
+        <h3>กำลังยืนยันสิทธิ์พยาบาล...</h3>
+    </div>
+
+    <div id="mainDashboard" class="container">
+        
+        <div class="card">
+            <h2 class="header-title"><i class="fa-solid fa-hospital-user"></i> ค้นหาข้อมูลคนไข้</h2>
+            <div class="select-group">
+                <label for="patientSelect">เลือกชื่อคนไข้จากระบบ</label>
+                <select id="patientSelect" onchange="loadPatientData()">
+                    <option value="" disabled selected>กำลังโหลดรายชื่อคนไข้...</option>
+                </select>
+            </div>
+        </div>
+
+        <div id="dataSection" style="display: none;">
+            <div class="card">
+                <h2 class="header-title"><i class="fa-solid fa-chart-line"></i> กราฟติดตามระดับน้ำตาล</h2>
+                <div class="chart-unit">หน่วย: ระดับน้ำตาลในเลือดสะสม (%)</div>
+                <div class="chart-wrapper">
+                    <canvas id="patientChart"></canvas>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2 class="header-title"><i class="fa-solid fa-clock-rotate-left"></i> ประวัติการบันทึก</h2>
+                <div id="loadingData">กำลังโหลดข้อมูล...</div>
+                <div id="historyContainer" class="history-list"></div>
+            </div>
+        </div>
+
+        <div id="welcomeMessage" style="text-align: center; color: #aaa; padding: 40px 20px;">
+            <i class="fa-solid fa-magnifying-glass" style="font-size: 40px; margin-bottom: 10px;"></i>
+            <p>กรุณาเลือกชื่อคนไข้เพื่อแสดงข้อมูล</p>
+        </div>
+    </div>
+
+    <script>
+        
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec';
+        const LIFF_ID = 'https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/patient.html';
+
+        let chartInstance = null;
+        Chart.register(ChartDataLabels);
+
+        async function main() {
+            try {
+                await liff.init({ liffId: LIFF_ID });
+                if (!liff.isLoggedIn()) { liff.login(); return; }
+                const profile = await liff.getProfile();
+                
+                // ตรวจสอบสิทธิ์ Admin
+                const res = await fetch(`${SCRIPT_URL}?type=checkAdmin&line_id=${profile.userId}`);
+                const adminData = await res.json();
+
+                if (adminData.isAdmin) {
+                    document.getElementById('checkAdminScreen').style.display = 'none';
+                    document.getElementById('mainDashboard').style.display = 'block';
+                    loadPatientList();
+                } else {
+                    document.body.innerHTML = `<div class="status-screen"><h3>ไม่มีสิทธิ์เข้าถึง</h3><p>เฉพาะผู้ดูแลระบบที่ลงทะเบียนแล้วเท่านั้น</p></div>`;
+                }
+            } catch (err) {
+                Swal.fire('Error', 'ไม่สามารถเชื่อมต่อระบบได้', 'error');
+            }
+        }
+
+        // 1. โหลดรายชื่อคนไข้เข้า Dropdown
+        async function loadPatientList() {
+            try {
+                const response = await fetch(`${SCRIPT_URL}?type=getUsers`);
+                const users = await response.json();
+                const select = document.getElementById('patientSelect');
+                select.innerHTML = '<option value="" disabled selected>-- เลือกชื่อคนไข้ --</option>';
+                
+                users.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.line_id;
+                    option.textContent = user.line_name;
+                    select.appendChild(option);
+                });
+            } catch (err) {
+                console.error("Load Patients Error:", err);
+            }
+        }
+
+        // 2. เมื่อเลือกคนไข้ ให้โหลดกราฟและตาราง
+        async function loadPatientData() {
+            const lineId = document.getElementById('patientSelect').value;
+            if (!lineId) return;
+
+            document.getElementById('welcomeMessage').style.display = 'none';
+            document.getElementById('dataSection').style.display = 'block';
+            document.getElementById('loadingData').style.display = 'block';
+            document.getElementById('historyContainer').innerHTML = '';
+
+            try {
+                // ดึงข้อมูลกราฟและตารางพร้อมกัน
+                const [graphRes, historyRes] = await Promise.all([
+                    fetch(`${SCRIPT_URL}?type=getGraphData&line_id=${lineId}`),
+                    fetch(`${SCRIPT_URL}?type=getHistoryTable&line_id=${lineId}`)
+                ]);
+
+                const graphData = await graphRes.json();
+                const historyData = await historyRes.json();
+
+                document.getElementById('loadingData').style.display = 'none';
+                
+                drawChart(graphData);
+                renderHistory(historyData);
+            } catch (err) {
+                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถดึงข้อมูลคนไข้ได้', 'error');
+            }
+        }
+
+        // 3. ฟังก์ชันวาดกราฟแบบมืออาชีพ
+        function drawChart(data) {
+            const ctx = document.getElementById('patientChart').getContext('2d');
+            if (chartInstance) chartInstance.destroy();
+
+            const labels = data.map(item => item.date);
+            const values = data.map(item => item.value);
+            const maxVal = Math.max(...values, 10);
+
+            chartInstance = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: values,
+                        borderColor: '#2e7d32',
+                        backgroundColor: 'rgba(46, 125, 50, 0.05)',
+                        borderWidth: 3,
+                        pointBackgroundColor: '#fff',
+                        pointBorderColor: '#2e7d32',
+                        pointRadius: 5,
+                        fill: true,
+                        tension: 0.2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    layout: { padding: { top: 30, bottom: 90, left: 10, right: 15 } },
+                    plugins: {
+                        legend: { display: false },
+                        datalabels: {
+                            align: 'top', anchor: 'end', offset: 5,
+                            color: '#2e7d32', font: { weight: 'bold', size: 11 },
+                            formatter: (v) => v.toFixed(1)
+                        }
+                    },
+                    scales: {
+                        x: {
+                            grid: { display: false },
+                            title: { display: true, text: 'วันที่บันทึก', font: { family: 'Sarabun', size: 12, weight: 'bold' }, padding: { top: 15 } },
+                            ticks: { font: { size: 10 }, minRotation: 80, maxRotation: 80, autoSkip: false }
+                        },
+                        y: { beginAtZero: true, suggestedMax: maxVal + 1.5, grid: { borderDash: [4, 4] } }
+                    }
+                }
+            });
+        }
+
+        // 4. แสดงการ์ดประวัติ พร้อมปุ่ม แก้ไข/ลบ
+        function renderHistory(data) {
+            const container = document.getElementById('historyContainer');
+            container.innerHTML = '';
+
+            if (!data.length) {
+                container.innerHTML = '<p style="text-align:center; color:#999;">ไม่พบประวัติการบันทึก</p>';
+                return;
+            }
+
+            data.sort((a, b) => b.isoDate.localeCompare(a.isoDate)); // เรียงล่าสุดขึ้นก่อน
+
+            data.forEach((item, index) => {
+                const card = document.createElement('div');
+                card.className = 'log-card';
+                card.innerHTML = `
+                    <div class="log-header">
+                        <span class="log-no">รายการที่ ${data.length - index}</span>
+                        <span class="log-time">${item.dateTime} น.</span>
+                    </div>
+                    <div class="log-body">
+                        <div style="font-size:14px; font-weight:600;">ระดับน้ำตาล</div>
+                        <div class="log-val">${item.bloodsugar}<span class="log-unit">mg/dL</span></div>
+                    </div>
+                    <div class="log-footer">
+                        <button class="btn-action btn-edit" onclick="openEdit(${item.row}, '${item.isoDate}', ${item.bloodsugar})"><i class="fa-solid fa-pen-to-square"></i> แก้ไข</button>
+                        <button class="btn-action btn-delete" onclick="openDelete(${item.row})"><i class="fa-solid fa-trash"></i> ลบ</button>
+                    </div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        // 5. ระบบแก้ไข (Admin Only)
+        async function openEdit(row, isoDate, sugar) {
+            const { value: formValues } = await Swal.fire({
+                title: 'แก้ไขข้อมูลบันทึก',
+                html: `
+                    <div style="text-align:left; margin-bottom:5px;"><label>วันที่ตรวจ:</label></div>
+                    <input id="swal-date" type="datetime-local" class="swal2-input" style="font-size:16px; margin:0 0 15px 0;" value="${isoDate}">
+                    <div style="text-align:left; margin-bottom:5px;"><label>ค่าน้ำตาล (mg/dL):</label></div>
+                    <input id="swal-sugar" type="number" step="any" inputmode="decimal" class="swal2-input" style="font-size:16px; margin:0;" value="${sugar}">
+                `,
+                showCancelButton: true,
+                confirmButtonColor: '#2e7d32',
+                preConfirm: () => ({ date: document.getElementById('swal-date').value, sugar: document.getElementById('swal-sugar').value })
+            });
+
+            if (formValues) {
+                Swal.fire({ title: 'กำลังบันทึก...', didOpen: () => Swal.showLoading() });
+                const formData = new URLSearchParams();
+                formData.append('action', 'update');
+                formData.append('row', row);
+                formData.append('line_id', document.getElementById('patientSelect').value);
+                formData.append('new_date', formValues.date);
+                formData.append('new_bloodsugar', formValues.sugar);
+
+                const res = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+                const result = await res.json();
+                if (result.status === 'success') {
+                    Swal.fire('สำเร็จ', 'แก้ไขข้อมูลเรียบร้อยแล้ว', 'success');
+                    loadPatientData();
+                }
+            }
+        }
+
+        // 6. ระบบลบ (Admin Only)
+        async function openDelete(row) {
+            const confirm = await Swal.fire({
+                title: 'ยืนยันการลบ?',
+                text: "ข้อมูลจะถูกลบออกจากฐานข้อมูลอย่างถาวร!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d32f2f',
+                confirmButtonText: 'ยืนยันการลบ'
+            });
+
+            if (confirm.isConfirmed) {
+                Swal.fire({ title: 'กำลังลบ...', didOpen: () => Swal.showLoading() });
+                const formData = new URLSearchParams();
+                formData.append('action', 'delete');
+                formData.append('row', row);
+                formData.append('line_id', document.getElementById('patientSelect').value);
+
+                const res = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+                const result = await res.json();
+                if (result.status === 'success') {
+                    Swal.fire('ลบสำเร็จ', 'ข้อมูลถูกลบเรียบร้อยแล้ว', 'success');
+                    loadPatientData();
+                }
+            }
+        }
+
+        main();
+    </script>
+</body>
+</html>
