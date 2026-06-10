@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ระบบจัดการ - สำหรับเจ้าหน้าที่</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        :root {
+            --primary: #2e7d32; /* สีเขียวทางการแพทย์ */
+            --primary-hover: #1b5e20;
+            --bg: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-dark: #333333;
+            --text-muted: #666666;
+        }
+
+        * { box-sizing: border-box; font-family: 'Sarabun', sans-serif; }
+
+        body {
+            background-color: var(--bg); margin: 0; padding: 15px;
+            display: flex; flex-direction: column; align-items: center; min-height: 100vh;
+        }
+
+        .container {
+            width: 100%; max-width: 400px;
+            display: none; /* ซ่อนไว้ก่อนจนกว่าจะยืนยัน Admin */
+        }
+
+        /* Loading & Error Screens */
+        .status-screen {
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            height: 80vh; text-align: center;
+        }
+        .status-screen h3 { color: var(--text-dark); margin-bottom: 10px; }
+        .status-screen p { color: var(--text-muted); font-size: 14px; }
+        .spinner {
+            width: 40px; height: 40px; border: 4px solid #ddd;
+            border-top: 4px solid var(--primary); border-radius: 50%;
+            animation: spin 1s linear infinite; margin-bottom: 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        /* Profile Area */
+        .profile-section {
+            background: var(--card-bg); padding: 20px; border-radius: 16px;
+            display: flex; align-items: center; gap: 15px; margin-bottom: 25px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+        .profile-img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; }
+        .profile-info h2 { margin: 0; font-size: 18px; color: var(--text-dark); }
+        .profile-info p { margin: 0; font-size: 13px; color: var(--primary); font-weight: 600; }
+
+        /* Menu Grid */
+        .menu-grid { display: flex; flex-direction: column; gap: 15px; }
+
+        .menu-btn {
+            background: var(--card-bg); border: none; padding: 20px;
+            border-radius: 16px; display: flex; align-items: center; gap: 15px;
+            width: 100%; cursor: pointer; transition: all 0.2s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05); text-decoration: none;
+        }
+        .menu-btn:active { transform: scale(0.98); }
+        .menu-icon {
+            width: 50px; height: 50px; border-radius: 12px;
+            display: flex; justify-content: center; align-items: center;
+        }
+        
+        /* Icon Colors */
+        .bg-blue { background: #e3f2fd; color: #1976d2; }
+        .bg-green { background: #e8f5e9; color: #388e3c; }
+        .bg-orange { background: #fff3e0; color: #f57c00; }
+
+        .menu-icon svg { width: 28px; height: 28px; fill: currentColor; }
+        .menu-text { text-align: left; }
+        .menu-text h3 { margin: 0; font-size: 16px; color: var(--text-dark); }
+        .menu-text p { margin: 4px 0 0 0; font-size: 12px; color: var(--text-muted); }
+
+    </style>
+</head>
+<body>
+
+    <div id="loadingScreen" class="status-screen">
+        <div class="spinner"></div>
+        <h3>กำลังตรวจสอบสิทธิ์...</h3>
+        <p>กรุณารอสักครู่ ระบบกำลังตรวจสอบข้อมูลของคุณ</p>
+    </div>
+
+    <div id="errorScreen" class="status-screen" style="display: none;">
+        <svg style="width:60px; height:60px; fill:#ff5252; margin-bottom:15px;" viewBox="0 0 24 24">
+            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm1 15h-2v-2h2v2zm0-4h-2V7h2v6z"/>
+        </svg>
+        <h3>ไม่มีสิทธิ์เข้าถึง</h3>
+        <p>หน้านี้สงวนไว้สำหรับเจ้าหน้าที่และพยาบาลเท่านั้น<br>หากคุณเป็นเจ้าหน้าที่ กรุณาติดต่อผู้ดูแลระบบ</p>
+    </div>
+
+    <div id="mainContainer" class="container">
+        
+        <div class="profile-section">
+            <img id="userImg" src="https://via.placeholder.com/60" alt="Profile" class="profile-img">
+            <div class="profile-info">
+                <h2 id="userName">ชื่อผู้ใช้งาน</h2>
+                <p>ระดับ: ผู้ดูแลระบบ (Admin)</p>
+            </div>
+        </div>
+
+        <div class="menu-grid">
+            
+            <button class="menu-btn" onclick="shareAdminInvite()">
+                <div class="menu-icon bg-blue">
+                    <svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                </div>
+                <div class="menu-text">
+                    <h3>แต่งตั้ง Admin</h3>
+                    <p>ส่งลิงก์เชิญเจ้าหน้าที่ท่านอื่นเข้าระบบ</p>
+                </div>
+            </button>
+
+            <a href="patient.html" class="menu-btn">
+                <div class="menu-icon bg-green">
+                    <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
+                </div>
+                <div class="menu-text">
+                    <h3>กราฟข้อมูลคนไข้</h3>
+                    <p>ดูประวัติและระดับน้ำตาลสะสมรายบุคคล</p>
+                </div>
+            </a>
+
+            <a href="set_medicine.html" class="menu-btn">
+                <div class="menu-icon bg-orange">
+                    <svg viewBox="0 0 24 24"><path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm.5-13H11v6l5.25 3.15.75-1.23-4.5-2.67z"/></svg>
+                </div>
+                <div class="menu-text">
+                    <h3>ตั้งเวลากินยา</h3>
+                    <p>กำหนดการแจ้งเตือนเตือนกินยาให้คนไข้</p>
+                </div>
+            </a>
+
+        </div>
+    </div>
+
+    <script>
+        // 🌟 ตั้งค่า LIFF ID และ URL ของ Apps Script
+        const LIFF_ID = 'ใส่_LIFF_ID_ของ_หน้า_nurse_ที่นี่'; 
+        const SCRIPT_URL = 'ใส่_URL_ของ_Apps_Script_ที่นี่';
+        
+        let currentUserProfile = null;
+
+        async function main() {
+            try {
+                await liff.init({ liffId: LIFF_ID });
+                if (!liff.isLoggedIn()) {
+                    liff.login();
+                    return;
+                }
+                
+                currentUserProfile = await liff.getProfile();
+                document.getElementById('userImg').src = currentUserProfile.pictureUrl;
+                document.getElementById('userName').innerText = currentUserProfile.displayName;
+
+                // ตรวจสอบสิทธิ์ Admin 
+                checkAdminStatus(currentUserProfile.userId);
+
+            } catch (err) {
+                console.error("LIFF Error:", err);
+                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อระบบ LINE ได้', 'error');
+            }
+        }
+
+        async function checkAdminStatus(userId) {
+            try {
+                // เรียก API ไปที่ Apps Script เพื่อเช็คว่ามี userId นี้ใน Sheet admin หรือไม่
+                const response = await fetch(`${SCRIPT_URL}?type=checkAdmin&line_id=${userId}`);
+                const data = await response.json();
+
+                document.getElementById('loadingScreen').style.display = 'none';
+
+                if (data.isAdmin) {
+                    // เป็น Admin ให้แสดงหน้า Dashboard
+                    document.getElementById('mainContainer').style.display = 'block';
+                } else {
+                    // ไม่ใช่ Admin ให้แสดงหน้า Error
+                    document.getElementById('errorScreen').style.display = 'flex';
+                }
+            } catch (error) {
+                Swal.fire('ข้อผิดพลาด', 'ไม่สามารถตรวจสอบสิทธิ์ได้', 'error');
+            }
+        }
+
+        function shareAdminInvite() {
+            // สร้างข้อความเชิญพร้อมลิงก์ไปยังหน้าลงทะเบียน Admin (ต้องสร้างไฟล์ add_admin.html แยกอีก 1 หน้า)
+            const inviteUrl = "https://liff.line.me/ใส่_LIFF_ID_หน้า_ลงทะเบียน_ADMIN";
+            
+            if (liff.isApiAvailable('shareTargetPicker')) {
+                liff.shareTargetPicker([{
+                    type: "flex",
+                    altText: "คำเชิญให้เป็นผู้ดูแลระบบ",
+                    contents: {
+                        type: "bubble",
+                        body: {
+                            type: "box",
+                            layout: "vertical",
+                            contents: [
+                                { type: "text", text: "คำเชิญเข้าร่วมทีมแพทย์/พยาบาล", weight: "bold", size: "md", color: "#2e7d32" },
+                                { type: "text", text: "กรุณากดปุ่มด้านล่างเพื่อยืนยันตัวตนการเป็นผู้ดูแลระบบ", wrap: true, size: "sm", margin: "md" }
+                            ]
+                        },
+                        footer: {
+                            type: "box",
+                            layout: "vertical",
+                            contents: [
+                                {
+                                    type: "button",
+                                    style: "primary",
+                                    color: "#2e7d32",
+                                    action: { type: "uri", label: "ยืนยันเป็น Admin", uri: inviteUrl }
+                                }
+                            ]
+                        }
+                    }
+                }]).then(function (res) {
+                    if (res) Swal.fire('ส่งสำเร็จ', 'ส่งคำเชิญเรียบร้อยแล้ว', 'success');
+                }).catch(function (error) {
+                    console.log(error);
+                });
+            } else {
+                Swal.fire('ข้อผิดพลาด', 'อุปกรณ์ของคุณไม่รองรับการส่งข้อความผ่าน LINE', 'warning');
+            }
+        }
+
+        main();
+    </script>
+</body>
+</html>
