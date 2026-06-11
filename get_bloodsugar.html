@@ -6,6 +6,7 @@
     <title>บันทึกค่าน้ำตาลสะสม</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <style>
         /* บังคับคำนวณขนาดกล่องรวม Border และ Padding ทั้งหน้าเว็บ */
         * {
@@ -20,6 +21,7 @@
             --border-color: #e0e0e0;
             --edit-color: #f57c00;
             --delete-color: #d32f2f;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* 🌟 เพิ่มตัวแปร shadow ที่ขาดไป */
         }
 
         body {
@@ -68,7 +70,7 @@
             max-width: 500px;
             width: 100%; /* ปรับให้เต็มจอในมือถือเพื่อความสวยงาม */
             background: rgba(255, 255, 255, 0.98);
-            box-shadow: 0 20px 50px var(--shadow);
+            box-shadow: var(--shadow);
             border-radius: 0 0 30px 30px; /* มนเฉพาะด้านล่างเพื่อให้ด้านบนชิดขอบ */
             padding: 15px 25px 40px; /* ปรับ padding ตัวแรกให้เหลือน้อย เพื่อให้เนื้อหาดันขึ้นบนสุด */
             text-align: left;
@@ -226,15 +228,21 @@
         <div class="history-section" id="historyCard">
             <h3 class="section-title">ประวัติการบันทึกค่าน้ำตาล</h3>
             <div id="table-loading">กำลังโหลดประวัติข้อมูล...</div>
-            <div id="cards-container">
-                </div>
+            <div id="cards-container"></div>
         </div>
     </div>
 
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec'; 
 
-        document.addEventListener('DOMContentLoaded', loadUsers);
+        document.addEventListener('DOMContentLoaded', () => {
+            loadUsers();
+            // 🌟 เริ่มต้นระบบ LIFF หากเปิดใช้งานในแอปพลิเคชัน LINE (ระบุ liffId ของคุณถ้าจำเป็น)
+            if (typeof liff !== 'undefined') {
+                liff.init({ liffId: "YOUR_LIFF_ID_HERE" }).catch(err => console.error("LIFF Init Error:", err));
+            }
+        });
+
         document.getElementById('userSelect').addEventListener('change', function() {
             loadHistoryCards(this.value);
         });
@@ -283,21 +291,23 @@
                     return;
                 }
 
-                data.sort((a, b) => a.isoDate.localeCompare(b.isoDate));
+                // 🌟 ปรับให้เรียงลำดับจาก "วันที่ล่าสุดขึ้นก่อน" (Descensding) เพื่อความสะดวกในการอ่านล๊อกใหม่
+                data.sort((a, b) => b.isoDate.localeCompare(a.isoDate));
 
                 data.forEach((item, index) => {
                     const card = document.createElement('div');
                     card.className = 'log-card';
+                    // 🌟 แก้ไขหน่วยแสดงผลจาก mg/dL เป็น % ให้ตรงตามบริบทค่าน้ำตาลสะสม (HbA1c)
                     card.innerHTML = `
                         <div class="log-header">
-                            <span class="log-no">รายการที่ ${index + 1}</span>
+                            <span class="log-no">รายการที่ ${data.length - index}</span>
                             <span class="log-time">${item.dateTime} น.</span>
                         </div>
                         <div class="log-body">
                             <div class="log-name">${item.name}</div>
                             <div class="log-sugar-wrapper">
                                 <span class="log-sugar-val">${item.bloodsugar}</span>
-                                <span class="log-sugar-unit">mg/dL</span>
+                                <span class="log-sugar-unit">%</span>
                             </div>
                         </div>
                         <div class="log-footer">
@@ -377,7 +387,7 @@
 
             Swal.fire({
                 title: 'ยืนยันการลบข้อมูล?',
-                text: `คุณกำลังจะลบรายการค่าน้ำตาล ${sugar} mg/dL ของคุณ ${name} ออกจากระบบอย่างถาวร!`,
+                text: `คุณกำลังจะลบรายการค่าน้ำตาลสะสม ${sugar}% ของคุณ ${name} ออกจากระบบอย่างถาวร!`, // 🌟 เปลี่ยนหน่วยเป็น %
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d32f2f',
@@ -421,6 +431,7 @@
             Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
             let formData = new URLSearchParams();
+            formData.append('action', 'insert'); // 🌟 ส่งแอ็กชันบ่งบอกชัดเจนว่าต้องการกดบันทึกใหม่
             formData.append('line_id', lineId);
             formData.append('line_name', lineName);
             formData.append('bloodsugar', bloodsugarValue);
@@ -434,7 +445,7 @@
                     await Swal.fire({
                         icon: 'success',
                         title: 'บันทึกสำเร็จ',
-                        text: `บันทึกค่าน้ำตาล ${bloodsugarValue} mg/dL ของคุณ ${lineName} เรียบร้อยแล้ว`,
+                        text: `บันทึกค่าน้ำตาลสะสม ${bloodsugarValue}% ของคุณ ${lineName} เรียบร้อยแล้ว`, // 🌟 เปลี่ยนหน่วยเป็น %
                         confirmButtonColor: '#2e7d32'
                     });
                     
@@ -452,8 +463,12 @@
         });
 
         function goBackMain() {
-            var baseUrl = 'https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes';
-            window.location.href = baseUrl + '/nurse.html';
+            if (typeof liff !== 'undefined' && liff.isInClient()) {
+                liff.closeWindow(); 
+            } else {
+                var baseUrl = 'https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes';
+                window.location.href = baseUrl + '/nurse.html';
+            }
         }
     </script>
 </body>
