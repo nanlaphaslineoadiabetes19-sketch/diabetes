@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ระบบติดตามผลคนไข้ - สำหรับเจ้าหน้าที่</title>
+    <title>ระบบติดตามผลคนไข้ - สำหรับ Admin</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -103,15 +103,15 @@
 
         <div id="dataSection" style="display: none;">
             <div class="card">
-                <h2 class="header-title"><i class="fa-solid fa-chart-line"></i> กราฟติดตามระดับน้ำตาล</h2>
-                <div class="chart-unit">หน่วย: ระดับน้ำตาลในเลือดสะสม (%)</div>
+                <h2 class="header-title"><i class="fa-solid fa-chart-line"></i> ระดับน้ำตาลสะสม</h2>
+                <div class="chart-unit">ระดับน้ำตาลสะสม(%)</div>
                 <div class="chart-wrapper">
                     <canvas id="patientChart"></canvas>
                 </div>
             </div>
 
             <div class="card">
-                <h2 class="header-title"><i class="fa-solid fa-clock-rotate-left"></i> ประวัติการบันทึก</h2>
+                <h2 class="header-title"><i class="fa-solid fa-clock-rotate-left"></i> ประวัติการบันทึกค่าน้ำตาล</h2>
                 <div id="loadingData">กำลังโหลดข้อมูล...</div>
                 <div id="historyContainer" class="history-list"></div>
             </div>
@@ -286,11 +286,11 @@
         // 5. ระบบแก้ไข (Admin Only)
         async function openEdit(row, isoDate, sugar) {
             const { value: formValues } = await Swal.fire({
-                title: 'แก้ไขข้อมูลบันทึก',
+                title: 'แก้ไขข้อมูล',
                 html: `
                     <div style="text-align:left; margin-bottom:5px;"><label>วันที่ตรวจ:</label></div>
                     <input id="swal-date" type="datetime-local" class="swal2-input" style="font-size:16px; margin:0 0 15px 0;" value="${isoDate}">
-                    <div style="text-align:left; margin-bottom:5px;"><label>ค่าน้ำตาล (mg/dL):</label></div>
+                    <div style="text-align:left; margin-bottom:5px;"><label>ค่าน้ำตาลสะสม(%):</label></div>
                     <input id="swal-sugar" type="number" step="any" inputmode="decimal" class="swal2-input" style="font-size:16px; margin:0;" value="${sugar}">
                 `,
                 showCancelButton: true,
