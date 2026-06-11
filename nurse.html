@@ -74,7 +74,8 @@
         .bg-green { background: #e8f5e9; color: #388e3c; }
         .bg-orange { background: #fff3e0; color: #f57c00; }
         .bg-red { background: #ffebee; color: #c62828; }
-        .bg-teal { background: #e0f7fa; color: #00838f; } /* 🌟 เพิ่มสีฟ้าอมเขียวสำหรับปุ่มใหม่ */
+        .bg-teal { background: #e0f7fa; color: #00838f; }
+        .bg-purple { background: #f3e5f5; color: #7b1fa2; } /* 🌟 เพิ่มสีม่วงสำหรับการนัดหมาย */
 
         .menu-icon svg { width: 28px; height: 28px; fill: currentColor; }
         .menu-text { text-align: left; }
@@ -113,7 +114,7 @@
             
             <button class="menu-btn" onclick="shareAdminInvite()">
                 <div class="menu-icon bg-blue">
-                    <svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                    <svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
                 </div>
                 <div class="menu-text">
                     <h3>แต่งตั้ง Admin</h3>
@@ -161,6 +162,16 @@
                 </div>
             </a>
 
+            <a href="health_care_services.html" class="menu-btn">
+                <div class="menu-icon bg-purple">
+                    <svg viewBox="0 0 24 24"><path d="M19 3h-1V1h-2v2H8V1H6v2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V8h14v11zM7 10h5v5H7v-5z"/></svg>
+                </div>
+                <div class="menu-text">
+                    <h3>การนัดผู้ป่วย</h3>
+                    <p>จัดการวันนัดหมายและตารางนัดตรวจของคนไข้</p>
+                </div>
+            </a>
+
         </div>
     </div>
 
@@ -171,15 +182,12 @@
         let currentUserProfile = null;
 
         async function main() {
-            // 🌟 1. ตรวจสอบก่อนเลยว่ากดมาจากลิงก์เชิญของเพื่อนหรือไม่
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('page') === 'registerAdmin') {
-                // ถ้าใช่ ให้เปลี่ยนหน้าไป register_admin.html ทันที
                 window.location.href = 'register_admin.html';
                 return; 
             }
         
-            // 2. ถ้าไม่ใช่ลิงก์เชิญ (แปลว่าเป็นพยาบาลเข้าใช้งานปกติ) ให้ทำงานตามขั้นตอนเดิม
             try {
                 await liff.init({ liffId: LIFF_ID });
                 if (!liff.isLoggedIn()) {
@@ -215,17 +223,14 @@
             }
         }
 
-        // 🌟 ฟังก์ชันสำหรับปุ่ม "ยกเลิก Admin" (เวอร์ชันป้องกัน Super Admin)
         async function removeAdminMenu() {
             try {
-                // 1. แสดง Loading รอโหลดข้อมูลรายชื่อจาก ชีต
                 Swal.fire({
                     title: 'กำลังดึงข้อมูลรายชื่อ...',
                     allowOutsideClick: false,
                     didOpen: () => { Swal.showLoading(); }
                 });
         
-                // 2. ยิงไปขอรายชื่อ Admin ทั้งหมดจาก Google Apps Script
                 const response = await fetch(`${SCRIPT_URL}?type=getAdmins`);
                 const admins = await response.json();
                 Swal.close();
@@ -235,13 +240,11 @@
                     return;
                 }
         
-                // 3. แปลงข้อมูลมาทำเป็นตัวเลือก Dropdown สำหรับ SweetAlert2
                 const options = {};
                 admins.forEach(admin => {
                     options[admin.line_id] = admin.line_name;
                 });
         
-                // 4. เปิดกล่องแสดงรายชื่อให้เลือกลบ
                 const { value: selectedLineId } = await Swal.fire({
                     title: 'เลือก Admin ที่ต้องการลบ',
                     input: 'select',
@@ -258,11 +261,9 @@
                     }
                 });
         
-                // 5. หากผู้ใช้งานเลือกรายชื่อ และกด "ถัดไป"
                 if (selectedLineId) {
                     const adminName = options[selectedLineId];
         
-                    // 👑 บล็อกไม่ให้ลบ Super Admin เด็ดขาด ไม่ว่าใครจะเป็นคนกด
                     const SUPER_ADMIN_ID = 'U174011434f0eb90f0b2950ad305c1610';
                     if (selectedLineId === SUPER_ADMIN_ID) {
                         Swal.fire({
@@ -271,16 +272,14 @@
                             icon: 'error',
                             confirmButtonColor: '#c62828'
                         });
-                        return; // เด้งออกทันที ไม่ทำงานต่อ
+                        return;
                     }
         
-                    // บล็อกไม่ให้ลบตัวเองป้องกันกรณีระบบล็อคเข้าไม่ได้อีกเลย
                     if (selectedLineId === currentUserProfile.userId) {
                         Swal.fire('ปฏิเสธการทำรายการ', 'คุณไม่สามารถลบสิทธิ์ Admin ของตัวเองได้ค่ะ', 'error');
                         return;
                     }
         
-                    // 6. หน้าจอยืนยันขั้นสุดท้าย (Confirm Double Check)
                     const confirmResult = await Swal.fire({
                         title: 'ยืนยันการลบสิทธิ์ใช่หรือไม่?',
                         text: `คุณกำลังจะลบสิทธิ์ผู้ดูแลระบบของ "${adminName}" การดำเนินการนี้ไม่สามารถย้อนคืนได้`,
@@ -298,7 +297,6 @@
                             didOpen: () => { Swal.showLoading(); }
                         });
         
-                        // 7. ส่งคำสั่งไปลบแถวข้อมูลใน Google Sheet
                         const deleteResponse = await fetch(`${SCRIPT_URL}?type=deleteAdmin&line_id=${selectedLineId}`);
                         const delResult = await deleteResponse.json();
         
