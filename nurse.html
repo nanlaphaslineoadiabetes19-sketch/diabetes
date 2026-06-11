@@ -204,7 +204,7 @@
             }
         }
 
-        // 🌟 ฟังก์ชันใหม่สำหรับปุ่ม "ยกเลิก Admin"
+        // 🌟 ฟังก์ชันสำหรับปุ่ม "ยกเลิก Admin" (เวอร์ชันป้องกัน Super Admin)
         async function removeAdminMenu() {
             try {
                 // 1. แสดง Loading รอโหลดข้อมูลรายชื่อจาก ชีต
@@ -213,23 +213,23 @@
                     allowOutsideClick: false,
                     didOpen: () => { Swal.showLoading(); }
                 });
-
+        
                 // 2. ยิงไปขอรายชื่อ Admin ทั้งหมดจาก Google Apps Script
                 const response = await fetch(`${SCRIPT_URL}?type=getAdmins`);
                 const admins = await response.json();
                 Swal.close();
-
+        
                 if (!admins || admins.length === 0) {
                     Swal.fire('แจ้งเตือน', 'ไม่พบรายชื่อผู้ดูแลระบบในระบบ', 'info');
                     return;
                 }
-
+        
                 // 3. แปลงข้อมูลมาทำเป็นตัวเลือก Dropdown สำหรับ SweetAlert2
                 const options = {};
                 admins.forEach(admin => {
                     options[admin.line_id] = admin.line_name;
                 });
-
+        
                 // 4. เปิดกล่องแสดงรายชื่อให้เลือกลบ
                 const { value: selectedLineId } = await Swal.fire({
                     title: 'เลือก Admin ที่ต้องการลบ',
@@ -246,17 +246,29 @@
                         });
                     }
                 });
-
+        
                 // 5. หากผู้ใช้งานเลือกรายชื่อ และกด "ถัดไป"
                 if (selectedLineId) {
                     const adminName = options[selectedLineId];
-
+        
+                    // 👑 [เพิ่มใหม่] บล็อกไม่ให้ลบ Super Admin เด็ดขาด ไม่ว่าใครจะเป็นคนกด
+                    const SUPER_ADMIN_ID = 'U174011434f0eb90f0b2950ad305c1610';
+                    if (selectedLineId === SUPER_ADMIN_ID) {
+                        Swal.fire({
+                            title: 'ปฏิเสธการทำรายการ!',
+                            text: `คุณไม่สามารถลบสิทธิ์ของ ${adminName} ได้ เนื่องจากเป็นบัญชี Super Admin ของระบบ`,
+                            icon: 'error',
+                            confirmButtonColor: '#c62828'
+                        });
+                        return; // เด้งออกทันที ไม่ทำงานต่อ
+                    }
+        
                     // บล็อกไม่ให้ลบตัวเองป้องกันกรณีระบบล็อคเข้าไม่ได้อีกเลย
                     if (selectedLineId === currentUserProfile.userId) {
                         Swal.fire('ปฏิเสธการทำรายการ', 'คุณไม่สามารถลบสิทธิ์ Admin ของตัวเองได้ครับ', 'error');
                         return;
                     }
-
+        
                     // 6. หน้าจอยืนยันขั้นสุดท้าย (Confirm Double Check)
                     const confirmResult = await Swal.fire({
                         title: 'ยืนยันการลบสิทธิ์ใช่หรือไม่?',
@@ -267,18 +279,18 @@
                         cancelButtonText: 'ยกเลิก',
                         confirmButtonText: 'ใช่, ยืนยันการลบ'
                     });
-
+        
                     if (confirmResult.isConfirmed) {
                         Swal.fire({
                             title: 'กำลังลบข้อมูล...',
                             allowOutsideClick: false,
                             didOpen: () => { Swal.showLoading(); }
                         });
-
+        
                         // 7. ส่งคำสั่งไปลบแถวข้อมูลใน Google Sheet
                         const deleteResponse = await fetch(`${SCRIPT_URL}?type=deleteAdmin&line_id=${selectedLineId}`);
                         const delResult = await deleteResponse.json();
-
+        
                         if (delResult.success) {
                             Swal.fire({
                                 title: 'ลบสำเร็จ!',
@@ -291,7 +303,7 @@
                         }
                     }
                 }
-
+        
             } catch (error) {
                 console.error(error);
                 Swal.fire('ข้อผิดพลาด', 'เกิดปัญหาในการเชื่อมต่อฐานข้อมูล', 'error');
