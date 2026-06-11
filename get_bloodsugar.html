@@ -27,16 +27,28 @@
             margin: 0; display: flex; justify-content: center; align-items: flex-start;
             min-height: 100vh; padding: 20px 15px;
         }
+
+        /* ปุ่มกลับหน้าหลักแบบ Fixed (ลอยค้าง) */
+        .nav-bar-fixed {
+            position: fixed !important;
+            top: 15px !important;
+            left: 15px !important;
+            z-index: 99999 !important;
+        }
+        
         .container {
             width: 100%; max-width: 480px; display: flex; flex-direction: column; gap: 20px;
         }
+        
         .form-card, .history-section {
             background-color: var(--card-bg); width: 100%;
             padding: 30px 20px; border-radius: 16px; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.05);
         }
+        
         .header { text-align: center; margin-bottom: 25px; }
         .header h2 { margin: 0; color: var(--primary-color); font-weight: 600; font-size: 22px; }
         .header p { margin: 5px 0 0; color: #666; font-size: 13px; }
+        
         .form-group { margin-bottom: 20px; width: 100%; }
         label { display: block; margin-bottom: 8px; color: var(--text-main); font-weight: 600; font-size: 15px; }
         
@@ -49,19 +61,23 @@
             -webkit-appearance: none !important;
             appearance: none !important;
         }
+        
         select:focus, input[type="number"]:focus, input[type="datetime-local"]:focus {
             outline: none; border-color: var(--primary-color); background-color: #fff;
             box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.1);
         }
+        
         .btn-submit {
             display: block; width: 100%; padding: 16px; background-color: var(--primary-color); color: white;
             border: none; border-radius: 10px; font-size: 18px; font-weight: 600;
             font-family: 'Sarabun', sans-serif; cursor: pointer;
             box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2); transition: all 0.3s ease;
         }
+        
         .btn-submit:hover { background-color: var(--primary-hover); }
         
         .history-section { display: none; padding-top: 25px; } 
+        
         .section-title {
             font-size: 17px; font-weight: 600; color: #333; margin-top: 0; margin-bottom: 18px;
             border-left: 4px solid var(--primary-color); padding-left: 10px;
