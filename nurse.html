@@ -73,6 +73,7 @@
         .bg-blue { background: #e3f2fd; color: #1976d2; }
         .bg-green { background: #e8f5e9; color: #388e3c; }
         .bg-orange { background: #fff3e0; color: #f57c00; }
+        .bg-red { background: #ffebee; color: #c62828; } /* เพิ่มสีแดงสำหรับปุ่มยกเลิก */
 
         .menu-icon svg { width: 28px; height: 28px; fill: currentColor; }
         .menu-text { text-align: left; }
@@ -119,6 +120,16 @@
                 </div>
             </button>
 
+            <button class="menu-btn" onclick="removeAdminMenu()">
+                <div class="menu-icon bg-red">
+                    <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11H7v-2h10v2z"/></svg>
+                </div>
+                <div class="menu-text">
+                    <h3>ยกเลิก Admin</h3>
+                    <p>ลบสิทธิ์การเป็นผู้ดูแลระบบของเจ้าหน้าที่</p>
+                </div>
+            </button>
+
             <a href="patient.html" class="menu-btn">
                 <div class="menu-icon bg-green">
                     <svg viewBox="0 0 24 24"><path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zM9 17H7v-7h2v7zm4 0h-2V7h2v10zm4 0h-2v-4h2v4z"/></svg>
@@ -143,7 +154,6 @@
     </div>
 
     <script>
-        // 🌟 ตั้งค่า LIFF ID และ URL ของ Apps Script
         const LIFF_ID = '2009966517-pPEyRumg'; 
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec';
         
@@ -161,7 +171,6 @@
                 document.getElementById('userImg').src = currentUserProfile.pictureUrl;
                 document.getElementById('userName').innerText = currentUserProfile.displayName;
 
-                // ตรวจสอบสิทธิ์ Admin 
                 checkAdminStatus(currentUserProfile.userId);
 
             } catch (err) {
@@ -172,17 +181,13 @@
 
         async function checkAdminStatus(userId) {
             try {
-                // เรียก API ไปที่ Apps Script เพื่อเช็คว่ามี userId นี้ใน Sheet admin หรือไม่
                 const response = await fetch(`${SCRIPT_URL}?type=checkAdmin&line_id=${userId}`);
                 const data = await response.json();
-
                 document.getElementById('loadingScreen').style.display = 'none';
 
                 if (data.isAdmin) {
-                    // เป็น Admin ให้แสดงหน้า Dashboard
                     document.getElementById('mainContainer').style.display = 'block';
                 } else {
-                    // ไม่ใช่ Admin ให้แสดงหน้า Error
                     document.getElementById('errorScreen').style.display = 'flex';
                 }
             } catch (error) {
@@ -190,11 +195,102 @@
             }
         }
 
+        // 🌟 ฟังก์ชันใหม่สำหรับปุ่ม "ยกเลิก Admin"
+        async function removeAdminMenu() {
+            try {
+                // 1. แสดง Loading รอโหลดข้อมูลรายชื่อจาก ชีต
+                Swal.fire({
+                    title: 'กำลังดึงข้อมูลรายชื่อ...',
+                    allowOutsideClick: false,
+                    didOpen: () => { Swal.showLoading(); }
+                });
+
+                // 2. ยิงไปขอรายชื่อ Admin ทั้งหมดจาก Google Apps Script
+                const response = await fetch(`${SCRIPT_URL}?type=getAdmins`);
+                const admins = await response.json();
+                Swal.close();
+
+                if (!admins || admins.length === 0) {
+                    Swal.fire('แจ้งเตือน', 'ไม่พบรายชื่อผู้ดูแลระบบในระบบ', 'info');
+                    return;
+                }
+
+                // 3. แปลงข้อมูลมาทำเป็นตัวเลือก Dropdown สำหรับ SweetAlert2
+                const options = {};
+                admins.forEach(admin => {
+                    options[admin.line_id] = admin.line_name;
+                });
+
+                // 4. เปิดกล่องแสดงรายชื่อให้เลือกลบ
+                const { value: selectedLineId } = await Swal.fire({
+                    title: 'เลือก Admin ที่ต้องการลบ',
+                    input: 'select',
+                    inputOptions: options,
+                    inputPlaceholder: '-- เลือกรายชื่อเจ้าหน้าที่ --',
+                    showCancelButton: true,
+                    confirmButtonColor: '#c62828',
+                    confirmButtonText: 'ถัดไป',
+                    cancelButtonText: 'ยกเลิก',
+                    inputValidator: (value) => {
+                        return new Promise((resolve) => {
+                            if (value) { resolve(); } else { resolve('กรุณาเลือกรายชื่อก่อนกดถัดไปครับ'); }
+                        });
+                    }
+                });
+
+                // 5. หากผู้ใช้งานเลือกรายชื่อ และกด "ถัดไป"
+                if (selectedLineId) {
+                    const adminName = options[selectedLineId];
+
+                    // บล็อกไม่ให้ลบตัวเองป้องกันกรณีระบบล็อคเข้าไม่ได้อีกเลย
+                    if (selectedLineId === currentUserProfile.userId) {
+                        Swal.fire('ปฏิเสธการทำรายการ', 'คุณไม่สามารถลบสิทธิ์ Admin ของตัวเองได้ครับ', 'error');
+                        return;
+                    }
+
+                    // 6. หน้าจอยืนยันขั้นสุดท้าย (Confirm Double Check)
+                    const confirmResult = await Swal.fire({
+                        title: 'ยืนยันการลบสิทธิ์ใช่หรือไม่?',
+                        text: `คุณกำลังจะลบสิทธิ์ผู้ดูแลระบบของ "${adminName}" การดำเนินการนี้ไม่สามารถย้อนคืนได้`,
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#c62828',
+                        cancelButtonText: 'ยกเลิก',
+                        confirmButtonText: 'ใช่, ยืนยันการลบ'
+                    });
+
+                    if (confirmResult.isConfirmed) {
+                        Swal.fire({
+                            title: 'กำลังลบข้อมูล...',
+                            allowOutsideClick: false,
+                            didOpen: () => { Swal.showLoading(); }
+                        });
+
+                        // 7. ส่งคำสั่งไปลบแถวข้อมูลใน Google Sheet
+                        const deleteResponse = await fetch(`${SCRIPT_URL}?type=deleteAdmin&line_id=${selectedLineId}`);
+                        const delResult = await deleteResponse.json();
+
+                        if (delResult.success) {
+                            Swal.fire({
+                                title: 'ลบสำเร็จ!',
+                                text: `ลบสิทธิ์ Admin ของคุณ ${adminName} เรียบร้อยแล้ว`,
+                                icon: 'success',
+                                confirmButtonColor: '#2e7d32'
+                            });
+                        } else {
+                            Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถลบข้อมูลจากฐานข้อมูลได้', 'error');
+                        }
+                    }
+                }
+
+            } catch (error) {
+                console.error(error);
+                Swal.fire('ข้อผิดพลาด', 'เกิดปัญหาในการเชื่อมต่อฐานข้อมูล', 'error');
+            }
+        }
+
         function shareAdminInvite() {
-            // 🔗 ลิงก์ปลายทางที่จะให้พยาบาลคนใหม่กดลงทะเบียน
             const inviteUrl = "https://liff.line.me/2009966517-pPEyRumg";
-            
-            // ตรวจสอบสิทธิ์และเปิดหน้าต่างเลือกเพื่อนใน LINE ทันที
             if (liff.isApiAvailable('shareTargetPicker')) {
                 liff.shareTargetPicker([
                     {
@@ -204,7 +300,7 @@
                             type: "bubble",
                             hero: {
                                 type: "image",
-                                url: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=500", // รูปหน้าปกธีมแพทย์
+                                url: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=500",
                                 size: "full",
                                 aspectRatio: "20:13",
                                 aspectMode: "cover"
@@ -238,7 +334,6 @@
                     }
                 ]).then(function (res) {
                     if (res) {
-                        // ส่งสำเร็จ
                         Swal.fire({
                             title: 'ส่งคำเชิญสำเร็จ!',
                             text: 'ระบบได้ส่งการ์ดเชิญไปในแชทเพื่อนที่คุณเลือกเรียบร้อยแล้ว',
@@ -250,7 +345,6 @@
                     console.error("Share error:", error);
                 });
             } else {
-                // ตัวป้องกันกรณีเปิดบนคอมฯ หรือเบราว์เซอร์ธรรมดาที่ LINE บล็อกไว้จริงๆ
                 Swal.fire({
                     title: 'คำแนะนำการใช้งาน',
                     text: 'กรุณาเปิดลิงก์นี้ผ่านแอป LINE บนมือถือ เพื่อใช้งานระบบส่งข้อความอัจฉริยะ',
@@ -259,7 +353,6 @@
                 });
             }
         }
-        
 
         main();
     </script>
