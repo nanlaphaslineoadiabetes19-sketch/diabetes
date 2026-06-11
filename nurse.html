@@ -160,6 +160,15 @@
         let currentUserProfile = null;
 
         async function main() {
+            // 🌟 1. ตรวจสอบก่อนเลยว่ากดมาจากลิงก์เชิญของเพื่อนหรือไม่
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('page') === 'registerAdmin') {
+                // ถ้าใช่ ให้เปลี่ยนหน้าไป register_admin.html ทันที
+                window.location.href = 'register_admin.html';
+                return; 
+            }
+        
+            // 2. ถ้าไม่ใช่ลิงก์เชิญ (แปลว่าเป็นพยาบาลเข้าใช้งานปกติ) ให้ทำงานตามขั้นตอนเดิม
             try {
                 await liff.init({ liffId: LIFF_ID });
                 if (!liff.isLoggedIn()) {
@@ -170,9 +179,9 @@
                 currentUserProfile = await liff.getProfile();
                 document.getElementById('userImg').src = currentUserProfile.pictureUrl;
                 document.getElementById('userName').innerText = currentUserProfile.displayName;
-
+        
                 checkAdminStatus(currentUserProfile.userId);
-
+        
             } catch (err) {
                 console.error("LIFF Error:", err);
                 Swal.fire('ข้อผิดพลาด', 'ไม่สามารถเชื่อมต่อระบบ LINE ได้', 'error');
@@ -290,7 +299,9 @@
         }
 
         function shareAdminInvite() {
-            const inviteUrl = "https://liff.line.me/2009966517-pPEyRumg";
+            // 🌟 แก้ไขตรงนี้: ใส่พารามิเตอร์ต่อท้าย เพื่อบอกระบบให้เปลี่ยนหน้าตอนเพื่อนกดเปิด
+            const inviteUrl = "https://liff.line.me/2009966517-pPEyRumg?page=registerAdmin";
+            
             if (liff.isApiAvailable('shareTargetPicker')) {
                 liff.shareTargetPicker([
                     {
