@@ -191,56 +191,75 @@
         }
 
         function shareAdminInvite() {
+            // 🔗 ลิงก์ปลายทางที่จะให้พยาบาลคนใหม่กดลงทะเบียน
+            const inviteUrl = "https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/register_admin.html";
             
-            const inviteUrl = "https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/register_admin.html"; 
-            
-            // ตรวจสอบว่าระบบ LINE เปิดสิทธิ์ Share Target Picker หรือยัง
+            // ตรวจสอบสิทธิ์และเปิดหน้าต่างเลือกเพื่อนใน LINE ทันที
             if (liff.isApiAvailable('shareTargetPicker')) {
-                liff.shareTargetPicker([{
-                    type: "flex",
-                    altText: "📢 คำเชิญให้เป็นผู้ดูแลระบบ (Admin)",
-                    contents: {
-                        type: "bubble",
-                        body: {
-                            type: "box",
-                            layout: "vertical",
-                            contents: [
-                                { type: "text", text: "คำเชิญเข้าร่วมทีมแพทย์/พยาบาล", weight: "bold", size: "md", color: "#2e7d32" },
-                                { type: "text", text: "กรุณากดปุ่มด้านล่างเพื่อยืนยันตัวตนการเป็นผู้ดูแลระบบในระบบดูแลผู้ป่วยเบาหวาน", wrap: true, size: "sm", margin: "md" }
-                            ]
-                        },
-                        footer: {
-                            type: "box",
-                            layout: "vertical",
-                            contents: [
-                                {
-                                    type: "button",
-                                    style: "primary",
-                                    color: "#2e7d32",
-                                    action: { type: "uri", label: "ยืนยันเป็น Admin", uri: inviteUrl }
-                                }
-                            ]
+                liff.shareTargetPicker([
+                    {
+                        type: "flex",
+                        altText: "📢 คำเชิญให้เป็นผู้ดูแลระบบ (Admin)",
+                        contents: {
+                            type: "bubble",
+                            hero: {
+                                type: "image",
+                                url: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=500", // รูปหน้าปกธีมแพทย์
+                                size: "full",
+                                aspectRatio: "20:13",
+                                aspectMode: "cover"
+                            },
+                            body: {
+                                type: "box",
+                                layout: "vertical",
+                                contents: [
+                                    { type: "text", text: "คำเชิญเข้าร่วมทีมพยาบาล", weight: "bold", size: "lg", color: "#2e7d32" },
+                                    { type: "text", text: "คุณได้รับคำเชิญสิทธิ์ให้เป็นผู้ดูแลระบบ (Admin) เพื่อเข้าจัดการข้อมูลและติดตามระดับน้ำตาลคนไข้", wrap: true, size: "sm", margin: "md", color: "#555555" }
+                                ]
+                            },
+                            footer: {
+                                type: "box",
+                                layout: "vertical",
+                                spacing: "sm",
+                                contents: [
+                                    {
+                                        type: "button",
+                                        style: "primary",
+                                        color: "#2e7d32",
+                                        action: {
+                                            type: "uri",
+                                            label: "กดเพื่อลงทะเบียน Admin",
+                                            uri: inviteUrl
+                                        }
+                                    }
+                                ]
+                            }
                         }
                     }
-                }]).then(function (res) {
-                    if (res) Swal.fire('ส่งสำเร็จ', 'ส่งคำเชิญเรียบร้อยแล้ว', 'success');
+                ]).then(function (res) {
+                    if (res) {
+                        // ส่งสำเร็จ
+                        Swal.fire({
+                            title: 'ส่งคำเชิญสำเร็จ!',
+                            text: 'ระบบได้ส่งการ์ดเชิญไปในแชทเพื่อนที่คุณเลือกเรียบร้อยแล้ว',
+                            icon: 'success',
+                            confirmButtonColor: '#2e7d32'
+                        });
+                    }
                 }).catch(function (error) {
-                    console.log(error);
+                    console.error("Share error:", error);
                 });
             } else {
-                // 🌟 ระบบสำรอง: หากเปิดสิทธิ์ไม่สำเร็จ หรือเปิดบน Browser ทั่วไป จะทำการคัดลอกลิงก์ให้ทันที
-                navigator.clipboard.writeText(inviteUrl).then(() => {
-                    Swal.fire({
-                        title: 'คัดลอกลิงก์เชิญสำเร็จ!',
-                        text: 'ระบบได้คัดลอกลิงก์สมัครลงคลิปบอร์ดให้คุณแล้ว สามารถนำไปวางส่งต่อในแชท LINE ให้เจ้าหน้าที่ท่านอื่นได้เลยครับ',
-                        icon: 'success',
-                        confirmButtonColor: '#2e7d32'
-                    });
-                }).catch(() => {
-                    Swal.fire('คำเชิญ Admin', `กรุณาก๊อปปี้ลิงก์นี้ส่งให้เจ้าหน้าที่คนอื่น:\n${inviteUrl}`, 'info');
+                // ตัวป้องกันกรณีเปิดบนคอมฯ หรือเบราว์เซอร์ธรรมดาที่ LINE บล็อกไว้จริงๆ
+                Swal.fire({
+                    title: 'คำแนะนำการใช้งาน',
+                    text: 'กรุณาเปิดลิงก์นี้ผ่านแอป LINE บนมือถือ เพื่อใช้งานระบบส่งข้อความอัจฉริยะ',
+                    icon: 'info',
+                    confirmButtonColor: '#2e7d32'
                 });
             }
         }
+        
 
         main();
     </script>
