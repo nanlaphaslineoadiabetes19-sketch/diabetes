@@ -75,7 +75,7 @@
         .bg-orange { background: #fff3e0; color: #f57c00; }
         .bg-red { background: #ffebee; color: #c62828; }
         .bg-teal { background: #e0f7fa; color: #00838f; }
-        .bg-purple { background: #f3e5f5; color: #7b1fa2; } /* 🌟 เพิ่มสีม่วงสำหรับการนัดหมาย */
+        .bg-purple { background: #f3e5f5; color: #7b1fa2; }
 
         .menu-icon svg { width: 28px; height: 28px; fill: currentColor; }
         .menu-text { text-align: left; }
@@ -177,7 +177,7 @@
                 </div>
             </a>
 
-        </div>
+         </div>
     </div>
 
     <script>
@@ -287,7 +287,7 @@
         
                     const confirmResult = await Swal.fire({
                         title: 'ยืนยันการลบสิทธิ์ใช่หรือไม่?',
-                        text: `คุณกำลังจะลบสิทธิ์ผู้ดูแลระบบของ "${adminName}" การดำเนินการนี้ไม่สามารถย้อนคืนได้`,
+                        text: `คุณกำลังจะลบสิทธิ์ผู้ดูแลระบบของ "${adminName}"`,
                         icon: 'warning',
                         showCancelButton: true,
                         confirmButtonColor: '#c62828',
@@ -308,7 +308,7 @@
                         if (delResult.success) {
                             Swal.fire({
                                 title: 'ลบสำเร็จ!',
-                                text: `ลบสิทธิ์ Admin ของคุณ ${adminName} เรียบร้อยแล้ว`,
+                                text: `ปรับสถานะสิทธิ์ Admin ของคุณ ${adminName} เป็นถูกยกเลิก (revoked) เรียบร้อยแล้ว`,
                                 icon: 'success',
                                 confirmButtonColor: '#2e7d32'
                             });
@@ -325,7 +325,8 @@
         }
 
         function shareAdminInvite() {
-            const inviteUrl = "https://liff.line.me/2009966517-pPEyRumg?page=registerAdmin&line_id=" + targetId + "&t=" + Date.now();
+            // แก้ไขบั๊กจุดนี้เรียบร้อย: นำคำเชิญลิ้งก์ส่งไปลงทะเบียนหน้า registerAdmin พร้อมเวลาบิตปัจจุบันส่งไปเทียบค่าในหลังบ้าน
+            const inviteUrl = "https://liff.line.me/2009966517-pPEyRumg?page=registerAdmin&t=" + Date.now();
             
             if (liff.isApiAvailable('shareTargetPicker')) {
                 liff.shareTargetPicker([
