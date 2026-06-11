@@ -134,6 +134,11 @@
     </style>
 </head>
 <body>
+    <div class="nav-bar-fixed">
+        <button class="btn-back" onclick="goBackMain()">
+            ⬅ ย้อนกลับ
+        </button>
+    </div>
 
     <div class="container">
         <div class="form-card">
@@ -391,6 +396,11 @@
                 Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'ไม่สามารถบันทึกข้อมูลได้', confirmButtonColor: '#d33' });
             }
         });
+
+        function goBackMain() {
+            var baseUrl = 'https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes';
+            window.location.href = baseUrl + '/bloodsugar.html';
+        }
     </script>
 </body>
 </html>
