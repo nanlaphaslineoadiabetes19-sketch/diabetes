@@ -239,11 +239,24 @@
         // ฟังก์ชันช่วยดึงค่าพารามิเตอร์จาก URL (รองรับทั้งแบบปกติ และแบบที่แอป LINE แปลงลิงก์)
         function getUrlParameter(name) {
             const url = window.location.href;
+            
+            // 1. ค้นหาแบบปกติใน URL หลัก (?t=... หรือ &t=...)
             let results = new RegExp('[?&]' + name + '=([^&#]*)').exec(url);
-            if (!results) {
-                results = new RegExp('[#&]' + name + '=([^&#]*)').exec(url);
+            if (results) return decodeURIComponent(results[1]);
+            
+            // 2. ค้นหาในส่วนของ Hash เผื่อระบบเปลี่ยนโครงสร้าง (#t=...)
+            results = new RegExp('[#&]' + name + '=([^&#]*)').exec(url);
+            if (results) return decodeURIComponent(results[1]);
+            
+            // 3. 🌟 ดักจับกรณี LINE LIFF ยุบพารามิเตอร์ไปซ่อนไว้ใน liff.state (แก้บั๊กมือถือ)
+            let liffStateMatch = new RegExp('[?&]liff.state=([^&]*)').exec(url);
+            if (liffStateMatch) {
+                let liffState = decodeURIComponent(liffStateMatch[1]);
+                let innerResults = new RegExp('[?&]' + name + '=([^&#]*)').exec(liffState);
+                if (innerResults) return decodeURIComponent(innerResults[1]);
             }
-            return results ? decodeURIComponent(results[1]) : '';
+            
+            return '';
         }
 
         document.addEventListener('DOMContentLoaded', () => {
