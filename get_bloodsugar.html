@@ -8,197 +8,49 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <style>
-        /* บังคับคำนวณขนาดกล่องรวม Border และ Padding ทั้งหน้าเว็บ */
-        * {
-            box-sizing: border-box !important;
-        }
+        * { box-sizing: border-box !important; }
         :root {
-            --primary-color: #2e7d32; 
-            --primary-hover: #1b5e20;
-            --bg-color: #f4f7f6;
-            --card-bg: #ffffff;
-            --text-main: #333333;
-            --border-color: #e0e0e0;
-            --edit-color: #f57c00;
-            --delete-color: #d32f2f;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08); /* 🌟 เพิ่มตัวแปร shadow ที่ขาดไป */
+            --primary-color: #2e7d32; --primary-hover: #1b5e20;
+            --bg-color: #f4f7f6; --card-bg: #ffffff; --text-main: #333333;
+            --border-color: #e0e0e0; --edit-color: #f57c00; --delete-color: #d32f2f;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
         }
-
-        body {
-            margin: 0;
-            padding: 0;
-            background-color: var(--bg-color);
-            font-family: 'Sarabun', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: flex-start; /* ชิดบน */
-            min-height: 100vh;
-        }
-
-        /* ปุ่มกลับหน้าหลักแบบ Fixed (ลอยค้าง) */
-        .nav-bar-fixed {
-            position: fixed !important;
-            top: 15px !important;
-            left: 15px !important;
-            z-index: 99999 !important;
-        }
-
-        .btn-back {
-            padding: 10px 22px;
-            background-color: rgba(255, 255, 255, 0.8);
-            color: #555;
-            border: 1px solid #ddd;
-            border-radius: 50px;
-            cursor: pointer;
-            font-family: 'Sarabun', sans-serif;
-            font-size: 15px;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            backdrop-filter: blur(8px);
-            transition: all 0.3s ease;
-        }
-
-        .btn-back:hover {
-            background-color: white;
-            transform: scale(1.05);
-        }
-        
-        .container {
-            max-width: 500px;
-            width: 100%; /* ปรับให้เต็มจอในมือถือเพื่อความสวยงาม */
-            background: rgba(255, 255, 255, 0.98);
-            box-shadow: var(--shadow);
-            border-radius: 0 0 30px 30px; /* มนเฉพาะด้านล่างเพื่อให้ด้านบนชิดขอบ */
-            padding: 15px 25px 40px; /* ปรับ padding ตัวแรกให้เหลือน้อย เพื่อให้เนื้อหาดันขึ้นบนสุด */
-            text-align: left;
-            margin: 0; /* ขยับขึ้นบนสุด */
-            box-sizing: border-box;
-            min-height: 100vh; /* ให้สีขาวลากยาวลงมาจนสุดหน้าจอ */
-        }
-        
-        .form-card, .history-section {
-            background-color: var(--card-bg); width: 100%;
-            padding: 30px 20px; border-radius: 16px; 
-        }
-        
+        body { margin: 0; padding: 0; background-color: var(--bg-color); font-family: 'Sarabun', sans-serif; display: flex; justify-content: center; min-height: 100vh; }
+        .nav-bar-fixed { position: fixed; top: 15px; left: 15px; z-index: 999; }
+        .btn-back { padding: 10px 22px; background: rgba(255, 255, 255, 0.8); color: #555; border: 1px solid #ddd; border-radius: 50px; cursor: pointer; font-size: 15px; font-weight: 700; box-shadow: 0 4px 15px rgba(0,0,0,0.1); backdrop-filter: blur(8px); }
+        .container { max-width: 500px; width: 100%; background: #fff; box-shadow: var(--shadow); padding: 80px 25px 40px; min-height: 100vh; }
+        .form-card, .history-section { background-color: var(--card-bg); width: 100%; padding: 10px 0; }
         .header { text-align: center; margin-bottom: 25px; }
-        .header h2 { margin: 0; color: var(--primary-color); font-weight: 600; font-size: 22px; }
+        .header h2 { margin: 0; color: var(--primary-color); font-size: 22px; }
         .header p { margin: 5px 0 0; color: #666; font-size: 13px; }
-        
-        .form-group { margin-bottom: 20px; width: 100%; }
+        .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; color: var(--text-main); font-weight: 600; font-size: 15px; }
-        
-        select, input[type="number"], input[type="datetime-local"] {
-            display: block; width: 100%; max-width: 100%; min-width: 0;
-            padding: 14px 16px; border: 1.5px solid var(--border-color);
-            border-radius: 10px; font-size: 16px; font-family: 'Sarabun', sans-serif;
-            background-color: #fafafa; transition: all 0.3s ease; color: #333;
-            /* 🌟 ปลดล็อคการควบคุมสไตล์ของ iOS */
-            -webkit-appearance: none !important;
-            appearance: none !important;
-        }
-        
-        select:focus, input[type="number"]:focus, input[type="datetime-local"]:focus {
-            outline: none; border-color: var(--primary-color); background-color: #fff;
-            box-shadow: 0 0 0 4px rgba(46, 125, 50, 0.1);
-        }
-        
-        .btn-submit {
-            display: block; width: 100%; padding: 16px; background-color: var(--primary-color); color: white;
-            border: none; border-radius: 10px; font-size: 18px; font-weight: 600;
-            font-family: 'Sarabun', sans-serif; cursor: pointer;
-            box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2); transition: all 0.3s ease;
-        }
-        
-        .btn-submit:hover { background-color: var(--primary-hover); }
-        
+        select, input { display: block; width: 100%; padding: 14px 16px; border: 1.5px solid var(--border-color); border-radius: 10px; font-size: 16px; font-family: 'Sarabun', sans-serif; background-color: #fafafa; }
+        .btn-submit { display: block; width: 100%; padding: 16px; background-color: var(--primary-color); color: white; border: none; border-radius: 10px; font-size: 18px; font-weight: 600; font-family: 'Sarabun', sans-serif; cursor: pointer; box-shadow: 0 4px 12px rgba(46, 125, 50, 0.2); }
         .history-section { display: none; padding-top: 25px; } 
-        
-        .section-title {
-            font-size: 17px; font-weight: 600; color: #333; margin-top: 0; margin-bottom: 18px;
-            border-left: 4px solid var(--primary-color); padding-left: 10px;
-        }
+        .section-title { font-size: 17px; font-weight: 600; color: #333; margin-bottom: 18px; border-left: 4px solid var(--primary-color); padding-left: 10px; }
         #cards-container { display: flex; flex-direction: column; gap: 14px; }
-        
-        .log-card {
-            border: 1px solid #edf2f0; background: #fff; border-radius: 12px;
-            padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-            transition: transform 0.2s; position: relative;
-        }
-        .log-card:active { transform: scale(0.99); }
-        
-        .log-header {
-            display: flex; justify-content: space-between; align-items: center;
-            margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px dashed #eee;
-        }
-        .log-no {
-            background-color: #f0f4f1; color: var(--primary-color);
-            font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 6px;
-        }
-        .log-time { font-size: 12px; color: #757575; font-weight: 400; }
-        
-        .log-body {
-            display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;
-        }
-        .log-name { font-size: 15px; font-weight: 600; color: #2c3e50; }
-        .log-sugar-wrapper { text-align: right; }
-        .log-sugar-val { font-size: 22px; font-weight: 600; color: var(--primary-color); line-height: 1; }
-        .log-sugar-unit { font-size: 11px; color: #888; display: block; margin-top: 2px; }
-        
+        .log-card { border: 1px solid #edf2f0; background: #fff; border-radius: 12px; padding: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.02); }
+        .log-header { display: flex; justify-content: space-between; font-size: 12px; color: #757575; margin-bottom: 12px; border-bottom: 1px dashed #eee; padding-bottom: 8px; }
+        .log-no { background-color: #f0f4f1; color: var(--primary-color); font-weight: 600; padding: 3px 8px; border-radius: 6px; }
+        .log-body { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+        .log-name { font-size: 15px; font-weight: 600; }
+        .log-sugar-val { font-size: 22px; font-weight: 600; color: var(--primary-color); }
         .log-footer { display: flex; gap: 10px; }
-        .btn-action {
-            flex: 1; padding: 10px; border: none; border-radius: 8px;
-            font-size: 14px; font-weight: 600; font-family: 'Sarabun', sans-serif;
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            gap: 6px; transition: all 0.2s;
-        }
-        .btn-edit { background-color: #fff3e0; color: var(--edit-color); border: 1px solid #ffe0b2; }
-        .btn-edit:hover { background-color: var(--edit-color); color: #fff; }
-        
-        .btn-delete { background-color: #ffebee; color: var(--delete-color); border: 1px solid #ffcdd2; }
-        .btn-delete:hover { background-color: var(--delete-color); color: #fff; }
-        
-        #table-loading { text-align: center; color: #888; padding: 20px 0; font-size: 14px; }
-
-        /* 🌟 [โซนปรับแต่งเพื่อฆ่าบั๊ก Auto-Zoom ของ iPhone] 🌟 */
-        @media (max-width: 440px) {
-            body {
-                padding: 0 6px 12px 6px; /* เรียงลำดับ: บน ขวา ล่าง ซ้าย */
-            }
-            .form-card, .history-section {
-                padding: 0; 
-            }
-            /* บังคับฟอนต์ห้ามต่ำกว่า 16px เพื่อไม่ให้ iOS แอบซูมหน้าจอตอนกดจิ้ม */
-            select, input[type="number"], input[type="datetime-local"] {
-                padding: 12px 10px;
-                font-size: 16px !important; 
-            }
-            /* บีบเฉพาะระยะ Padding ด้านในช่องวันเวลา เพื่อให้แสดงผลในกล่องได้สวยงามไม่ล้น */
-            input[type="datetime-local"] {
-                padding-left: 6px !important;
-                padding-right: 6px !important;
-                letter-spacing: -0.3px !important;
-            }
-            label {
-                font-size: 14px;
-            }
-        }
+        .btn-action { flex: 1; padding: 10px; border: none; border-radius: 8px; font-size: 14px; font-weight: 600; font-family: 'Sarabun', sans-serif; cursor: pointer; }
+        .btn-edit { background-color: #fff3e0; color: var(--edit-color); }
+        .btn-delete { background-color: #ffebee; color: var(--delete-color); }
+        #table-loading { text-align: center; color: #888; padding: 20px 0; }
     </style>
 </head>
 <body>
     <div class="nav-bar-fixed">
-        <button class="btn-back" onclick="goBackMain()">
-            ⬅ ย้อนกลับ
-        </button>
+        <button class="btn-back" onclick="goBackMain()">⬅ ย้อนกลับ</button>
     </div>
 
     <div class="container">
         <div class="form-card">
             <div class="header">
-                <br><br><br>
                 <h2>บันทึกค่าน้ำตาลสะสม</h2>
                 <p>ระบบติดตามข้อมูลผู้ป่วยเบาหวาน</p>
             </div>
@@ -233,49 +85,14 @@
     </div>
 
     <script>
+        // เปลี่ยนเป็น URL Apps Script ของคุณ
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec'; 
-        let URL_T_PARAM = ''; // ตัวแปรส่วนกลางสำหรับเก็บค่า t เพื่อส่งให้ Apps Script
-
-        // ฟังก์ชันช่วยดึงค่าพารามิเตอร์จาก URL (รองรับทั้งแบบปกติ และแบบที่แอป LINE แปลงลิงก์)
-        function getUrlParameter(name) {
-            const url = window.location.href;
-            
-            // 1. ค้นหาแบบปกติใน URL หลัก (?t=... หรือ &t=...)
-            let results = new RegExp('[?&]' + name + '=([^&#]*)').exec(url);
-            if (results) return decodeURIComponent(results[1]);
-            
-            // 2. ค้นหาในส่วนของ Hash เผื่อระบบเปลี่ยนโครงสร้าง (#t=...)
-            results = new RegExp('[#&]' + name + '=([^&#]*)').exec(url);
-            if (results) return decodeURIComponent(results[1]);
-            
-            // 3. 🌟 ดักจับกรณี LINE LIFF ยุบพารามิเตอร์ไปซ่อนไว้ใน liff.state (แก้บั๊กมือถือ)
-            let liffStateMatch = new RegExp('[?&]liff.state=([^&]*)').exec(url);
-            if (liffStateMatch) {
-                let liffState = decodeURIComponent(liffStateMatch[1]);
-                let innerResults = new RegExp('[?&]' + name + '=([^&#]*)').exec(liffState);
-                if (innerResults) return decodeURIComponent(innerResults[1]);
-            }
-            
-            return '';
-        }
 
         document.addEventListener('DOMContentLoaded', () => {
-            // 🌟 1. ดึงค่า t จากลิงก์การ์ดเชิญมาเก็บไว้ก่อนเลย
-            URL_T_PARAM = getUrlParameter('t');
-
-            // 🌟 2. เริ่มต้นระบบ LIFF และเรียงลำดับให้โหลดรายชื่อเมื่อ LIFF พร้อม
             if (typeof liff !== 'undefined') {
-                liff.init({ 
-                    liffId: "2009966517-lR3UbezH" 
-                })
-                .then(() => {
-                    console.log("LIFF Init สำเร็จ");
-                    loadUsers(); // โหลดรายชื่อผู้ป่วยเมื่อระบบ LINE พร้อมแล้ว
-                })
-                .catch(err => {
-                    console.error("LIFF Init Error:", err);
-                    loadUsers(); // เผื่อรันบนคอมฯ แล้ว LIFF พัง ก็ยังให้พยายามโหลดรายชื่อมาแสดง
-                });
+                liff.init({ liffId: "2009966517-lR3UbezH" })
+                .then(() => { loadUsers(); })
+                .catch(err => { console.error(err); loadUsers(); });
             } else {
                 loadUsers();
             }
@@ -285,19 +102,14 @@
             loadHistoryCards(this.value);
         });
 
+        // 🟢 ดึงรายชื่อผู้ป่วย (ไม่มีค่า t กวนใจแล้ว)
         async function loadUsers() {
             const select = document.getElementById('userSelect');
             try {
-                // 🌟 พ่วงค่า &t= ไปด้วยเพื่อผ่านประตูด่านตรวจของ Apps Script
-                const response = await fetch(`${SCRIPT_URL}?type=getUsers&t=${URL_T_PARAM}`);
+                const response = await fetch(`${SCRIPT_URL}?type=getUsers`);
                 const users = await response.json();
                 select.innerHTML = '<option value="" disabled selected>-- กรุณาเลือกชื่อผู้ป่วย --</option>';
                 
-                if(users.error) {
-                    select.innerHTML = `<option value="" disabled selected>${users.error}</option>`;
-                    return;
-                }
-
                 users.forEach(user => {
                     const option = document.createElement('option');
                     option.value = user.line_id;
@@ -306,11 +118,11 @@
                     select.appendChild(option);
                 });
             } catch (error) {
-                console.error("Error:", error);
                 select.innerHTML = '<option value="" disabled selected>เกิดข้อผิดพลาดในการโหลดรายชื่อ</option>';
             }
         }
 
+        // 🟢 ดึงประวัติค่าน้ำตาล
         async function loadHistoryCards(lineId) {
             const section = document.getElementById('historyCard');
             const loading = document.getElementById('table-loading');
@@ -321,144 +133,41 @@
             container.innerHTML = '';
 
             try {
-                // 🌟 พ่วงค่า &t= ไปด้วยเช่นกันเวลาเรียกดูประวัติ
-                const response = await fetch(`${SCRIPT_URL}?type=getHistoryTable&line_id=${lineId}&t=${URL_T_PARAM}`);
+                const response = await fetch(`${SCRIPT_URL}?type=getHistoryTable&line_id=${lineId}`);
                 const data = await response.json();
                 loading.style.display = 'none';
 
                 if (!Array.isArray(data) || data.length === 0) {
-                    container.innerHTML = '<div style="text-align:center; color:#999; padding:25px 0; font-size:14px;">ไม่พบประวัติการบันทึกข้อมูลของผู้ป่วยรายนี้</div>';
+                    container.innerHTML = '<div style="text-align:center; color:#999; padding:25px 0;">ไม่พบประวัติการบันทึก</div>';
                     return;
                 }
 
                 data.sort((a, b) => b.isoDate.localeCompare(a.isoDate));
-
                 data.forEach((item, index) => {
                     const card = document.createElement('div');
                     card.className = 'log-card';
                     card.innerHTML = `
                         <div class="log-header">
                             <span class="log-no">รายการที่ ${data.length - index}</span>
-                            <span class="log-time">${item.dateTime} น.</span>
+                            <span>${item.dateTime} น.</span>
                         </div>
                         <div class="log-body">
                             <div class="log-name">${item.name}</div>
-                            <div class="log-sugar-wrapper">
-                                <span class="log-sugar-val">${item.bloodsugar}</span>
-                                <span class="log-sugar-unit">%</span>
-                            </div>
+                            <div><span class="log-sugar-val">${item.bloodsugar}</span> <span style="font-size:12px; color:#888;">%</span></div>
                         </div>
                         <div class="log-footer">
-                            <button class="btn-action btn-edit" onclick="openEditModal(${item.row}, '${item.isoDate}', ${item.bloodsugar}, '${item.name}')">
-                                ✏️ แก้ไข
-                            </button>
-                            <button class="btn-action btn-delete" onclick="openDeleteModal(${item.row}, '${item.name}', ${item.bloodsugar})">
-                                🗑️ ลบ
-                            </button>
+                            <button class="btn-action btn-edit" onclick="openEditModal(${item.row}, '${item.isoDate}', ${item.bloodsugar}, '${item.name}')">✏️ แก้ไข</button>
+                            <button class="btn-action btn-delete" onclick="openDeleteModal(${item.row}, '${item.name}', ${item.bloodsugar})">🗑️ ลบ</button>
                         </div>
                     `;
                     container.appendChild(card);
                 });
             } catch (error) {
-                console.error(error);
-                loading.innerHTML = '<span style="color:red; font-size:14px;">ไม่สามารถโหลดข้อมูลประวัติได้</span>';
+                loading.innerHTML = '<span style="color:red;">ไม่สามารถโหลดข้อมูลประวัติได้</span>';
             }
         }
 
-        async function openEditModal(row, isoDate, currentSugar, name) {
-            const lineId = document.getElementById('userSelect').value;
-
-            const { value: formValues } = await Swal.fire({
-                title: 'แก้ไขข้อมูลบันทึก',
-                text: `คุณ ${name}`,
-                html: `
-                    <div style="text-align: left; margin-bottom: 6px;"><label style="font-weight:600; font-size:14px; color:#555;">วัน-เวลาตรวจย้อนหลัง:</label></div>
-                    <input id="swal-date" type="datetime-local" class="swal2-input" style="margin: 0 0 15px 0; width: 90%; padding: 10px 6px; font-family: 'Sarabun'; font-size: 16px !important; -webkit-appearance:none;" value="${isoDate}">
-                    <div style="text-align: left; margin-bottom: 6px;"><label style="font-weight:600; font-size:14px; color:#555;">ค่าน้ำตาลสะสม(%):</label></div>
-                    <input id="swal-sugar" type="number" inputmode="decimal" step="any" class="swal2-input" style="margin: 0; width: 90%; font-family: 'Sarabun'; font-size: 16px !important;" value="${currentSugar}">
-                `,
-                focusConfirm: false,
-                showCancelButton: true,
-                confirmButtonText: 'บันทึกการแก้ไข',
-                cancelButtonText: 'ยกเลิก',
-                confirmButtonColor: '#2e7d32',
-                preConfirm: () => {
-                    return {
-                        newDate: document.getElementById('swal-date').value,
-                        newSugar: document.getElementById('swal-sugar').value
-                    }
-                }
-            });
-
-            if (formValues) {
-                if(!formValues.newDate || !formValues.newSugar) {
-                    Swal.fire('แจ้งเตือน', 'กรุณากรอกข้อมูลให้ครบถ้วน', 'warning');
-                    return;
-                }
-
-                Swal.fire({ title: 'กำลังปรับปรุงข้อมูล...', didOpen: () => { Swal.showLoading(); } });
-
-                let formData = new URLSearchParams();
-                formData.append('action', 'update');
-                formData.append('row', row);
-                formData.append('line_id', lineId);
-                formData.append('new_date', formValues.newDate);
-                formData.append('new_bloodsugar', formValues.newSugar);
-                formData.append('t', URL_T_PARAM); // 🌟 แนบค่า t ไปในฟอร์ม POST
-
-                try {
-                    const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-                    const result = await response.json();
-                    if(result.status === 'success') {
-                        Swal.fire('สำเร็จ!', 'แก้ไขข้อมูลเรียบร้อยแล้ว', 'success');
-                        loadHistoryCards(lineId);
-                    } else {
-                        throw new Error(result.message);
-                    }
-                } catch (error) {
-                    Swal.fire('ล้มเหลว', 'ไม่สามารถแก้ไขข้อมูลได้: ' + error.message, 'error');
-                }
-            }
-        }
-
-        function openDeleteModal(row, name, sugar) {
-            const lineId = document.getElementById('userSelect').value;
-
-            Swal.fire({
-                title: 'ยืนยันการลบข้อมูล?',
-                text: `คุณกำลังจะลบรายการค่าน้ำตาลสะสม ${sugar}% ของคุณ ${name} ออกจากระบบอย่างถาวร!`,
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#d32f2f',
-                cancelButtonColor: '#666',
-                confirmButtonText: 'ใช่, ฉันต้องการลบ',
-                cancelButtonText: 'ยกเลิก'
-            }).then(async (result) => {
-                if (result.isConfirmed) {
-                    Swal.fire({ title: 'กำลังลบข้อมูล...', didOpen: () => { Swal.showLoading(); } });
-
-                    let formData = new URLSearchParams();
-                    formData.append('action', 'delete');
-                    formData.append('row', row);
-                    formData.append('line_id', lineId);
-                    formData.append('t', URL_T_PARAM); // 🌟 แนบค่า t ไปในฟอร์ม POST
-
-                    try {
-                        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
-                        const result = await response.json();
-                        if(result.status === 'success') {
-                            Swal.fire('ลบสำเร็จ!', 'ลบรายการข้อมูลเรียบร้อยแล้ว', 'success');
-                            loadHistoryCards(lineId);
-                        } else {
-                            throw new Error(result.message);
-                        }
-                    } catch (error) {
-                        Swal.fire('เกิดข้อผิดพลาด', 'ไม่สามารถลบข้อมูลได้: ' + error.message, 'error');
-                    }
-                }
-            });
-        }
-
+        // 🟢 เพิ่มข้อมูลใหม่
         document.getElementById('bloodSugarForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             const select = document.getElementById('userSelect');
@@ -476,39 +185,91 @@
             formData.append('line_name', lineName);
             formData.append('bloodsugar', bloodsugarValue);
             formData.append('custom_date', customDateValue); 
-            formData.append('t', URL_T_PARAM); // 🌟 แนบค่า t ไปในฟอร์ม POST สำหรับการเพิ่มข้อมูลใหม่
 
             try {
                 const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
                 const result = await response.json();
 
                 if (result.status === 'success') {
-                    await Swal.fire({
-                        icon: 'success',
-                        title: 'บันทึกสำเร็จ',
-                        text: `บันทึกค่าน้ำตาลสะสม ${bloodsugarValue}% ของคุณ ${lineName} เรียบร้อยแล้ว`,
-                        confirmButtonColor: '#2e7d32'
-                    });
-                    
+                    Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ', confirmButtonColor: '#2e7d32' });
                     document.getElementById('bloodsugar').value = '';
                     document.getElementById('customDate').value = ''; 
-                    
                     loadHistoryCards(lineId); 
-                } else {
-                    throw new Error(result.message || 'Server error');
-                }
+                } else { throw new Error(result.message); }
             } catch (error) {
-                console.error(error);
-                Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'ไม่สามารถบันทึกข้อมูลได้: ' + error.message, confirmButtonColor: '#d33' });
+                Swal.fire({ icon: 'error', title: 'ล้มเหลว', text: error.message });
             }
         });
+
+        // 🟢 แก้ไขข้อมูล
+        async function openEditModal(row, isoDate, currentSugar, name) {
+            const lineId = document.getElementById('userSelect').value;
+            const { value: formValues } = await Swal.fire({
+                title: 'แก้ไขข้อมูล',
+                html: `
+                    <input id="swal-date" type="datetime-local" class="swal2-input" value="${isoDate}">
+                    <input id="swal-sugar" type="number" step="any" class="swal2-input" value="${currentSugar}">
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'บันทึก',
+                preConfirm: () => {
+                    return { newDate: document.getElementById('swal-date').value, newSugar: document.getElementById('swal-sugar').value }
+                }
+            });
+
+            if (formValues) {
+                let formData = new URLSearchParams();
+                formData.append('action', 'update');
+                formData.append('row', row);
+                formData.append('line_id', lineId);
+                formData.append('new_date', formValues.newDate);
+                formData.append('new_bloodsugar', formValues.newSugar);
+
+                try {
+                    const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+                    const result = await response.json();
+                    if(result.status === 'success') {
+                        Swal.fire('สำเร็จ', 'แก้ไขเรียบร้อย', 'success');
+                        loadHistoryCards(lineId);
+                    }
+                } catch (error) { Swal.fire('ล้มเหลว', 'เกิดข้อผิดพลาด', 'error'); }
+            }
+        }
+
+        // 🟢 ลบข้อมูล
+        function openDeleteModal(row, name, sugar) {
+            const lineId = document.getElementById('userSelect').value;
+            Swal.fire({
+                title: 'ยืนยันการลบ?',
+                text: `ลบรายการ ${sugar}% ของคุณ ${name}`,
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#d32f2f',
+                confirmButtonText: 'ลบเลย'
+            }).then(async (result) => {
+                if (result.isConfirmed) {
+                    let formData = new URLSearchParams();
+                    formData.append('action', 'delete');
+                    formData.append('row', row);
+                    formData.append('line_id', lineId);
+
+                    try {
+                        const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
+                        const result = await response.json();
+                        if(result.status === 'success') {
+                            Swal.fire('ลบสำเร็จ!', 'ลบข้อมูลเรียบร้อย', 'success');
+                            loadHistoryCards(lineId);
+                        }
+                    } catch (error) { Swal.fire('ผิดพลาด', 'ลบไม่ได้', 'error'); }
+                }
+            });
+        }
 
         function goBackMain() {
             if (typeof liff !== 'undefined' && liff.isInClient()) {
                 liff.closeWindow(); 
             } else {
-                var baseUrl = 'https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes';
-                window.location.href = baseUrl + '/nurse.html';
+                window.location.href = 'https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/nurse.html';
             }
         }
     </script>
