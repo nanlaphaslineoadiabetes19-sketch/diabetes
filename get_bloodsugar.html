@@ -234,15 +234,37 @@
 
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec'; 
+        let URL_T_PARAM = ''; // ตัวแปรส่วนกลางสำหรับเก็บค่า t เพื่อส่งให้ Apps Script
+
+        // ฟังก์ชันช่วยดึงค่าพารามิเตอร์จาก URL (รองรับทั้งแบบปกติ และแบบที่แอป LINE แปลงลิงก์)
+        function getUrlParameter(name) {
+            const url = window.location.href;
+            let results = new RegExp('[?&]' + name + '=([^&#]*)').exec(url);
+            if (!results) {
+                results = new RegExp('[#&]' + name + '=([^&#]*)').exec(url);
+            }
+            return results ? decodeURIComponent(results[1]) : '';
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
-            loadUsers();
-            // 🌟 เริ่มต้นระบบ LIFF หากเปิดใช้งานในแอปพลิเคชัน LINE (ระบุ liffId ของคุณถ้าจำเป็น)
+            // 🌟 1. ดึงค่า t จากลิงก์การ์ดเชิญมาเก็บไว้ก่อนเลย
+            URL_T_PARAM = getUrlParameter('t');
+
+            // 🌟 2. เริ่มต้นระบบ LIFF และเรียงลำดับให้โหลดรายชื่อเมื่อ LIFF พร้อม
             if (typeof liff !== 'undefined') {
                 liff.init({ 
                     liffId: "2009966517-lR3UbezH" 
                 })
-                .catch(err => console.error("LIFF Init Error:", err));
+                .then(() => {
+                    console.log("LIFF Init สำเร็จ");
+                    loadUsers(); // โหลดรายชื่อผู้ป่วยเมื่อระบบ LINE พร้อมแล้ว
+                })
+                .catch(err => {
+                    console.error("LIFF Init Error:", err);
+                    loadUsers(); // เผื่อรันบนคอมฯ แล้ว LIFF พัง ก็ยังให้พยายามโหลดรายชื่อมาแสดง
+                });
+            } else {
+                loadUsers();
             }
         });
 
@@ -253,7 +275,8 @@
         async function loadUsers() {
             const select = document.getElementById('userSelect');
             try {
-                const response = await fetch(SCRIPT_URL + '?type=getUsers');
+                // 🌟 พ่วงค่า &t= ไปด้วยเพื่อผ่านประตูด่านตรวจของ Apps Script
+                const response = await fetch(`${SCRIPT_URL}?type=getUsers&t=${URL_T_PARAM}`);
                 const users = await response.json();
                 select.innerHTML = '<option value="" disabled selected>-- กรุณาเลือกชื่อผู้ป่วย --</option>';
                 
@@ -285,7 +308,8 @@
             container.innerHTML = '';
 
             try {
-                const response = await fetch(`${SCRIPT_URL}?type=getHistoryTable&line_id=${lineId}`);
+                // 🌟 พ่วงค่า &t= ไปด้วยเช่นกันเวลาเรียกดูประวัติ
+                const response = await fetch(`${SCRIPT_URL}?type=getHistoryTable&line_id=${lineId}&t=${URL_T_PARAM}`);
                 const data = await response.json();
                 loading.style.display = 'none';
 
@@ -294,13 +318,11 @@
                     return;
                 }
 
-                // 🌟 ปรับให้เรียงลำดับจาก "วันที่ล่าสุดขึ้นก่อน" (Descensding) เพื่อความสะดวกในการอ่านล๊อกใหม่
                 data.sort((a, b) => b.isoDate.localeCompare(a.isoDate));
 
                 data.forEach((item, index) => {
                     const card = document.createElement('div');
                     card.className = 'log-card';
-                    // 🌟 แก้ไขหน่วยแสดงผลจาก mg/dL เป็น % ให้ตรงตามบริบทค่าน้ำตาลสะสม (HbA1c)
                     card.innerHTML = `
                         <div class="log-header">
                             <span class="log-no">รายการที่ ${data.length - index}</span>
@@ -369,6 +391,7 @@
                 formData.append('line_id', lineId);
                 formData.append('new_date', formValues.newDate);
                 formData.append('new_bloodsugar', formValues.newSugar);
+                formData.append('t', URL_T_PARAM); // 🌟 แนบค่า t ไปในฟอร์ม POST
 
                 try {
                     const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
@@ -390,7 +413,7 @@
 
             Swal.fire({
                 title: 'ยืนยันการลบข้อมูล?',
-                text: `คุณกำลังจะลบรายการค่าน้ำตาลสะสม ${sugar}% ของคุณ ${name} ออกจากระบบอย่างถาวร!`, // 🌟 เปลี่ยนหน่วยเป็น %
+                text: `คุณกำลังจะลบรายการค่าน้ำตาลสะสม ${sugar}% ของคุณ ${name} ออกจากระบบอย่างถาวร!`,
                 icon: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#d32f2f',
@@ -405,6 +428,7 @@
                     formData.append('action', 'delete');
                     formData.append('row', row);
                     formData.append('line_id', lineId);
+                    formData.append('t', URL_T_PARAM); // 🌟 แนบค่า t ไปในฟอร์ม POST
 
                     try {
                         const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
@@ -434,11 +458,12 @@
             Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
             let formData = new URLSearchParams();
-            formData.append('action', 'insert'); // 🌟 ส่งแอ็กชันบ่งบอกชัดเจนว่าต้องการกดบันทึกใหม่
+            formData.append('action', 'insert'); 
             formData.append('line_id', lineId);
             formData.append('line_name', lineName);
             formData.append('bloodsugar', bloodsugarValue);
             formData.append('custom_date', customDateValue); 
+            formData.append('t', URL_T_PARAM); // 🌟 แนบค่า t ไปในฟอร์ม POST สำหรับการเพิ่มข้อมูลใหม่
 
             try {
                 const response = await fetch(SCRIPT_URL, { method: 'POST', body: formData });
@@ -448,7 +473,7 @@
                     await Swal.fire({
                         icon: 'success',
                         title: 'บันทึกสำเร็จ',
-                        text: `บันทึกค่าน้ำตาลสะสม ${bloodsugarValue}% ของคุณ ${lineName} เรียบร้อยแล้ว`, // 🌟 เปลี่ยนหน่วยเป็น %
+                        text: `บันทึกค่าน้ำตาลสะสม ${bloodsugarValue}% ของคุณ ${lineName} เรียบร้อยแล้ว`,
                         confirmButtonColor: '#2e7d32'
                     });
                     
@@ -461,7 +486,7 @@
                 }
             } catch (error) {
                 console.error(error);
-                Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'ไม่สามารถบันทึกข้อมูลได้', confirmButtonColor: '#d33' });
+                Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: 'ไม่สามารถบันทึกข้อมูลได้: ' + error.message, confirmButtonColor: '#d33' });
             }
         });
 
@@ -469,7 +494,7 @@
             if (typeof liff !== 'undefined' && liff.isInClient()) {
                 liff.closeWindow(); 
             } else {
-                var baseUrl = 'https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes';
+                var baseUrl = 'https://nanlaphaslineodiabetes19-sketch.github.io/diabetes';
                 window.location.href = baseUrl + '/nurse.html';
             }
         }
