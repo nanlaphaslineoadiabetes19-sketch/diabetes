@@ -239,7 +239,10 @@
             loadUsers();
             // 🌟 เริ่มต้นระบบ LIFF หากเปิดใช้งานในแอปพลิเคชัน LINE (ระบุ liffId ของคุณถ้าจำเป็น)
             if (typeof liff !== 'undefined') {
-                liff.init({ liffId: "YOUR_LIFF_ID_HERE" }).catch(err => console.error("LIFF Init Error:", err));
+                liff.init({ 
+                    liffId: "2009966517-lR3UbezH" 
+                })
+                .catch(err => console.error("LIFF Init Error:", err));
             }
         });
 
