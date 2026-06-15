@@ -266,12 +266,10 @@
         }
 
         function goBackMain() {
-            if (typeof liff !== 'undefined' && liff.isInClient()) {
-                liff.closeWindow(); 
-            } else {
-                window.location.href = 'https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/nurse.html';
-            }
+            var baseUrl = 'https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes';
+            window.location.href = baseUrl + '/nurse.html';
         }
+        
     </script>
 </body>
 </html>
