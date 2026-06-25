@@ -49,9 +49,10 @@
             font-size: 18px;
         }
 
+        /* ปรับปรุงตามรูปแนบที่หนึ่ง: ให้เรียงลงมาบรรทัดละกล่อง (4 ระดับ) ทุกขนาดหน้าจอ */
         .scoring-guide {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: 1fr;
             gap: 10px;
             margin-top: 15px;
             font-size: 14px;
@@ -577,11 +578,12 @@
             
             resultsForSheet[`result${i}`] = avg; 
             
-            // ปรับรูปแบบ: ลบวงเล็บออก และเน้นความชัดเจนของตัวเลขและระดับ
+            // ปรับรูปแบบการแสดงผลรายด้านตามรูปแนบที่สาม (มีเลขข้อ, บรรทัดใหม่สำหรับระดับที่เป็นตัวหนังสือสีแดง และเส้นคั่น)
             swalHtml += `
-                <div style="border-bottom: 1px solid #eee; padding: 8px 0; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 18px; color: #555;">${sections[`s${i}`].title}</span>
-                    <span style="font-size: 18px; font-weight: 600;">เท่ากับ ${avg} <span style="color: #2e7d32;">(ระดับ ${level})</span></span>
+                <div style="padding: 10px 0; font-size: 19px; line-height: 1.5; text-align: left;">
+                    <div style="color: #2e7d32; font-weight: 600;">${i}.${sections[`s${i}`].title} = ${avg}</div>
+                    <div style="color: #d32f2f; font-weight: 600;">(อยู่ในระดับ${level})</div>
+                    <hr style="border: none; border-top: 2px solid #cccccc; margin: 12px 0 0 0;">
                 </div>`;
         }
 
@@ -598,14 +600,19 @@
         const totalAvg = (totalSum / 24).toFixed(2);
         const totalLevel = getLevel(totalAvg);
 
+        // ปรับปรุงการแสดงผลสัดส่วนหน้าตา SweetAlert2 ทั้งหมดตามแบบในรูปแนบที่สาม
         const result = await Swal.fire({
-            title: '<span style="font-size: 26px; color: #2e7d32;">สรุปผลการประเมินของคุณ</span>',
+            title: '<span style="font-size: 26px; color: #2e7d32; font-weight: bold;">ผลการประเมินของคุณ</span>',
             html: `
-                <div style="text-align:left; padding: 10px;">
-                    <div style="background: #f1f8e9; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 2px solid #2e7d32;">
-                        <div style="font-size: 20px; font-weight: bold; color: #1b5e20; line-height: 1.4;">
-                            ผลเฉลี่ยรวม เท่ากับ ${totalAvg} อยู่ในระดับ ${totalLevel}
+                <div style="padding: 5px;">
+                    <div style="background: #e8f5e9; padding: 18px; border-radius: 15px; margin-bottom: 25px; border: 2px solid #66bb6a; text-align: center;">
+                        <div style="font-size: 20px; font-weight: bold; color: #2e7d32; line-height: 1.5;">
+                            ค่าเฉลี่ยคะแนนพฤติกรรม<br>การจัดการตนเองโดยรวม = ${totalAvg}<br>
+                            <span style="color: #d32f2f;">(อยู่ในระดับ${totalLevel})</span>
                         </div>
+                    </div>
+                    <div style="text-align: center; font-size: 22px; font-weight: bold; color: #2e7d32; margin-bottom: 15px;">
+                        พฤติกรรมการจัดการตนเอง<span style="color: #d32f2f;">รายด้าน</span>
                     </div>
                     <div style="margin-top: 10px;">
                         ${swalHtml}
