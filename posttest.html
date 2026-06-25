@@ -51,7 +51,7 @@
 
         .scoring-guide {
             display: grid;
-            grid-template-columns: 1fr; /* ปรับให้เรียงลงมาบรรทัดละกล่องเลยตามรูปแนบที่หนึ่ง */
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 10px;
             margin-top: 15px;
             font-size: 14px;
@@ -752,7 +752,7 @@
         let resultsForSheet = {}; 
         let swalHtml = "";          
     
-        // วนลูปคำนวณคะแนนแต่ละด้านและปรับโครงสร้างการแสดงผลตามรูปแนบที่สาม
+        // วนลูปคำนวณคะแนนแต่ละด้าน
         for (let i = 1; i <= 6; i++) {
             let sectionSum = 0;
             let sectionQuestions = sections[`s${i}`].questions;
@@ -772,43 +772,31 @@
             const level = getLevel(avg);
             resultsForSheet[`result${i}`] = avg; 
             
-            // แสดงผลลัพธ์รายด้านแบบขึ้นบรรทัดใหม่ และมีเส้นคั่นระหว่างข้อตามรูปแนบที่สาม
             swalHtml += `
-                <div style="padding: 5px 0; text-align: left; font-size: 19px; color: #2e7d32; font-weight: 600; line-height: 1.4;">
-                    <div>${i}.${sections[`s${i}`].title} = ${avg}</div>
-                    <div style="color: red; font-weight: 600; margin-top: 2px;">(อยู่ในระดับ${level})</div>
+                <div style="border-bottom: 1px solid #eee; padding: 10px 0; display: flex; justify-content: space-between; align-items: center;">
+                    <span style="font-size: 18px; color: #555;">${sections[`s${i}`].title}</span>
+                    <span style="font-size: 18px; font-weight: 600;">เท่ากับ ${avg} <span style="color: #2e7d32;">(ระดับ ${level})</span></span>
                 </div>`;
-            
-            if (i < 6) {
-                swalHtml += `<hr style="border: none; border-top: 2px solid #9e9e9e; margin: 8px 0; max-width: 100%;">`;
-            }
         }
     
         const totalAvg = (totalSum / 24).toFixed(2);
         const totalLevel = getLevel(totalAvg);
     
-        // แสดงหน้าสรุปผลเพื่อให้กดยืนยันการส่ง (ปรับตามรูปแนบที่สาม เอา icon ออกและเปลี่ยนสไตล์)
+        // แสดงหน้าสรุปผลเพื่อให้กดยืนยันการส่ง
         const result = await Swal.fire({
-            title: '<span style="font-size: 26px; color: #2e7d32; font-weight: bold;">ผลการประเมินของคุณ</span>',
+            title: '<span style="font-size: 26px; color: #2e7d32;">สรุปผลการประเมิน (Post-test)</span>',
             html: `
-                <div style="text-align:center; padding: 5px;">
-                    <!-- กล่องสรุปคะแนนรวมสีเขียวอ่อน ขอบเขียวเข้ม -->
-                    <div style="background: #e8f5e9; padding: 15px; border-radius: 18px; margin-bottom: 25px; border: 2px solid #66bb6a; text-align: center; color: #2e7d32; font-size: 20px; font-weight: 600; line-height: 1.5;">
-                        ค่าเฉลี่ยคะแนนพฤติกรรม<br>
-                        การจัดการตนเอง<span style="color: red;">โดยรวม</span> = ${totalAvg}<br>
-                        <span style="color: red;">(อยู่ในระดับ${totalLevel})</span>
+                <div style="text-align:left; padding: 10px;">
+                    <div style="background: #f1f8e9; padding: 20px; border-radius: 10px; margin-bottom: 20px; border: 2px solid #2e7d32;">
+                        <div style="font-size: 20px; font-weight: bold; color: #1b5e20; line-height: 1.4; text-align: center;">
+                            คะแนนเฉลี่ยรวม เท่ากับ ${totalAvg}<br>อยู่ในระดับ ${totalLevel}
+                        </div>
                     </div>
-                    
-                    <!-- หัวข้อพฤติกรรมรายด้าน -->
-                    <div style="text-align: center; font-size: 21px; color: #2e7d32; font-weight: bold; margin-bottom: 15px;">
-                        พฤติกรรมการจัดการตนเอง<span style="color: red;">รายด้าน</span>
-                    </div>
-                    
-                    <!-- รายการคะแนนรายด้าน 1-6 -->
-                    <div style="max-width: 480px; margin: 0 auto; padding: 0 10px;">
+                    <div style="margin-top: 10px;">
                         ${swalHtml}
                     </div>
                 </div>`,
+            icon: 'info',
             width: '90%',
             showCancelButton: true,
             confirmButtonColor: '#2e7d32',
