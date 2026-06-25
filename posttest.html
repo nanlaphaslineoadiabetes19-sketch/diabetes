@@ -51,7 +51,7 @@
 
         .scoring-guide {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            grid-template-columns: 1fr; /* ปรับให้เรียงลงมาแนวตั้งบรรทัดละ 1 กล่อง */
             gap: 10px;
             margin-top: 15px;
             font-size: 14px;
@@ -59,10 +59,10 @@
 
         .score-item {
             background: var(--white);
-            padding: 8px;
+            padding: 12px 15px; /* เพิ่มพื้นที่ padding ด้านในให้อ่านง่ายและสมดุลขึ้น */
             border-radius: 4px;
             border: 1px solid var(--border-color);
-            text-align: center;
+            text-align: left; /* จัดข้อความชิดซ้ายเพื่อความเป็นระเบียบสำหรับรูปแบบแถวยาว */
         }
 
         .section-title {
@@ -752,6 +752,7 @@
         let swalHtml = "";          
     
         // วนลูปคำนวณคะแนนแต่ละด้าน
+        // วนลูปคำนวณคะแนนแต่ละด้าน
         for (let i = 1; i <= 6; i++) {
             let sectionSum = 0;
             let sectionQuestions = sections[`s${i}`].questions;
@@ -771,10 +772,11 @@
             const level = getLevel(avg);
             resultsForSheet[`result${i}`] = avg; 
             
+            // ปรับการแสดงผลลัพธ์เป็นแบบบล็อกแนวตั้ง ป้องกันข้อความเบียดกันบนจอแคบ
             swalHtml += `
-                <div style="border-bottom: 1px solid #eee; padding: 10px 0; display: flex; justify-content: space-between; align-items: center;">
-                    <span style="font-size: 18px; color: #555;">${sections[`s${i}`].title}</span>
-                    <span style="font-size: 18px; font-weight: 600;">เท่ากับ ${avg} <span style="color: #2e7d32;">(ระดับ ${level})</span></span>
+                <div style="border-bottom: 1px solid #eee; padding: 12px 0; text-align: left;">
+                    <div style="font-size: 18px; font-weight: 600; color: #333; margin-bottom: 4px;">${sections[`s${i}`].title}</div>
+                    <div style="font-size: 16px; color: #555;">เท่ากับ ${avg} <span style="color: #2e7d32; font-weight: 600;">(ระดับ ${level})</span></div>
                 </div>`;
         }
     
