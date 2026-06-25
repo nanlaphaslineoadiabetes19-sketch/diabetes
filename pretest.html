@@ -28,8 +28,8 @@
             max-width: 800px;
             background: var(--white);
             padding: 15px;
-            margin: 0 auto;
-            border-radius: 0;
+            margin: 0 auto;        /* 1. มั่นใจว่า margin ด้านบนและล่างเป็น 0 */
+            border-radius: 0;      /* 2. เปลี่ยนมุมมนด้านบนให้เป็นเหลี่ยม จะได้ชิดขอบบนได้สนิทและสวยงาม */
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
         }
 
@@ -49,6 +49,7 @@
             font-size: 18px;
         }
 
+        /* ปรับปรุงตามรูปแนบที่หนึ่ง: ให้เรียงลงมาบรรทัดละกล่อง (4 ระดับ) ทุกขนาดหน้าจอ */
         .scoring-guide {
             display: grid;
             grid-template-columns: 1fr;
@@ -105,6 +106,7 @@
             transform: scale(1.05);
         }
         
+        /* สไตล์สำหรับหัวข้อย่อย 1-6 */
         .sub-section-header {
             background-color: #e8f5e9;
             color: #2e7d32;
@@ -202,7 +204,8 @@
             cursor: pointer;
             font-size: 19px;
             flex-wrap: wrap; 
-            justify-content: space-around;
+            justify-content: 
+            space-around;
         }
 
         .options-inline input[type="radio"] {
@@ -575,6 +578,7 @@
             
             resultsForSheet[`result${i}`] = avg; 
             
+            // ปรับรูปแบบการแสดงผลรายด้านตามรูปแนบที่สาม (มีเลขข้อ, บรรทัดใหม่สำหรับระดับที่เป็นตัวหนังสือสีแดง และเส้นคั่น)
             swalHtml += `
                 <div style="padding: 10px 0; font-size: 19px; line-height: 1.5; text-align: left;">
                     <div style="color: #2e7d32; font-weight: 600;">${i}.${sections[`s${i}`].title} = ${avg}</div>
@@ -596,6 +600,7 @@
         const totalAvg = (totalSum / 24).toFixed(2);
         const totalLevel = getLevel(totalAvg);
 
+        // ปรับปรุงการแสดงผลสัดส่วนหน้าตา SweetAlert2 ทั้งหมดตามแบบในรูปแนบที่สาม
         const result = await Swal.fire({
             title: '<span style="font-size: 26px; color: #2e7d32; font-weight: bold;">ผลการประเมินของคุณ</span>',
             html: `
@@ -609,13 +614,12 @@
                     <div style="text-align: center; font-size: 22px; font-weight: bold; color: #2e7d32; margin-bottom: 15px;">
                         พฤติกรรมการจัดการตนเอง<span style="color: #d32f2f;">รายด้าน</span>
                     </div>
-                    <!-- เพิ่มกล่องครอบแบบ Scroll เพื่อล็อกสัดส่วนหน้าจอ และไม่ให้ดันปุ่ม Confirm หายบนมือถือ -->
-                    <div style="margin-top: 10px; max-height: 260px; overflow-y: auto; padding-right: 5px;">
+                    <div style="margin-top: 10px;">
                         ${swalHtml}
                     </div>
                 </div>`,
             icon: 'info',
-            width: '90%', 
+            width: '90%', // ขยายหน้าต่างให้กว้างขึ้นสำหรับมือถือ
             showCancelButton: true,
             confirmButtonColor: '#2e7d32',
             cancelButtonColor: '#d33',
@@ -656,7 +660,9 @@
                     confirmButtonColor: '#2e7d32',
                     allowOutsideClick: false
                 }).then(() => {
+                    // 3. ตรวจสอบการปิดหน้าต่างให้รัดกุมขึ้น
                     if (liff.isInClient()) {
+                        // ถ้าเปิดในแอป LINE (ในมือถือ) สั่งปิดหน้าต่าง LIFF ทันที
                         liff.closeWindow(); 
                     } 
                 });
@@ -667,13 +673,13 @@
     }
 </script>
 
-<script>
-    function goBack() {
-        var currentPath = window.location.pathname;
-        var directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
-        location.href = directoryPath + '/self.html';
-    }
-</script>
+    <script>
+        function goBack() {
+            var currentPath = window.location.pathname;
+            var directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+            location.href = directoryPath + '/self.html';
+        }
+    </script>
 
 </body>
 </html>
