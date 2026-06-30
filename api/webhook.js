@@ -9,6 +9,7 @@ const client = new Client(config);
 
 // Vercel จะเรียกใช้ฟังก์ชันที่ export ออกมานี้โดยอัตโนมัติ
 module.exports = async (req, res) => {
+  console.log("--- Webhook เริ่มทำงานแล้ว! ---");
   // LINE จะส่งข้อมูลแบบ POST มาที่นี่
   if (req.method === 'POST') {
     const events = req.body.events;
