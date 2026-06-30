@@ -19,11 +19,18 @@ module.exports = async (req, res) => {
         if (event.type === 'postback') {
           const userId = event.source.userId;
           const data = event.postback.data;
-
+          
+          // บรรทัดสำคัญ: เพิ่ม Log เพื่อดูว่า data ที่ได้คืออะไร
+          console.log("ได้รับ Postback data:", data); 
+      
           if (data === 'action=switch_to_menu_2') {
+            console.log("กำลังเปลี่ยนเป็นเมนู 2 ด้วย ID:", process.env.RICH_MENU_ID_2);
             await client.linkRichMenuToUser(userId, process.env.RICH_MENU_ID_2);
           } else if (data === 'action=switch_to_menu_1') {
+            console.log("กำลังเปลี่ยนเป็นเมนู 1 ด้วย ID:", process.env.RICH_MENU_ID_1);
             await client.linkRichMenuToUser(userId, process.env.RICH_MENU_ID_1);
+          } else {
+            console.log("Data ไม่ตรงเงื่อนไข:", data);
           }
         }
       }));
