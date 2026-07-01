@@ -9,18 +9,27 @@
         body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; }
         
         /* Header */
-        header { background-color: #06c755; color: white; padding: 15px; text-align: center; font-weight: bold; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        header { background-color: #06c755; color: white; padding: 20px; text-align: center; font-weight: bold; font-size: 18px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         
         /* Chat Area */
         #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
         .message { max-width: 80%; padding: 12px 16px; border-radius: 18px; line-height: 1.5; font-size: 14px; }
         .received { background-color: white; align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        .sent { background-color: #06c755; color: white; align-self: flex-end; border-bottom-right-radius: 4px; }
         
-        /* Input Area */
-        footer { background: white; padding: 10px; display: flex; gap: 10px; border-top: 1px solid #ddd; }
-        input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
-        button { background-color: #06c755; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; }
+        /* ปุ่มสำหรับกดเข้า LINE */
+        .line-button {
+            display: block;
+            background-color: #06c755;
+            color: white;
+            text-align: center;
+            padding: 15px;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            margin: 20px;
+            font-size: 16px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
     </style>
 </head>
 <body>
@@ -28,32 +37,12 @@
     <header>ติดต่อสอบถามพยาบาล</header>
 
     <div id="chat-container">
-        <div class="message received">สวัสดีค่ะ มีอะไรให้พยาบาลช่วยดูแลในวันนี้คะ?</div>
+        <div class="message received">สวัสดีค่ะ มีอะไรให้พยาบาลช่วยดูแลในวันนี้คะ? สามารถกดปุ่มด้านล่างเพื่อแชทกับพยาบาลได้เลยค่ะ</div>
     </div>
 
-    <footer>
-        <input type="text" id="message-input" placeholder="พิมพ์ข้อความที่นี่...">
-        <button onclick="sendMessage()">ส่ง</button>
-    </footer>
+    <a href="https://line.me/ti/p/~Ubb14a9e757138710939fd9b7d49efe3c" class="line-button">
+        แชทกับพยาบาลคลิกที่นี่
+    </a>
 
-    <script>
-        function sendMessage() {
-            const input = document.getElementById('message-input');
-            const message = input.value.trim();
-            
-            if (message !== "") {
-                // 1. นำข้อความที่พิมพ์ ไปสร้างเป็น Link ของ LINE
-                // เราใช้ https://line.me/R/msg/text/? ตามด้วยข้อความที่จะส่ง
-                const encodedMessage = encodeURIComponent(message);
-                const lineDeepLink = `https://line.me/R/msg/text/?${encodedMessage}`;
-                
-                // 2. สั่งให้เบราว์เซอร์เปิดลิงก์นี้ (มันจะเด้งไปที่แอป LINE อัตโนมัติ)
-                window.location.href = lineDeepLink;
-                
-                // ล้างช่อง input
-                input.value = "";
-            }
-        }
-    </script>
 </body>
 </html>
