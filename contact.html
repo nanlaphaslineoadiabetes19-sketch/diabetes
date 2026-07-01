@@ -60,29 +60,9 @@
         }
     
         document.getElementById('send-btn').addEventListener('click', async () => {
-            const input = document.getElementById('message-input');
-            const msg = input.value.trim();
-    
-            if (msg === "") return;
-    
-            if (liff.isLoggedIn()) {
-                if (liff.isInClient()) {
-                    try {
-                        await liff.sendMessages([{
-                            'type': 'text',
-                            'text': msg
-                        }]);
-                        alert("ส่งข้อความถึงพยาบาลเรียบร้อยแล้วค่ะ");
-                        input.value = "";
-                    } catch (err) {
-                        alert("เกิดข้อผิดพลาดในการส่งข้อความ: " + err.message);
-                    }
-                } else {
-                    alert("กรุณาเปิดผ่านแอป LINE เพื่อใช้งานฟังก์ชันส่งข้อความค่ะ");
-                }
-            } else {
-                liff.login();
-            }
+            const msg = document.getElementById('message-input').value;
+            if (msg.trim() === "") return;
+            window.location.href = `https://line.me/R/msg/text/?${encodeURIComponent(msg)}`;
         });
     
         initializeLiff();
