@@ -45,31 +45,48 @@
     </footer>
 
     <script>
-        
         const LIFF_ID = "2010571894-SPkCK10Z";
-
+    
         async function initializeLiff() {
-            await liff.init({ liffId: LIFF_ID });
-            if (!liff.isLoggedIn()) { liff.login(); }
+            try {
+                await liff.init({ liffId: LIFF_ID });
+                if (!liff.isLoggedIn()) {
+                    liff.login();
+                }
+            } catch (err) {
+                console.error("LIFF initialization failed", err);
+                alert("ไม่สามารถเชื่อมต่อกับ LINE ได้: " + err.message);
+            }
         }
-
+    
         document.getElementById('send-btn').addEventListener('click', async () => {
-            const msg = document.getElementById('message-input').value;
-            
-            // ตรวจสอบว่าเปิดใน LINE หรือไม่
-            if (liff.isInClient()) {
-                await liff.sendMessages([{
-                    'type': 'text',
-                    'text': msg
-                }]);
-                alert("ส่งข้อความถึงพยาบาลเรียบร้อยแล้วค่ะ");
-                document.getElementById('message-input').value = "";
+            const input = document.getElementById('message-input');
+            const msg = input.value.trim();
+    
+            if (msg === "") return;
+    
+            if (liff.isLoggedIn()) {
+                if (liff.isInClient()) {
+                    try {
+                        await liff.sendMessages([{
+                            'type': 'text',
+                            'text': msg
+                        }]);
+                        alert("ส่งข้อความถึงพยาบาลเรียบร้อยแล้วค่ะ");
+                        input.value = "";
+                    } catch (err) {
+                        alert("เกิดข้อผิดพลาดในการส่งข้อความ: " + err.message);
+                    }
+                } else {
+                    alert("กรุณาเปิดผ่านแอป LINE เพื่อใช้งานฟังก์ชันส่งข้อความค่ะ");
+                }
             } else {
-                alert("ต้องเปิดผ่านแอป LINE เท่านั้นค่ะ");
+                liff.login();
             }
         });
-
+    
         initializeLiff();
     </script>
+    
 </body>
 </html>
