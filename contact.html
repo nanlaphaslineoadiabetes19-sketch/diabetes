@@ -39,20 +39,19 @@
     <script>
         function sendMessage() {
             const input = document.getElementById('message-input');
-            const chatContainer = document.getElementById('chat-container');
-            if (input.value.trim() !== "") {
-                // Add user message
-                const sentDiv = document.createElement('div');
-                sentDiv.className = 'message sent';
-                sentDiv.innerText = input.value;
-                chatContainer.appendChild(sentDiv);
+            const message = input.value.trim();
+            
+            if (message !== "") {
+                // 1. นำข้อความที่พิมพ์ ไปสร้างเป็น Link ของ LINE
+                // เราใช้ https://line.me/R/msg/text/? ตามด้วยข้อความที่จะส่ง
+                const encodedMessage = encodeURIComponent(message);
+                const lineDeepLink = `https://line.me/R/msg/text/?${encodedMessage}`;
                 
-                // Simulate Line ID redirect/action
-                const lineId = "Ubb14a9e757138710939fd9b7d49efe3c";
-                console.log("Sending to: " + lineId);
+                // 2. สั่งให้เบราว์เซอร์เปิดลิงก์นี้ (มันจะเด้งไปที่แอป LINE อัตโนมัติ)
+                window.location.href = lineDeepLink;
                 
+                // ล้างช่อง input
                 input.value = "";
-                chatContainer.scrollTop = chatContainer.scrollHeight;
             }
         }
     </script>
