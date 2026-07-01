@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ติดต่อสอบถามพยาบาล</title>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
         body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; }
@@ -33,21 +34,42 @@
     </style>
 </head>
 <body>
-
     <header>ติดต่อสอบถามพยาบาล</header>
-
     <div id="chat-container">
-        <div class="message received">สวัสดีค่ะ มีอะไรให้พยาบาลช่วยดูแลในวันนี้คะ? สามารถกดปุ่มด้านล่างเพื่อแชทกับพยาบาลได้เลยค่ะ</div>
+        <div class="message">สวัสดีค่ะ สามารถกดส่งข้อความถึงพยาบาลได้ที่นี่เลยค่ะ</div>
     </div>
 
-    <a href="https://line.me/ti/p/@047iltje" class="line-button">
-        แชทกับพยาบาลคลิกที่นี่
-    </a>
-    
+    <footer>
+        <input type="text" id="message-input" placeholder="พิมพ์ข้อความ...">
+        <button id="send-btn">ส่งข้อความ</button>
+    </footer>
+
     <script>
-        // สั่งให้หน้าเว็บเด้งไปที่ LINE ทันทีที่โหลดหน้าเสร็จ
-        window.location.href = "https://line.me/ti/p/@047iltje";
+        // แทนที่ด้วย LIFF ID ที่คุณได้มา
+        const LIFF_ID = "2010571894-SPkCK10Z";
+
+        async function initializeLiff() {
+            await liff.init({ liffId: LIFF_ID });
+            if (!liff.isLoggedIn()) { liff.login(); }
+        }
+
+        document.getElementById('send-btn').addEventListener('click', async () => {
+            const msg = document.getElementById('message-input').value;
+            
+            // ตรวจสอบว่าเปิดใน LINE หรือไม่
+            if (liff.isInClient()) {
+                await liff.sendMessages([{
+                    'type': 'text',
+                    'text': msg
+                }]);
+                alert("ส่งข้อความถึงพยาบาลเรียบร้อยแล้วค่ะ");
+                document.getElementById('message-input').value = "";
+            } else {
+                alert("ต้องเปิดผ่านแอป LINE เท่านั้นค่ะ");
+            }
+        });
+
+        initializeLiff();
     </script>
-    
 </body>
 </html>
