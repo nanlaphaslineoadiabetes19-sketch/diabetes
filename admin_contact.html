@@ -43,6 +43,22 @@
     <script>
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec";
         let currentUserId = null;
+
+        const MY_LINE_ID = "2009966517-vtjZMQ5e";
+
+        // ฟังก์ชันตรวจสอบสิทธิ์ก่อนโหลดหน้าเว็บ
+        async function initAdmin() {
+            const response = await fetch(`${WEB_APP_URL}?action=checkAuth&id=${MY_LINE_ID}`);
+            const result = await response.json();
+            
+            if (!result.authorized) {
+                document.body.innerHTML = "<h1 style='text-align:center; margin-top:50px;'>ไม่มีสิทธิ์เข้าถึงระบบนี้</h1>";
+                return;
+            }
+            // ถ้าผ่าน ให้รันระบบปกติ
+            updateUI();
+            setInterval(updateUI, 2000);
+        }
     
         async function fetchLogs() {
             const res = await fetch(`${WEB_APP_URL}?action=getChatLogs`);
@@ -127,6 +143,7 @@
         // ปรับความเร็วการดึงข้อมูลเป็น 2 วินาทีเพื่อให้ดู Real-time มากขึ้น
         setInterval(updateUI, 2000);
         updateUI();
+        initAdmin();
     </script>
     
 </body>
