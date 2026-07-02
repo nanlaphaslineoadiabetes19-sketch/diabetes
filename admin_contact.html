@@ -43,70 +43,93 @@
     <script>
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec";
         let currentUserId = null;
-        let lastMessageCount = 0;
-
-        // 1. ดึงข้อมูลและตรวจสอบข้อความใหม่
+    
+        // ดึงข้อมูลแชททั้งหมด
         async function fetchLogs() {
             const res = await fetch(`${WEB_APP_URL}?action=getChatLogs`);
             return await res.json();
         }
-
+    
         async function updateUI() {
             const logs = await fetchLogs();
-            const users = [...new Set(logs.map(row => row[1]))];
             const container = document.getElementById("list-container");
             
-            users.forEach(id => {
-                let userDiv = document.getElementById(`user-${id}`);
-                const hasNew = logs.filter(l => l[1] == id && l[5] == "unread").length > 0; // สมมติว่ามี column สถานะ
-
-                if (!userDiv) {
-                    userDiv = document.createElement("div");
-                    userDiv.id = `user-${id}`;
-                    userDiv.className = "user-item";
-                    userDiv.onclick = () => selectUser(id);
-                    container.appendChild(userDiv);
+            // สร้าง Map เก็บข้อมูลล่าสุดของแต่ละคน
+            const userMap = {};
+            logs.forEach(row => {
+                const id = row[1]; // line_id
+                const name = row[2]; // line_name
+                const status = row[5]; // status (คอลัมน์ F)
+                
+                if (!userMap[id]) {
+                    userMap[id] = { name: name, hasUnread: false };
                 }
-                userDiv.innerHTML = `<span>User: ${id.substring(0, 8)}...</span> 
-                                   ${hasNew ? '<div class="new-msg-badge">!</div>' : ''}`;
+                if (status === 'unread') {
+                    userMap[id].hasUnread = true;
+                }
             });
-
-            // ถ้ากำลังคุยกับใครอยู่ ให้ refresh แชทอัตโนมัติ
+    
+            container.innerHTML = "";
+            Object.keys(userMap).forEach(id => {
+                const user = userMap[id];
+                const div = document.createElement("div");
+                div.className = "user-item";
+                div.onclick = () => selectUser(id);
+                
+                div.innerHTML = `
+                    <span>${user.name || 'ไม่มีชื่อ'}</span>
+                    ${user.hasUnread ? '<div class="new-msg-badge">!</div>' : ''}
+                `;
+                container.appendChild(div);
+            });
+    
+            // ถ้ากำลังดูแชทอยู่ ให้ refresh แชทอัตโนมัติ
             if (currentUserId) selectUser(currentUserId);
         }
-
+    
         async function selectUser(id) {
             currentUserId = id;
             const logs = await fetchLogs();
             const area = document.getElementById("chat-area");
             area.innerHTML = "";
+            
             logs.filter(row => row[1] == id).forEach(row => {
                 const div = document.createElement("div");
                 div.className = `message ${row[4] == 'admin' ? 'received' : 'sent'}`;
                 div.innerText = row[3];
                 area.appendChild(div);
+                
+                // ถ้าแอดมินเปิดอ่านแล้ว ให้ส่งคำสั่งอัปเดตสถานะเป็น 'read'
+                if (row[5] === 'unread') {
+                    updateStatusToRead(id);
+                }
             });
             area.scrollTop = area.scrollHeight;
-            // ลบ badge ออกเมื่อกดเลือก
-            const badge = document.querySelector(`#user-${id} .new-msg-badge`);
-            if (badge) badge.remove();
         }
-
+    
+        // ฟังก์ชันอัปเดตสถานะใน Sheet
+        async function updateStatusToRead(id) {
+            await fetch(WEB_APP_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "markAsRead", line_id: id })
+            });
+        }
+    
         async function sendReply() {
             const msg = document.getElementById("reply-input").value;
             if (!currentUserId || !msg) return;
             
             await fetch(WEB_APP_URL, {
                 method: "POST",
-                body: JSON.stringify({ action: "saveChat", line_id: currentUserId, message: msg, sender: "admin" })
+                body: JSON.stringify({ action: "saveChat", line_id: currentUserId, message: msg, sender: "admin", status: "read" })
             });
             document.getElementById("reply-input").value = "";
             selectUser(currentUserId);
         }
-
-        // ตรวจสอบข้อความใหม่ทุก 5 วินาที
+    
         setInterval(updateUI, 5000);
         updateUI();
     </script>
+    
 </body>
 </html>
