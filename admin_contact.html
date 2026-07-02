@@ -62,11 +62,10 @@
                 let row = logs[i];
                 let id = row[1];     // line_id
                 let name = row[2];   // line_name
-                let status = row[5]; // status (คอลัมน์ F)
+                let status = String(row[5]).trim().toLowerCase(); // status (คอลัมน์ F)
                 
-                // กรองเอาแถวที่ไม่มี Line ID หรือเป็นหัวตารางออก
-                if (!id || String(id).toLowerCase() === 'lineid' || String(id).toLowerCase() === 'line_id') continue;
-                
+                if (!id || String(id).toLowerCase() === 'lineid') continue;
+            
                 if (!userMap[id]) {
                     userMap[id] = { name: name, hasUnread: false };
                 }
@@ -88,9 +87,6 @@
                 `;
                 container.appendChild(div);
             });
-            
-            // ถ้ากำลังดูแชทอยู่ ให้ refresh แชทอัตโนมัติ
-            if (currentUserId) selectUser(currentUserId);
         }
     
         async function selectUser(id) {
@@ -100,13 +96,17 @@
             area.innerHTML = "";
             
             logs.filter(row => row[1] == id).forEach(row => {
+                // ปรับรูปแบบวันเวลาจาก row[0]
+                const dateObj = new Date(row[0]);
+                const timeString = dateObj.toLocaleTimeString('th-TH', {hour: '2-digit', minute:'2-digit'});
+                
                 const div = document.createElement("div");
                 div.className = `message ${row[4] == 'admin' ? 'received' : 'sent'}`;
-                div.innerText = row[3];
+                div.innerHTML = `<div>${row[3]}</div>
+                                 <div style="font-size: 10px; opacity: 0.7; margin-top: 5px;">${timeString}</div>`;
                 area.appendChild(div);
                 
-                // ถ้าแอดมินเปิดอ่านแล้ว ให้ส่งคำสั่งอัปเดตสถานะเป็น 'read'
-                if (row[5] === 'unread') {
+                if (String(row[5]).trim().toLowerCase() === 'unread') {
                     updateStatusToRead(id);
                 }
             });
@@ -119,6 +119,8 @@
                 method: "POST",
                 body: JSON.stringify({ action: "markAsRead", line_id: id })
             });
+            // เรียก updateUI ทันทีเพื่อให้ badge หายไป
+            updateUI();
         }
     
         async function sendReply() {
@@ -133,7 +135,7 @@
             selectUser(currentUserId);
         }
     
-        setInterval(updateUI, 5000);
+        setInterval(updateUI, 3000);
         updateUI();
     </script>
     
