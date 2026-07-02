@@ -6,67 +6,57 @@
     <title>ติดต่อสอบถามพยาบาล</title>
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: #f0f2f5; display: flex; flex-direction: column; height: 100vh; }
-        
-        /* Header */
-        header { background-color: #06c755; color: white; padding: 20px; text-align: center; font-weight: bold; font-size: 18px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-        
-        /* Chat Area */
-        #chat-container { flex: 1; padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
-        .message { max-width: 80%; padding: 12px 16px; border-radius: 18px; line-height: 1.5; font-size: 14px; }
-        .received { background-color: white; align-self: flex-start; border-bottom-left-radius: 4px; box-shadow: 0 1px 2px rgba(0,0,0,0.1); }
-        
-        /* ปุ่มสำหรับกดเข้า LINE */
-        .line-button {
-            display: block;
-            background-color: #06c755;
-            color: white;
-            text-align: center;
-            padding: 15px;
-            text-decoration: none;
-            border-radius: 25px;
-            font-weight: bold;
-            margin: 20px;
-            font-size: 16px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
+        /* สไตล์ความสวยงามระดับมืออาชีพ */
+        body { background: #f0f2f5; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; height: 100vh; margin: 0; }
+        header { background: #06c755; color: white; padding: 20px; text-align: center; font-weight: bold; }
+        #chat-container { flex: 1; padding: 20px; overflow-y: auto; }
+        .user-info { text-align: center; color: #666; font-size: 14px; margin-bottom: 10px; }
+        footer { background: white; padding: 15px; display: flex; gap: 10px; border-top: 1px solid #ddd; }
+        input { flex: 1; padding: 12px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
+        button { background: #06c755; color: white; border: none; padding: 10px 20px; border-radius: 20px; cursor: pointer; }
     </style>
 </head>
 <body>
     <header>ติดต่อสอบถามพยาบาล</header>
-    <div id="chat-container">
-        <div class="message">สวัสดีค่ะ สามารถกดส่งข้อความถึงพยาบาลได้ที่นี่เลยค่ะ</div>
-    </div>
-
+    <div class="user-info" id="user-display">กำลังโหลดข้อมูลผู้ใช้...</div>
+    <div id="chat-container"></div>
     <footer>
-        <input type="text" id="message-input" placeholder="พิมพ์ข้อความ...">
-        <button id="send-btn">ส่งข้อความ</button>
+        <input type="text" id="message-input" placeholder="พิมพ์ข้อความที่นี่...">
+        <button id="send-btn">ส่ง</button>
     </footer>
 
     <script>
-        const LIFF_ID = "2010571894-SPkCK10Z";
-    
-        async function initializeLiff() {
-            try {
-                await liff.init({ liffId: LIFF_ID });
-                if (!liff.isLoggedIn()) {
-                    liff.login();
-                }
-            } catch (err) {
-                console.error("LIFF initialization failed", err);
-                alert("ไม่สามารถเชื่อมต่อกับ LINE ได้: " + err.message);
-            }
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec";
+        let userInfo = { id: "", name: "" };
+
+        async function init() {
+            await liff.init({ liffId: "2010571894-SPkCK10Z" });
+            const profile = await liff.getProfile();
+            userInfo = { id: profile.userId, name: profile.displayName };
+            document.getElementById("user-display").innerText = "ผู้ถาม: " + userInfo.name;
         }
-    
-        document.getElementById('send-btn').addEventListener('click', async () => {
-            const msg = document.getElementById('message-input').value;
-            if (msg.trim() === "") return;
-            window.location.href = `https://line.me/R/msg/text/?${encodeURIComponent(msg)}`;
-        });
-    
-        initializeLiff();
+
+        document.getElementById("send-btn").onclick = async () => {
+            const msg = document.getElementById("message-input").value;
+            if (!msg) return;
+
+            // ส่งข้อมูลไปบันทึกใน Google Sheets ผ่าน Web App
+            await fetch(WEB_APP_URL, {
+                method: "POST",
+                body: JSON.stringify({
+                    action: "saveChat",
+                    line_id: userInfo.id,
+                    line_name: userInfo.name,
+                    message: msg,
+                    sender: "user"
+                })
+            });
+            
+            alert("ส่งข้อความเรียบร้อยแล้วค่ะ");
+            document.getElementById("message-input").value = "";
+        };
+
+        init();
     </script>
-    
 </body>
 </html>
