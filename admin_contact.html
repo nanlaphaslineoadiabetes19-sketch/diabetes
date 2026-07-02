@@ -139,6 +139,33 @@
                 body: JSON.stringify({ action: "markAsRead", line_id: id })
             });
         }
+
+        async function sendReply() {
+            const msgInput = document.getElementById("reply-input");
+            const msg = msgInput.value;
+            
+            // ตรวจสอบว่าได้เลือกผู้ใช้งานและมีข้อความแล้วหรือไม่
+            if (!currentUserId || !msg) {
+                alert("กรุณาเลือกผู้ใช้งานและพิมพ์ข้อความก่อนครับ");
+                return;
+            }
+            
+            // ส่งข้อมูลไปบันทึก
+            await fetch(WEB_APP_URL, {
+                method: "POST",
+                body: JSON.stringify({ 
+                    action: "saveChat", 
+                    line_id: currentUserId, 
+                    message: msg, 
+                    sender: "admin", 
+                    status: "read" 
+                })
+            });
+            
+            // ล้างช่องพิมพ์และอัปเดตแชทให้เห็นข้อความล่าสุด
+            msgInput.value = "";
+            selectUser(currentUserId);
+        }
     
         // ปรับความเร็วการดึงข้อมูลเป็น 2 วินาทีเพื่อให้ดู Real-time มากขึ้น
         setInterval(updateUI, 2000);
