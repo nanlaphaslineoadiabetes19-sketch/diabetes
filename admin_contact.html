@@ -132,13 +132,6 @@
             });
             area.scrollTop = area.scrollHeight;
         }
-    
-        async function updateStatusToRead(id) {
-            await fetch(WEB_APP_URL, {
-                method: "POST",
-                body: JSON.stringify({ action: "markAsRead", line_id: id })
-            });
-        }
 
         async function sendReply() {
             const msgInput = document.getElementById("reply-input");
@@ -165,6 +158,13 @@
             // ล้างช่องพิมพ์และอัปเดตแชทให้เห็นข้อความล่าสุด
             msgInput.value = "";
             selectUser(currentUserId);
+        }
+
+        async function updateStatusToRead(id) {
+            await fetch(WEB_APP_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "markAsRead", line_id: id })
+            });
         }
     
         // ปรับความเร็วการดึงข้อมูลเป็น 2 วินาทีเพื่อให้ดู Real-time มากขึ้น
