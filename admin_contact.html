@@ -56,10 +56,16 @@
             
             // สร้าง Map เก็บข้อมูลล่าสุดของแต่ละคน
             const userMap = {};
-            logs.forEach(row => {
-                const id = row[1]; // line_id
-                const name = row[2]; // line_name
-                const status = row[5]; // status (คอลัมน์ F)
+            
+            // เริ่มลูปที่ i = 1 เพื่อข้ามแถวหัวตาราง (index 0)
+            for (let i = 1; i < logs.length; i++) {
+                let row = logs[i];
+                let id = row[1];     // line_id
+                let name = row[2];   // line_name
+                let status = row[5]; // status (คอลัมน์ F)
+                
+                // กรองเอาแถวที่ไม่มี Line ID หรือเป็นหัวตารางออก
+                if (!id || String(id).toLowerCase() === 'lineid' || String(id).toLowerCase() === 'line_id') continue;
                 
                 if (!userMap[id]) {
                     userMap[id] = { name: name, hasUnread: false };
@@ -67,7 +73,7 @@
                 if (status === 'unread') {
                     userMap[id].hasUnread = true;
                 }
-            });
+            }
     
             container.innerHTML = "";
             Object.keys(userMap).forEach(id => {
@@ -82,7 +88,7 @@
                 `;
                 container.appendChild(div);
             });
-    
+            
             // ถ้ากำลังดูแชทอยู่ ให้ refresh แชทอัตโนมัติ
             if (currentUserId) selectUser(currentUserId);
         }
