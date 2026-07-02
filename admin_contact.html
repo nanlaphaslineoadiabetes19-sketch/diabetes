@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <title>ระบบตอบกลับของพยาบาล</title>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <style>
+        body { font-family: sans-serif; display: flex; height: 100vh; margin: 0; }
+        #user-list { width: 300px; border-right: 1px solid #ddd; overflow-y: auto; background: #f8f9fa; }
+        #chat-panel { flex: 1; display: flex; flex-direction: column; }
+        .user-item { padding: 15px; border-bottom: 1px solid #ddd; cursor: pointer; }
+        .user-item:hover { background: #e9ecef; }
+        #chat-area { flex: 1; padding: 20px; overflow-y: auto; background: #eee; }
+        .message { margin-bottom: 10px; padding: 8px 12px; border-radius: 10px; max-width: 60%; }
+        .sent { background: white; align-self: flex-start; }
+        .received { background: #06c755; color: white; align-self: flex-end; }
+        footer { padding: 10px; display: flex; gap: 10px; }
+    </style>
+</head>
+<body>
+    <div id="user-list"><h3>รายชื่อผู้ติดต่อ</h3><div id="list-container"></div></div>
+    <div id="chat-panel">
+        <div id="chat-area">เลือกผู้ป่วยเพื่อเริ่มการสนทนา</div>
+        <footer>
+            <input type="text" id="reply-input" style="flex:1" placeholder="พิมพ์คำตอบกลับ...">
+            <button onclick="sendReply()">ส่ง</button>
+        </footer>
+    </div>
+
+    <script>
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec";
+        let currentUserId = "";
+
+        // 1. ดึงรายชื่อผู้ป่วยที่เคยทักมา
+        async function loadUserList() {
+            const res = await fetch(`${WEB_APP_URL}?action=getChatLogs`);
+            const logs = await res.json();
+            const users = [...new Set(logs.map(row => row[1]))]; // กรองเฉพาะ Line ID
+            const container = document.getElementById("list-container");
+            users.forEach(id => {
+                const div = document.createElement("div");
+                div.className = "user-item";
+                div.innerText = "ผู้ใช้งาน: " + id.substring(0, 8) + "...";
+                div.onclick = () => selectUser(id);
+                container.appendChild(div);
+            });
+        }
+
+        // 2. เลือกผู้ใช้เพื่อดูแชท
+        async function selectUser(id) {
+            currentUserId = id;
+            const res = await fetch(`${WEB_APP_URL}?action=getChatLogs`);
+            const logs = await res.json();
+            const area = document.getElementById("chat-area");
+            area.innerHTML = "";
+            logs.filter(row => row[1] == id).forEach(row => {
+                const div = document.createElement("div");
+                div.className = `message ${row[4] == 'admin' ? 'received' : 'sent'}`;
+                div.innerText = row[3];
+                area.appendChild(div);
+            });
+        }
+
+        // 3. แอดมินตอบกลับ
+        async function sendReply() {
+            if (!currentUserId) return alert("โปรดเลือกผู้ป่วยก่อน");
+            const msg = document.getElementById("reply-input").value;
+            await fetch(WEB_APP_URL, {
+                method: "POST",
+                body: JSON.stringify({ action: "saveChat", line_id: currentUserId, message: msg, sender: "admin" })
+            });
+            document.getElementById("reply-input").value = "";
+            selectUser(currentUserId);
+        }
+
+        loadUserList();
+    </script>
+</body>
+</html>
