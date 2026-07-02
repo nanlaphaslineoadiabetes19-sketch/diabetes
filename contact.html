@@ -48,16 +48,20 @@
             const container = document.getElementById("chat-container");
             container.innerHTML = ""; // ล้างจอเก่า
         
-            // วนลูปแสดงเฉพาะของตัวเอง (กรองด้วย line_id)
-            logs.forEach(row => {
-                // row[1] คือ line_id, row[3] คือ message, row[4] คือ sender
-                if (row[1] == userInfo.id) {
-                    const div = document.createElement("div");
-                    div.className = `message ${row[4] === 'admin' ? 'received' : 'sent'}`;
-                    div.innerHTML = `<div>${row[3]}</div><small>${row[0]}</small>`;
-                    container.appendChild(div);
-                }
-            });
+            // ตรวจสอบว่า logs เป็น Array หรือไม่
+            if (Array.isArray(logs)) {
+                logs.forEach(row => {
+                    // row[1] คือ line_id, row[3] คือ message, row[4] คือ sender
+                    // เพิ่มการเช็คค่าว่างด้วย
+                    if (row[1] && String(row[1]).trim() == String(userInfo.id).trim()) {
+                        const div = document.createElement("div");
+                        div.className = `message ${row[4] === 'admin' ? 'received' : 'sent'}`;
+                        // ใช้ row[0] สำหรับวันที่
+                        div.innerHTML = `<div>${row[3]}</div><small>${row[0]}</small>`;
+                        container.appendChild(div);
+                    }
+                });
+            }
             container.scrollTop = container.scrollHeight; // เลื่อนล่างสุด
         }
 
