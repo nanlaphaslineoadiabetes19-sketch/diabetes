@@ -44,7 +44,6 @@
         const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec";
         let currentUserId = null;
     
-        // ดึงข้อมูลแชททั้งหมด
         async function fetchLogs() {
             const res = await fetch(`${WEB_APP_URL}?action=getChatLogs`);
             return await res.json();
@@ -53,23 +52,21 @@
         async function updateUI() {
             const logs = await fetchLogs();
             const container = document.getElementById("list-container");
-            
-            // สร้าง Map เก็บข้อมูลล่าสุดของแต่ละคน
             const userMap = {};
-            
-            // เริ่มลูปที่ i = 1 เพื่อข้ามแถวหัวตาราง (index 0)
+    
             for (let i = 1; i < logs.length; i++) {
                 let row = logs[i];
-                let id = row[1];     // line_id
-                let name = row[2];   // line_name
-                let status = String(row[5]).trim().toLowerCase(); // status (คอลัมน์ F)
+                let id = row[1];
+                let name = row[2];
+                let status = String(row[5]).trim().toLowerCase();
                 
                 if (!id || String(id).toLowerCase() === 'lineid') continue;
-            
+                
                 if (!userMap[id]) {
                     userMap[id] = { name: name, hasUnread: false };
                 }
-                if (status === 'unread') {
+                // เงื่อนไข: ถ้าข้อความนั้น unread และ "ไม่ใช่คนที่กำลังคุยอยู่ตอนนี้" ให้โชว์ Badge
+                if (status === 'unread' && id !== currentUserId) {
                     userMap[id].hasUnread = true;
                 }
             }
@@ -87,6 +84,9 @@
                 `;
                 container.appendChild(div);
             });
+            
+            // ถ้ากำลังดูแชทอยู่ ให้ refresh แชทอัตโนมัติ (ให้เร็วขึ้นเป็น 2 วินาที)
+            if (currentUserId) selectUser(currentUserId);
         }
     
         async function selectUser(id) {
@@ -96,16 +96,20 @@
             area.innerHTML = "";
             
             logs.filter(row => row[1] == id).forEach(row => {
-                // ปรับรูปแบบวันเวลาจาก row[0]
+                // แสดงวัน เดือน ปี และเวลา
                 const dateObj = new Date(row[0]);
-                const timeString = dateObj.toLocaleTimeString('th-TH', {hour: '2-digit', minute:'2-digit'});
+                const fullDateString = dateObj.toLocaleString('th-TH', { 
+                    day: '2-digit', month: '2-digit', year: '2-digit', 
+                    hour: '2-digit', minute: '2-digit' 
+                });
                 
                 const div = document.createElement("div");
                 div.className = `message ${row[4] == 'admin' ? 'received' : 'sent'}`;
                 div.innerHTML = `<div>${row[3]}</div>
-                                 <div style="font-size: 10px; opacity: 0.7; margin-top: 5px;">${timeString}</div>`;
+                                 <div style="font-size: 9px; opacity: 0.6; margin-top: 5px;">${fullDateString}</div>`;
                 area.appendChild(div);
                 
+                // อ่านแล้วให้อัปเดตสถานะทันที
                 if (String(row[5]).trim().toLowerCase() === 'unread') {
                     updateStatusToRead(id);
                 }
@@ -113,29 +117,15 @@
             area.scrollTop = area.scrollHeight;
         }
     
-        // ฟังก์ชันอัปเดตสถานะใน Sheet
         async function updateStatusToRead(id) {
             await fetch(WEB_APP_URL, {
                 method: "POST",
                 body: JSON.stringify({ action: "markAsRead", line_id: id })
             });
-            // เรียก updateUI ทันทีเพื่อให้ badge หายไป
-            updateUI();
         }
     
-        async function sendReply() {
-            const msg = document.getElementById("reply-input").value;
-            if (!currentUserId || !msg) return;
-            
-            await fetch(WEB_APP_URL, {
-                method: "POST",
-                body: JSON.stringify({ action: "saveChat", line_id: currentUserId, message: msg, sender: "admin", status: "read" })
-            });
-            document.getElementById("reply-input").value = "";
-            selectUser(currentUserId);
-        }
-    
-        setInterval(updateUI, 3000);
+        // ปรับความเร็วการดึงข้อมูลเป็น 2 วินาทีเพื่อให้ดู Real-time มากขึ้น
+        setInterval(updateUI, 2000);
         updateUI();
     </script>
     
