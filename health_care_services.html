@@ -31,9 +31,9 @@
 <script>
     const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec";
 
-    // 1. ดึงรายชื่อ
+    // 1. ดึงรายชื่อ 
     fetch(SCRIPT_URL + "?type=getUsersForAppointment")
-        .then(res => res.text())
+        .then(res => res.json())
         .then(data => {
             console.log("ข้อมูลที่ได้จาก Script:", data);
 
