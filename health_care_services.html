@@ -2,49 +2,59 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ระบบนัดหมายคนไข้ - พยาบาล</title>
+    <!-- ใช้ Bootstrap 5 และเพิ่มขนาด Font สำหรับความสบายตา -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        body { background-color: #f8f9fa; font-family: 'Prompt', sans-serif; }
-        .card { border-radius: 15px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
-        .calendar-table { background: white; border-radius: 10px; overflow: hidden; }
-        .selected-row { background-color: #e7f3ff; }
+        body { background-color: #f0f2f5; font-family: 'Prompt', sans-serif; font-size: 1.1rem; }
+        .card { border-radius: 20px; border: none; box-shadow: 0 8px 16px rgba(0,0,0,0.05); }
+        .dropdown-menu { max-height: 300px; overflow-y: auto; width: 100%; }
+        .btn-lg { padding: 12px 24px; font-weight: 600; }
+        h2 { font-size: 2rem; font-weight: 700; color: #333; }
+        h4 { font-size: 1.3rem; color: #555; }
     </style>
 </head>
 <body class="p-4">
 
-<div class="container">
-    <h2 class="mb-4">📋 ระบบจัดการนัดหมายคนไข้</h2>
+<div class="container-fluid max-width-1200">
+    <h2 class="mb-4">📋 ระบบนัดหมายคนไข้</h2>
     
-    <!-- ส่วนเลือกรายชื่อคนไข้ -->
-    <div class="card p-4 mb-4">
-        <h4>เลือกรายชื่อคนไข้ (เลือกได้หลายคน)</h4>
-        <div id="patient-list" class="row">
-            <!-- ข้อมูลจาก Google Apps Script จะมาแสดงตรงนี้ -->
-            <div class="col-md-3"><input type="checkbox" value="1"> นาย ก.</div>
-            <div class="col-md-3"><input type="checkbox" value="2"> นาง ข.</div>
+    <!-- ส่วนเลือกรายชื่อคนไข้ (แบบ Dropdown ที่มี Checkbox) -->
+    <div class="card p-5 mb-4">
+        <label class="form-label h4 mb-3">เลือกรายชื่อคนไข้ (เลือกได้หลายคน)</label>
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary btn-lg dropdown-toggle w-100 text-start" type="button" data-bs-toggle="dropdown">
+                คลิกเพื่อเลือกชื่อคนไข้...
+            </button>
+            <ul class="dropdown-menu p-3">
+                <li><label><input type="checkbox" class="me-2"> เลือกทั้งหมด</label></li>
+                <li><hr class="dropdown-divider"></li>
+                <!-- ข้อมูลรายชื่อจะถูกโหลดมาจากชีท pretest คอลัมน์ line_name -->
+                <li><label><input type="checkbox" class="me-2" value="นาย ก."> นาย ก.</label></li>
+                <li><label><input type="checkbox" class="me-2" value="นาง ข."> นาง ข.</label></li>
+            </ul>
         </div>
-        <button class="btn btn-primary mt-3">ลงวันนัดหมาย</button>
+        <button class="btn btn-primary btn-lg mt-4 w-100">ลงวันนัดหมาย</button>
     </div>
 
     <!-- ตารางปฏิทินแสดงคิว -->
-    <div class="card p-4">
+    <div class="card p-5">
         <h4>ตารางนัดหมายภาพรวม</h4>
-        <table class="table table-hover calendar-table mt-3">
+        <table class="table table-hover mt-3 align-middle">
             <thead class="table-light">
                 <tr>
                     <th>วัน/เวลา</th><th>ชื่อคนไข้</th><th>สถานะ</th><th>จัดการ</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- แสดงรายการนัดที่ดึงจาก Sheet -->
                 <tr>
                     <td>05/07/2026 09:00</td>
                     <td>นาย ก.</td>
                     <td><span class="badge bg-success">ยืนยันแล้ว</span></td>
                     <td>
-                        <button class="btn btn-sm btn-warning">แก้ไข</button>
-                        <button class="btn btn-sm btn-danger">ลบ</button>
+                        <button class="btn btn-warning btn-sm">แก้ไข</button>
+                        <button class="btn btn-danger btn-sm">ลบ</button>
                     </td>
                 </tr>
             </tbody>
@@ -52,5 +62,6 @@
     </div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
