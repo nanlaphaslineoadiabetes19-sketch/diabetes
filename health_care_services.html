@@ -97,14 +97,18 @@
             .then(data => {
                 const tbody = document.getElementById('appointment-table');
                 tbody.innerHTML = '';
-                data.forEach((row, index) => {
+                data.forEach((row) => {
                     tbody.insertAdjacentHTML('beforeend', `<tr>
-                        <td>${row.name}</td><td>${row.date}</td>
-                        <td><button class="btn btn-sm btn-danger" onclick="deleteApp(${index})">ลบ</button></td>
+                        <td>${row.line_name}</td>
+                        <td>${row.app_date}</td>
+                        <td>
+                            <button class="btn btn-sm btn-danger" onclick="deleteApp(${row.row})">ลบ</button>
+                        </td>
                     </tr>`);
                 });
             });
         }
+        
         // เรียกให้ทำงานตอนโหลดหน้าเว็บ
         window.onload = loadAppointments;
         
