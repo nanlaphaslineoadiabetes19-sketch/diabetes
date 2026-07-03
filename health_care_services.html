@@ -23,7 +23,7 @@
             <div class="dropdown mb-3">
                 <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" data-bs-toggle="dropdown">เลือกคนไข้...</button>
                 <ul class="dropdown-menu p-3" id="patient-list">
-                    <li><label><input type="checkbox" id="selectAll"> เลือกทั้งหมด</label></li>
+                    <li><label><input type="radio" name="patient" class="p-radio" value="${p.line_id}" data-name="${p.line_name}"> ${p.line_name}</label></li>
                 </ul>
             </div>
             <input type="datetime-local" id="app-date" class="form-control mb-3">
@@ -33,12 +33,10 @@
 
     <div class="card p-4">
         <h4 class="mb-3">📅 ตารางนัดหมาย</h4>
-        <div class="table-responsive">
-            <table class="table table-hover">
-                <thead><tr><th>ชื่อคนไข้</th><th>วันนัด</th><th>จัดการ</th></tr></thead>
-                <tbody id="appointment-table"></tbody>
-            </table>
-        </div>
+        <table class="table table-hover text-nowrap"> <!-- เพิ่ม text-nowrap -->
+            <thead><tr><th>ชื่อ</th><th>วันนัด</th><th>จัดการ</th></tr></thead>
+            <tbody id="appointment-table"></tbody>
+        </table>
     </div>
 
     <script>
@@ -87,6 +85,27 @@
             }).then(() => {
                 showToast("บันทึกนัดหมายสำเร็จ!");
                 loadAppointments(); // ดึงตารางใหม่
+            });
+        }
+
+        // ฟังก์ชันลบ
+        function deleteApp(row) {
+            Swal.fire({
+                title: 'ยืนยันการลบ?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'ลบเลย',
+                cancelButtonText: 'ยกเลิก'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ action: 'deleteAppointment', row: row })
+                    }).then(() => {
+                        showToast("ลบนัดหมายแล้ว");
+                        loadAppointments();
+                    });
+                }
             });
         }
 
