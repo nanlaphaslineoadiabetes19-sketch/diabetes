@@ -35,11 +35,20 @@
     fetch(SCRIPT_URL + "?type=getUsersForAppointment")
         .then(res => res.json())
         .then(data => {
+            console.log("ข้อมูลที่ได้จาก Script:", data);
+
+            // ตรวจสอบก่อนว่า data เป็น Array จริงไหม
+            if (Array.isArray(data)) {
             const list = document.getElementById('patient-list');
-            data.forEach(p => {
-                list.insertAdjacentHTML('beforeend', `<li><label><input type="checkbox" class="p-check" value="${p.line_id}" data-name="${p.line_name}"> ${p.line_name}</label></li>`);
-            });
-        });
+                data.forEach(p => {
+                    list.insertAdjacentHTML('beforeend', `<li><label><input type="checkbox" class="p-check" value="${p.line_id}" data-name="${p.line_name}"> ${p.line_name}</label></li>`);
+                });
+            } else {
+                console.error("ข้อมูลไม่ใช่ Array:", data);
+                alert("เกิดข้อผิดพลาด: ข้อมูลที่ได้รับไม่ถูกต้อง");
+            }
+        })
+        .catch(err => console.error("Fetch error:", err));
 
     // 2. เลือกทั้งหมด
     document.getElementById('selectAll').onclick = function() {
