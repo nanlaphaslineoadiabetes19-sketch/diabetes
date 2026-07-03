@@ -33,7 +33,7 @@
 
     // 1. ดึงรายชื่อ
     fetch(SCRIPT_URL + "?type=getUsersForAppointment")
-        .then(res => res.json())
+        .then(res => res.text())
         .then(data => {
             console.log("ข้อมูลที่ได้จาก Script:", data);
 
