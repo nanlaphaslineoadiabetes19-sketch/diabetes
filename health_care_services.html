@@ -109,6 +109,52 @@
             });
         }
 
+        // ฟังก์ชันแก้ไข ใช้ SweetAlert2
+        function editApp(row, name, currentDate) {
+            Swal.fire({
+                title: 'แก้ไขเวลานัดหมาย',
+                html: `
+                    <div class="text-start mb-3">
+                        <label class="form-label">คนไข้: <strong>${name}</strong></label>
+                        <input type="datetime-local" id="swal-edit-date" class="form-control" value="${currentDate}">
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonColor: '#ffc107', // สีเหลืองให้เข้ากับปุ่มแก้ไข
+                confirmButtonText: 'บันทึกการแก้ไข',
+                cancelButtonText: 'ยกเลิก',
+                preConfirm: () => {
+                    const newDate = document.getElementById('swal-edit-date').value;
+                    if (!newDate) {
+                        Swal.showValidationMessage('กรุณาเลือกวันและเวลาใหม่');
+                    }
+                    return newDate;
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    const newDate = result.value;
+                    
+                    // เรียก API เพื่อส่งข้อมูลไปอัปเดต
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ 
+                            action: 'editAppointment', 
+                            row: row, 
+                            new_date: newDate 
+                        })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        showToast("อัปเดตนัดหมายสำเร็จ!", "success");
+                        loadAppointments(); // โหลดตารางใหม่
+                    })
+                    .catch(err => {
+                        Swal.fire('ข้อผิดพลาด', 'ไม่สามารถแก้ไขข้อมูลได้', 'error');
+                    });
+                }
+            });
+        }
+
         // 4. ฟังก์ชันดึงตารางนัดหมาย
         function loadAppointments() {
             fetch(SCRIPT_URL + "?type=getAppointments")
@@ -117,10 +163,23 @@
                 const tbody = document.getElementById('appointment-table');
                 tbody.innerHTML = '';
                 data.forEach((row) => {
+                    // แปลง format วันที่ให้แสดงผลอ่านง่ายขึ้น (ถ้าต้องการ)
+                    let displayDate = new Date(row.app_date).toLocaleString('th-TH', {dateStyle: 'medium', timeStyle: 'short'});
+                    
+                    // เตรียม format วันที่สำหรับใส่ในช่อง input ตอนกดแก้ไข (YYYY-MM-DDTHH:MM)
+                    let inputFormatDate = '';
+                    if(row.app_date) {
+                        try {
+                            inputFormatDate = new Date(row.app_date).toISOString().slice(0, 16);
+                        } catch(e) {}
+                    }
+
                     tbody.insertAdjacentHTML('beforeend', `<tr>
                         <td>${row.line_name}</td>
-                        <td>${row.app_date}</td>
+                        <td>${displayDate}</td>
                         <td>
+                            <!-- เพิ่มปุ่มแก้ไข (สีเหลือง) -->
+                            <button class="btn btn-sm btn-warning me-1" onclick="editApp(${row.row}, '${row.line_name}', '${inputFormatDate}')">แก้ไข</button>
                             <button class="btn btn-sm btn-danger" onclick="deleteApp(${row.row})">ลบ</button>
                         </td>
                     </tr>`);
