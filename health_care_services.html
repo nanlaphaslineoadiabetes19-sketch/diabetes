@@ -9,6 +9,19 @@
         body { background-color: #f8f9fa; font-family: 'Prompt', sans-serif; font-size: 1.1rem; }
         .card { border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .dropdown-menu { max-height: 300px; overflow-y: auto; width: 100%; }
+
+        /* ปรับแต่ง Dropdown ให้สวยงาม */
+        .custom-dropdown-btn {
+            background-color: #ffffff;
+            border: 2px solid #e9ecef;
+            border-radius: 12px;
+            padding: 12px;
+            transition: all 0.3s;
+        }
+        .custom-dropdown-btn:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+        }
     </style>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
@@ -19,11 +32,14 @@
         <h2 class="mb-4">📋 ระบบนัดหมายคนไข้</h2>
         
         <div class="card p-4 mb-4">
-            <label class="form-label h4">เลือกรายชื่อคนไข้</label>
+            <label class="form-label h5 mb-2">เลือกรายชื่อคนไข้</label>
             <div class="dropdown mb-3">
-                <button class="btn btn-outline-secondary dropdown-toggle w-100 text-start" data-bs-toggle="dropdown">เลือกคนไข้...</button>
-                <ul class="dropdown-menu p-3" id="patient-list">
-                    <li><label><input type="radio" name="patient" class="p-radio" value="${p.line_id}" data-name="${p.line_name}"> ${p.line_name}</label></li>
+                <button class="btn custom-dropdown-btn w-100 text-start dropdown-toggle" 
+                        type="button" data-bs-toggle="dropdown">
+                    กรุณาเลือกคนไข้...
+                </button>
+                <ul class="dropdown-menu w-100 p-2 shadow-sm" id="patient-list">
+                    <!-- รายชื่อคนไข้จะมาอยู่ที่นี่ -->
                 </ul>
             </div>
             <input type="datetime-local" id="app-date" class="form-control mb-3">
@@ -31,12 +47,9 @@
         </div>
     </div>
 
-    <div class="card p-4">
-        <h4 class="mb-3">📅 ตารางนัดหมาย</h4>
-        <table class="table table-hover text-nowrap"> <!-- เพิ่ม text-nowrap -->
-            <thead><tr><th>ชื่อ</th><th>วันนัด</th><th>จัดการ</th></tr></thead>
-            <tbody id="appointment-table"></tbody>
-        </table>
+    <div id="appointment-cards" class="mt-4">
+        <h5 class="mb-3">📅 รายการนัดหมาย</h5>
+        <!-- รายการนัดจะถูกแสดงที่นี่ -->
     </div>
 
     <script>
@@ -160,29 +173,30 @@
             fetch(SCRIPT_URL + "?type=getAppointments")
             .then(res => res.json())
             .then(data => {
-                const tbody = document.getElementById('appointment-table');
-                tbody.innerHTML = '';
+                const container = document.getElementById('appointment-cards');
+                container.innerHTML = '';
+                
                 data.forEach((row) => {
-                    // แปลง format วันที่ให้แสดงผลอ่านง่ายขึ้น (ถ้าต้องการ)
-                    let displayDate = new Date(row.app_date).toLocaleString('th-TH', {dateStyle: 'medium', timeStyle: 'short'});
-                    
-                    // เตรียม format วันที่สำหรับใส่ในช่อง input ตอนกดแก้ไข (YYYY-MM-DDTHH:MM)
-                    let inputFormatDate = '';
-                    if(row.app_date) {
-                        try {
-                            inputFormatDate = new Date(row.app_date).toISOString().slice(0, 16);
-                        } catch(e) {}
-                    }
-
-                    tbody.insertAdjacentHTML('beforeend', `<tr>
-                        <td>${row.line_name}</td>
-                        <td>${displayDate}</td>
-                        <td>
-                            <!-- เพิ่มปุ่มแก้ไข (สีเหลือง) -->
-                            <button class="btn btn-sm btn-warning me-1" onclick="editApp(${row.row}, '${row.line_name}', '${inputFormatDate}')">แก้ไข</button>
-                            <button class="btn btn-sm btn-danger" onclick="deleteApp(${row.row})">ลบ</button>
-                        </td>
-                    </tr>`);
+                    const dateObj = new Date(row.app_date);
+                    const formattedDate = dateObj.toLocaleDateString('th-TH', { 
+                        day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' 
+                    });
+    
+                    // สร้างการ์ดนัดหมาย
+                    container.insertAdjacentHTML('beforeend', `
+                        <div class="card mb-3 border-0 shadow-sm p-3">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <h6 class="mb-0 text-primary fw-bold">${row.line_name}</h6>
+                                    <small class="text-muted"><i class="bi bi-calendar-check"></i> ${formattedDate}</small>
+                                </div>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-warning me-2" onclick="editApp(${row.row}, '${row.line_name}', '${row.app_date}')">แก้ไข</button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="deleteApp(${row.row})">ลบ</button>
+                                </div>
+                            </div>
+                        </div>
+                    `);
                 });
             });
         }
