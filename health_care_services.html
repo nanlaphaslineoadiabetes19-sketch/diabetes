@@ -20,16 +20,18 @@
         .card { border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .custom-dropdown-btn { background-color: #ffffff; border: 2px solid #e9ecef; border-radius: 12px; padding: 12px; }
         #calendar { background: white; padding: 15px; border-radius: 20px; }
-        .fc-event-busy { background-color: #dc3545 !important; border-color: #dc3545 !important; cursor: pointer; }
+        .fc-event-busy { background-color: #0d6efd !important; border-color: #0d6efd !important; cursor: pointer; padding: 2px 4px; }
+        .fc-event-time { font-weight: bold; }
+        .fc-event-title { font-weight: normal; }
     </style>
 </head>
 <body class="p-4">
     <div class="container">
         <h2 class="mb-4">📋 ระบบนัดหมายคนไข้</h2>
         
-        <!-- ส่วนเลือกคนไข้และลงนัด -->
+        <!-- ส่วนเลือกคนไข้และลงนัด (เก็บไว้เป็นทางเลือกในการกรอกแบบเดิม) -->
         <div class="card p-4 mb-4">
-            <label class="form-label h5 mb-2">เลือกรายชื่อคนไข้</label>
+            <label class="form-label h5 mb-2">ลงนัดหมายด่วน</label>
             <div class="dropdown mb-3">
                 <button class="btn custom-dropdown-btn w-100 text-start dropdown-toggle" type="button" data-bs-toggle="dropdown" id="dropdownMenuButton">
                     กรุณาเลือกคนไข้...
@@ -42,7 +44,7 @@
 
         <!-- ส่วนของปฏิทิน -->
         <div class="card p-4">
-            <h4 class="mb-3">📅 ปฏิทินนัดหมาย</h4>
+            <h4 class="mb-3">📅 ปฏิทินนัดหมาย <small class="text-muted fs-6">(กดที่วันที่เพื่อเพิ่มนัด / กดที่ชื่อเพื่อแก้ไข)</small></h4>
             <div id="calendar"></div>
         </div>
     </div>
@@ -51,11 +53,13 @@
         // *** อย่าลืมเปลี่ยน URL ตรงนี้เป็น Web App URL ของคุณเอง ***
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec";
         let calendar;
+        let globalPatients = []; // ตัวแปรเก็บรายชื่อคนไข้สำหรับใช้ใน Popup
 
-        // 1. ดึงรายชื่อคนไข้มาใส่ใน Dropdown
+        // 1. ดึงรายชื่อคนไข้มาใส่ใน Dropdown และเก็บไว้ในตัวแปร global
         fetch(SCRIPT_URL + "?type=getUsersForAppointment")
             .then(res => res.json())
             .then(data => {
+                globalPatients = data; 
                 const list = document.getElementById('patient-list');
                 data.forEach(p => {
                     list.insertAdjacentHTML('beforeend', `
@@ -75,7 +79,6 @@
             fetch(SCRIPT_URL + "?type=getAppointments")
             .then(res => res.json())
             .then(data => {
-                // แปลงข้อมูลจาก Google Sheets ให้อยู่ในรูปแบบ Event ของ FullCalendar
                 const events = data.map(row => ({
                     title: row.line_name,
                     start: row.app_date,
@@ -85,7 +88,6 @@
 
                 const calendarEl = document.getElementById('calendar');
                 
-                // เคลียร์ปฏิทินเก่าออกก่อน (ถ้ามี)
                 if (calendar) {
                     calendar.destroy();
                 }
@@ -93,35 +95,107 @@
                 calendar = new FullCalendar.Calendar(calendarEl, {
                     initialView: 'dayGridMonth',
                     locale: 'th',
-                    height: 'auto', /* เพิ่มบรรทัดนี้เข้าไปเพื่อให้สูงพอดีกับเนื้อหา */
+                    height: 'auto',
+                    displayEventTime: true,
+                    eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
                     events: events,
-                    eventClick: function(info) {
+                    
+                    // --- เมื่อกดที่ "วันที่ว่าง" บนปฏิทิน ---
+                    dateClick: function(info) {
+                        // สร้าง Option ตัวเลือกคนไข้สำหรับ Popup
+                        let optionsHtml = '<option value="">-- กรุณาเลือกคนไข้ --</option>';
+                        globalPatients.forEach(p => {
+                            optionsHtml += `<option value="${p.line_id}" data-name="${p.line_name}">${p.line_name}</option>`;
+                        });
+
                         Swal.fire({
-                            title: info.event.title,
-                            html: `เวลานัด: ${info.event.start.toLocaleString('th-TH')}<br><br>
-                                   <button class="btn btn-warning m-1" onclick="editApp(${info.event.extendedProps.row}, '${info.event.start.toISOString().slice(0,16)}')">แก้ไข</button>
-                                   <button class="btn btn-danger m-1" onclick="deleteApp(${info.event.extendedProps.row})">ลบ</button>`,
-                            showConfirmButton: false
+                            title: '📅 เพิ่มการนัดหมาย',
+                            html: `
+                                <div class="mb-3 text-start mt-3">
+                                    <label class="form-label fw-bold">เลือกคนไข้:</label>
+                                    <select id="swal-patient-select" class="form-select">
+                                        ${optionsHtml}
+                                    </select>
+                                </div>
+                                <div class="mb-3 text-start">
+                                    <label class="form-label fw-bold">วันที่และเวลานัด:</label>
+                                    <input type="datetime-local" id="swal-app-date" class="form-control" value="${info.dateStr}T09:00">
+                                </div>
+                            `,
+                            showCancelButton: true,
+                            confirmButtonText: 'บันทึกนัดหมาย',
+                            cancelButtonText: 'ยกเลิก',
+                            preConfirm: () => {
+                                const selectEl = document.getElementById('swal-patient-select');
+                                const pId = selectEl.value;
+                                const pName = selectEl.options[selectEl.selectedIndex] ? selectEl.options[selectEl.selectedIndex].getAttribute('data-name') : null;
+                                const dateVal = document.getElementById('swal-app-date').value;
+                                
+                                if (!pId || !dateVal) {
+                                    Swal.showValidationMessage('กรุณาเลือกคนไข้และเวลาให้ครบถ้วน');
+                                    return false;
+                                }
+                                return { id: pId, name: pName, date: dateVal };
+                            }
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                Swal.fire({title: 'กำลังบันทึก...', allowOutsideClick: false});
+                                Swal.showLoading();
+                                
+                                fetch(SCRIPT_URL, {
+                                    method: 'POST',
+                                    body: JSON.stringify({ 
+                                        action: 'addBulkAppointments', 
+                                        patients: JSON.stringify([{id: result.value.id, name: result.value.name}]), 
+                                        appointment_date: result.value.date 
+                                    })
+                                }).then(() => {
+                                    showToast("บันทึกสำเร็จ!");
+                                    loadAppointments(); 
+                                }).catch(err => console.error("Error saving:", err));
+                            }
+                        });
+                    },
+
+                    // --- เมื่อกดที่ "รายการนัดหมาย" บนปฏิทิน ---
+                    eventClick: function(info) {
+                        // แปลงเวลาให้เป็นฟอร์แมต YYYY-MM-DDTHH:mm ให้ตรงกับ Local Time (ป้องกันเวลาเพี้ยน)
+                        const d = info.event.start;
+                        const localIso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}T${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+                        
+                        Swal.fire({
+                            title: `👨‍⚕️ นัดหมาย: ${info.event.title}`,
+                            html: `
+                                <div class="mb-4 mt-2 fs-5">
+                                    ⏰ <b>เวลา:</b> ${info.event.start.toLocaleString('th-TH', { hour12: false })}
+                                </div>
+                                <button class="btn btn-warning mx-1 px-4" onclick="editApp(${info.event.extendedProps.row}, '${localIso}')">✏️ แก้ไข</button>
+                                <button class="btn btn-danger mx-1 px-4" onclick="deleteApp(${info.event.extendedProps.row})">🗑️ ลบ</button>
+                            `,
+                            showConfirmButton: false,
+                            showCloseButton: true
                         });
                     }
                 });
-                calendar.render(); // สั่งให้วาดปฏิทิน
+                calendar.render(); 
             })
             .catch(err => console.error("Error loading appointments:", err));
         }
 
-        // ฟังก์ชันแสดงแจ้งเตือน (Toast)
         function showToast(text, icon = 'success') {
             Swal.fire({ text: text, icon: icon, toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
         }
 
-        // 3. ฟังก์ชันบันทึกนัดหมาย
+        // 3. ฟังก์ชันบันทึกนัดหมาย (จากส่วนฟอร์มด้านบน)
         function saveAppointments() {
             const selected = document.querySelector('.p-check:checked');
             if(!selected) return showToast("กรุณาเลือกคนไข้", "error");
             
             const date = document.getElementById('app-date').value;
             if(!date) return showToast("กรุณาเลือกวันและเวลา", "error");
+
+            Swal.fire({title: 'กำลังบันทึก...', allowOutsideClick: false});
+            Swal.showLoading();
 
             fetch(SCRIPT_URL, {
                 method: 'POST',
@@ -132,7 +206,8 @@
                 })
             }).then(() => {
                 showToast("บันทึกสำเร็จ!");
-                loadAppointments(); // โหลดปฏิทินใหม่หลังบันทึก
+                document.getElementById('app-date').value = ''; // เคลียร์ฟอร์ม
+                loadAppointments(); 
             }).catch(err => console.error("Error saving:", err));
         }
 
@@ -140,12 +215,17 @@
         function deleteApp(row) {
             Swal.fire({
                 title: 'ยืนยันการลบ?',
+                text: "หากลบแล้วจะไม่สามารถกู้คืนได้",
                 icon: 'warning',
                 showCancelButton: true,
+                confirmButtonColor: '#d33',
                 confirmButtonText: 'ใช่, ลบเลย',
                 cancelButtonText: 'ยกเลิก'
             }).then((result) => {
                 if (result.isConfirmed) {
+                    Swal.fire({title: 'กำลังลบ...', allowOutsideClick: false});
+                    Swal.showLoading();
+                    
                     fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'deleteAppointment', row: row }) })
                     .then(() => { showToast("ลบสำเร็จ"); loadAppointments(); });
                 }
@@ -155,25 +235,29 @@
         // 5. ฟังก์ชันแก้ไขนัดหมาย
         function editApp(row, currentDate) {
             Swal.fire({
-                title: 'แก้ไขนัดหมาย',
-                html: `<input type="datetime-local" id="swal-edit-date" class="form-control" value="${currentDate}">`,
+                title: '✏️ แก้ไขเวลานัดหมาย',
+                html: `<input type="datetime-local" id="swal-edit-date" class="form-control mt-3" value="${currentDate}">`,
+                showCancelButton: true,
+                confirmButtonText: 'บันทึกการแก้ไข',
+                cancelButtonText: 'ยกเลิก',
                 preConfirm: () => document.getElementById('swal-edit-date').value
             }).then((result) => {
                 if (result.isConfirmed) {
+                    Swal.fire({title: 'กำลังอัปเดต...', allowOutsideClick: false});
+                    Swal.showLoading();
+
                     fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify({ action: 'editAppointment', row: row, new_date: result.value }) })
                     .then(() => { showToast("แก้ไขสำเร็จ"); loadAppointments(); });
                 }
             });
         }
 
-        // อัปเดตข้อความปุ่ม Dropdown เมื่อมีการเลือกคนไข้
         document.getElementById('patient-list').addEventListener('change', function(e) {
             if(e.target && e.target.matches('.p-check')) {
                 document.getElementById('dropdownMenuButton').innerText = e.target.getAttribute('data-name');
             }
         });
 
-        // ให้โหลดปฏิทินทันทีเมื่อเปิดหน้าเว็บ
         window.onload = loadAppointments;
     </script>
     
