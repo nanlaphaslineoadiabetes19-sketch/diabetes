@@ -15,9 +15,14 @@
     </div>
 
     <script>
-        // สมมติว่ารับ line_id ผ่าน query string เช่น ?line_id=U...
-        const urlParams = new URLSearchParams(window.location.search);
+        // เปลี่ยนส่วนนี้ในไฟล์ appointment_date.html
         const myLineId = urlParams.get('line_id');
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec'; // ต้องได้มาจากตอน Deploy
+        
+        fetch(`${SCRIPT_URL}?action=getAppointments&lineId=${myLineId}`)
+            .then(response => response.json())
+            .then(data => showAppointments(data))
+            .catch(error => console.error('Error:', error));
 
         // ดึงเฉพาะคนๆ นั้น
         google.script.run.withSuccessHandler(showAppointments).getAppointments(myLineId);
