@@ -27,11 +27,21 @@
         // 4. เรียกใช้ fetch เพื่อดึงข้อมูล
         fetch(`${SCRIPT_URL}?action=getAppointments&lineId=${myLineId}`)
             .then(response => response.json())
-            .then(data => showAppointments(data))
-            .catch(error => console.error('Error:', error));
-
-        // ดึงเฉพาะคนๆ นั้น
-        google.script.run.withSuccessHandler(showAppointments).getAppointments(myLineId);
+            .then(data => {
+                // เพิ่มการตรวจสอบว่า data เป็น Array หรือไม่ก่อนส่งให้ฟังก์ชัน
+                if (Array.isArray(data)) {
+                    showAppointments(data);
+                } else {
+                    document.getElementById('appointment-list').innerHTML = 
+                        '<div class="alert alert-warning">ไม่พบข้อมูลนัดหมาย</div>';
+                    console.log("Data returned is not an array:", data);
+                }
+            })
+            .catch(error => {
+                document.getElementById('appointment-list').innerHTML = 
+                    '<div class="alert alert-danger">เกิดข้อผิดพลาดในการโหลดข้อมูล</div>';
+                console.error('Error:', error);
+            });
 
         function showAppointments(data) {
             const container = document.getElementById('appointment-list');
@@ -39,19 +49,19 @@
                 container.innerHTML = '<div class="alert alert-info">ยังไม่มีนัดหมายในขณะนี้</div>';
                 return;
             }
-
+    
             let html = '';
             data.forEach(item => {
-                const d = new Date(item.date);
+                const d = new Date(item.app_date || item.date); 
                 const dateStr = d.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
                 const timeStr = d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
-
+    
                 html += `
                 <div class="card mb-3 appointment-card shadow-sm">
                     <div class="card-body">
                         <h5 class="card-title text-primary">${dateStr}</h5>
                         <p class="card-text mb-1">⏰ เวลา: <strong>${timeStr} น.</strong></p>
-                        <span class="badge bg-success">${item.status}</span>
+                        <span class="badge bg-success">${item.status || 'confirmed'}</span>
                     </div>
                 </div>`;
             });
