@@ -5,7 +5,7 @@
     { "source": "/menu3", "destination": "https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/food.html", "permanent": false },
     { "source": "/menu4", "destination": "https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/sugartest.html", "permanent": false },
     { "source": "/menu5", "destination": "https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/exercise.html", "permanent": false },
-    { "source": "/menu6", "destination": "https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/health_care_services.html", "permanent": false },
+    { "source": "/menu6", "destination": "https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/appointment_date.html", "permanent": false },
     { "source": "/menu7", "destination": "https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/bloodsugar.html", "permanent": false },
     { "source": "/menu8", "destination": "https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/guideline.html", "permanent": false },
     { "source": "/menu9", "destination": "https://nanlaphaslineoadiabetes19-sketch.github.io/diabetes/self.html", "permanent": false },
