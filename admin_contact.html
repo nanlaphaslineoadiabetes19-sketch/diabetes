@@ -8,7 +8,10 @@
     <style>
         :root { --primary: #06c755; --bg: #f0f2f5; }
         body { font-family: 'Segoe UI', sans-serif; display: flex; height: 100vh; margin: 0; background: #e5ddd5; }
-        
+
+        .nav-bar-fixed { position: fixed; top: 15px; left: 15px; z-index: 999; }
+        .btn-back { padding: 10px 22px; background: rgba(255, 255, 255, 0.8); color: #555; border: 1px solid #ddd; border-radius: 50px; cursor: pointer; font-size: 15px; font-weight: 700; box-shadow: 0 4px 15px rgba(0,0,0,0.1); backdrop-filter: blur(8px); }
+
         /* Sidebar */
         #user-list { width: 320px; background: white; border-right: 1px solid #ddd; display: flex; flex-direction: column; }
         .list-header { padding: 20px; background: var(--primary); color: white; font-weight: bold; }
@@ -28,6 +31,11 @@
     </style>
 </head>
 <body>
+    <div class="nav-bar-fixed">
+        <button class="btn-back" onclick="goBackMain()">⬅ ย้อนกลับ</button>
+    </div>
+    <br><br>
+    
     <div id="user-list">
         <div class="list-header">รายการสนทนา</div>
         <div id="list-container"></div>
@@ -171,6 +179,11 @@
         setInterval(updateUI, 2000);
         updateUI();
         initAdmin();
+
+        function goBackMain() {
+            window.location.href = 'https://liff.line.me/2009966517-pPEyRumg';
+        }
+
     </script>
     
 </body>
