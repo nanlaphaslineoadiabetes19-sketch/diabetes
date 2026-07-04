@@ -20,7 +20,9 @@
         .card { border-radius: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
         .custom-dropdown-btn { background-color: #ffffff; border: 2px solid #e9ecef; border-radius: 12px; padding: 12px; }
         #calendar { background: white; padding: 15px; border-radius: 20px; }
-        .fc-event-busy { background-color: #0d6efd !important; border-color: #0d6efd !important; cursor: pointer; padding: 2px 4px; }
+        
+        /* สไตล์ของ Event ปฏิทิน */
+        .fc-event-busy { background-color: #0d6efd !important; border-color: #0d6efd !important; color: white !important; cursor: pointer; padding: 2px 4px; }
         .fc-event-time { font-weight: bold; color: white !important; }
         .fc-event-title { font-weight: normal; color: white !important; }
     </style>
@@ -29,15 +31,15 @@
     <div class="container">
         <h2 class="mb-4">📋 ระบบนัดหมายคนไข้</h2>
         
-        <!-- ส่วนเลือกคนไข้และลงนัด (เก็บไว้เป็นทางเลือกในการกรอกแบบเดิม) -->
+        <!-- ส่วนเลือกคนไข้และลงนัด -->
         <div class="card p-4 mb-4">
             <label class="form-label h5 mb-2">ลงนัดหมายด่วน</label>
-            <div class="dropdown mb-3">
-                <button class="btn custom-dropdown-btn w-100 text-start dropdown-toggle" type="button" data-bs-toggle="dropdown" id="dropdownMenuButton">
-                    กรุณาเลือกคนไข้...
-                </button>
-                <ul class="dropdown-menu w-100 p-2 shadow-sm" id="patient-list"></ul>
-            </div>
+            
+            <!-- เปลี่ยนมาใช้ Select มาตรฐานแทน เพื่อเอา Radio ออก -->
+            <select id="main-patient-select" class="form-select custom-dropdown-btn mb-3">
+                <option value="">-- กรุณาเลือกคนไข้ --</option>
+            </select>
+
             <input type="datetime-local" id="app-date" class="form-control mb-3">
             <button class="btn btn-primary w-100" onclick="saveAppointments()">ลงวันนัดหมาย</button>
         </div>
@@ -50,26 +52,19 @@
     </div>
 
     <script>
-        // *** อย่าลืมเปลี่ยน URL ตรงนี้เป็น Web App URL ของคุณเอง ***
+       
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec";
         let calendar;
-        let globalPatients = []; // ตัวแปรเก็บรายชื่อคนไข้สำหรับใช้ใน Popup
+        let globalPatients = []; 
 
-        // 1. ดึงรายชื่อคนไข้มาใส่ใน Dropdown และเก็บไว้ในตัวแปร global
+        // 1. ดึงรายชื่อคนไข้มาใส่ใน Select
         fetch(SCRIPT_URL + "?type=getUsersForAppointment")
             .then(res => res.json())
             .then(data => {
                 globalPatients = data; 
-                const list = document.getElementById('patient-list');
+                const select = document.getElementById('main-patient-select');
                 data.forEach(p => {
-                    list.insertAdjacentHTML('beforeend', `
-                        <li>
-                            <label class="dropdown-item">
-                                <input type="radio" name="p-radio" class="me-2 p-check" value="${p.line_id}" data-name="${p.line_name}"> 
-                                ${p.line_name}
-                            </label>
-                        </li>
-                    `);
+                    select.insertAdjacentHTML('beforeend', `<option value="${p.line_id}" data-name="${p.line_name}">${p.line_name}</option>`);
                 });
             })
             .catch(err => console.error("Error loading patients:", err));
@@ -102,7 +97,6 @@
                     
                     // --- เมื่อกดที่ "วันที่ว่าง" บนปฏิทิน ---
                     dateClick: function(info) {
-                        // สร้าง Option ตัวเลือกคนไข้สำหรับ Popup
                         let optionsHtml = '<option value="">-- กรุณาเลือกคนไข้ --</option>';
                         globalPatients.forEach(p => {
                             optionsHtml += `<option value="${p.line_id}" data-name="${p.line_name}">${p.line_name}</option>`;
@@ -159,7 +153,6 @@
 
                     // --- เมื่อกดที่ "รายการนัดหมาย" บนปฏิทิน ---
                     eventClick: function(info) {
-                        // แปลงเวลาให้เป็นฟอร์แมต YYYY-MM-DDTHH:mm ให้ตรงกับ Local Time (ป้องกันเวลาเพี้ยน)
                         const d = info.event.start;
                         const localIso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}T${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
                         
@@ -186,12 +179,16 @@
             Swal.fire({ text: text, icon: icon, toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
         }
 
-        // 3. ฟังก์ชันบันทึกนัดหมาย (จากส่วนฟอร์มด้านบน)
+        // 3. ฟังก์ชันบันทึกนัดหมาย (ดึงค่าจาก Select แทน)
         function saveAppointments() {
-            const selected = document.querySelector('.p-check:checked');
-            if(!selected) return showToast("กรุณาเลือกคนไข้", "error");
+            const selectEl = document.getElementById('main-patient-select');
+            const pId = selectEl.value;
             
+            if(!pId) return showToast("กรุณาเลือกคนไข้", "error");
+            
+            const pName = selectEl.options[selectEl.selectedIndex].getAttribute('data-name');
             const date = document.getElementById('app-date').value;
+            
             if(!date) return showToast("กรุณาเลือกวันและเวลา", "error");
 
             Swal.fire({title: 'กำลังบันทึก...', allowOutsideClick: false});
@@ -201,12 +198,13 @@
                 method: 'POST',
                 body: JSON.stringify({ 
                     action: 'addBulkAppointments', 
-                    patients: JSON.stringify([{id: selected.value, name: selected.getAttribute('data-name')}]), 
+                    patients: JSON.stringify([{id: pId, name: pName}]), 
                     appointment_date: date 
                 })
             }).then(() => {
                 showToast("บันทึกสำเร็จ!");
-                document.getElementById('app-date').value = ''; // เคลียร์ฟอร์ม
+                document.getElementById('app-date').value = ''; 
+                selectEl.value = ''; // รีเซ็ต Dropdown กลับเป็นค่าว่าง
                 loadAppointments(); 
             }).catch(err => console.error("Error saving:", err));
         }
@@ -251,12 +249,6 @@
                 }
             });
         }
-
-        document.getElementById('patient-list').addEventListener('change', function(e) {
-            if(e.target && e.target.matches('.p-check')) {
-                document.getElementById('dropdownMenuButton').innerText = e.target.getAttribute('data-name');
-            }
-        });
 
         window.onload = loadAppointments;
     </script>
