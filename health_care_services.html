@@ -94,7 +94,17 @@
                     displayEventTime: true,
                     eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
                     events: events,
-                    
+
+                    // ปรับรูปแบบการแสดงผลในช่องวัน
+                    eventContent: function(arg) {
+                        return {
+                            html: `<div class="fc-event-main">
+                                     <span class="fc-event-time">${arg.timeText}</span> 
+                                     <span class="fc-event-title">${arg.event.title}</span>
+                                   </div>`
+                        };
+                    },
+                                    
                     // --- เมื่อกดที่ "วันที่ว่าง" บนปฏิทิน ---
                     dateClick: function(info) {
                         let optionsHtml = '<option value="">-- กรุณาเลือกคนไข้ --</option>';
@@ -154,6 +164,7 @@
                     // --- เมื่อกดที่ "รายการนัดหมาย" บนปฏิทิน ---
                     eventClick: function(info) {
                         const d = info.event.start;
+                        // แปลงเวลาให้เป็นรูปแบบ datetime-local
                         const localIso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}T${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
                         
                         Swal.fire({
