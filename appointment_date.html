@@ -19,6 +19,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const myLineId = urlParams.get('line_id');
 
+        // ดึงเฉพาะคนๆ นั้น
         google.script.run.withSuccessHandler(showAppointments).getAppointments(myLineId);
 
         function showAppointments(data) {
