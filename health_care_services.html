@@ -25,7 +25,21 @@
         .fc-event-busy { background-color: #0d6efd !important; border-color: #0d6efd !important; color: white !important; cursor: pointer; padding: 2px 4px; }
         .fc-event-time { font-weight: bold; color: white !important; }
         .fc-event-title { font-weight: normal; color: white !important; }
+
+        /* เพิ่มเติมในส่วน <style> */
+        .fc-event-main {
+            padding: 2px 5px !important;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .fc-event-busy {
+            background-color: #0d6efd !important;
+            border-radius: 4px;
+            margin-bottom: 2px;
+        }  
     </style>
+    
 </head>
 <body class="p-4">
     <div class="container">
@@ -74,12 +88,22 @@
             fetch(SCRIPT_URL + "?type=getAppointments")
             .then(res => res.json())
             .then(data => {
-                const events = data.map(row => ({
-                    title: row.line_name,
-                    start: row.app_date,
-                    className: 'fc-event-busy',
-                    extendedProps: { row: row.row, name: row.line_name }
-                }));
+                const events = data.map(row => {
+                    // แปลงวันที่เพื่อให้ FullCalendar อ่านได้ถูกต้อง
+                    const d = new Date(row.app_date);
+                    const timeStr = `${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+                    
+                    return {
+                        title: row.line_name,
+                        start: row.app_date,
+                        className: 'fc-event-busy',
+                        extendedProps: { 
+                            row: row.row, 
+                            name: row.line_name,
+                            time: timeStr // ส่งเวลาไปด้วย
+                        }
+                    };
+                });
 
                 const calendarEl = document.getElementById('calendar');
                 
@@ -91,20 +115,35 @@
                     initialView: 'dayGridMonth',
                     locale: 'th',
                     height: 'auto',
-                    displayEventTime: true,
-                    eventTimeFormat: { hour: '2-digit', minute: '2-digit', hour12: false },
                     events: events,
 
-                    // ปรับรูปแบบการแสดงผลในช่องวัน
+                    // ปรับการแสดงผลในปฏิทินให้เป็น เวลา + ชื่อคนไข้
                     eventContent: function(arg) {
                         return {
-                            html: `<div class="fc-event-main">
-                                     <span class="fc-event-time">${arg.timeText}</span> 
-                                     <span class="fc-event-title">${arg.event.title}</span>
+                            html: `<div class="fc-event-main" style="padding: 2px; font-size: 0.85em;">
+                                     <b>${arg.event.extendedProps.time}</b> ${arg.event.title}
                                    </div>`
                         };
                     },
-                                    
+
+                    // --- เมื่อกดที่ "รายการนัดหมาย" บนปฏิทิน ---
+                    eventClick: function(info) {
+                        const d = info.event.start;
+                        // แปลงเวลาให้เป็นรูปแบบ datetime-local
+                        const localIso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}T${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
+
+                        Swal.fire({
+                            title: `นัดหมาย: ${info.event.title}`,
+                            html: `
+                                <div class="mb-3">เวลา: ${info.event.extendedProps.time} น.</div>
+                                <button class="btn btn-warning" onclick="editApp(${info.event.extendedProps.row}, '${localIso}')">✏️ แก้ไข</button>
+                                <button class="btn btn-danger" onclick="deleteApp(${info.event.extendedProps.row})">🗑️ ลบ</button>
+                            `,
+                            showConfirmButton: false,
+                            showCloseButton: true
+                        });
+                    },
+
                     // --- เมื่อกดที่ "วันที่ว่าง" บนปฏิทิน ---
                     dateClick: function(info) {
                         let optionsHtml = '<option value="">-- กรุณาเลือกคนไข้ --</option>';
@@ -160,26 +199,7 @@
                             }
                         });
                     },
-
-                    // --- เมื่อกดที่ "รายการนัดหมาย" บนปฏิทิน ---
-                    eventClick: function(info) {
-                        const d = info.event.start;
-                        // แปลงเวลาให้เป็นรูปแบบ datetime-local
-                        const localIso = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}T${String(d.getHours()).padStart(2, '0')}:${String(d.getMinutes()).padStart(2, '0')}`;
-                        
-                        Swal.fire({
-                            title: `👨‍⚕️ นัดหมาย: ${info.event.title}`,
-                            html: `
-                                <div class="mb-4 mt-2 fs-5">
-                                    ⏰ <b>เวลา:</b> ${info.event.start.toLocaleString('th-TH', { hour12: false })}
-                                </div>
-                                <button class="btn btn-warning mx-1 px-4" onclick="editApp(${info.event.extendedProps.row}, '${localIso}')">✏️ แก้ไข</button>
-                                <button class="btn btn-danger mx-1 px-4" onclick="deleteApp(${info.event.extendedProps.row})">🗑️ ลบ</button>
-                            `,
-                            showConfirmButton: false,
-                            showCloseButton: true
-                        });
-                    }
+                    
                 });
                 calendar.render(); 
             })
