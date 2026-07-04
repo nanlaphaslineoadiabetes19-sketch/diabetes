@@ -144,59 +144,46 @@
                         });
                     },
 
-                    // --- เมื่อกดที่ "วันที่ว่าง" บนปฏิทิน ---
+                    // --- ปรับปรุง dateClick เพื่อให้แสดงรายการนัดหมายของวันนั้นๆ ---
                     dateClick: function(info) {
-                        let optionsHtml = '<option value="">-- กรุณาเลือกคนไข้ --</option>';
-                        globalPatients.forEach(p => {
-                            optionsHtml += `<option value="${p.line_id}" data-name="${p.line_name}">${p.line_name}</option>`;
+                        // 1. กรองหานัดหมายที่ตรงกับวันที่คลิก
+                        const clickedDate = info.dateStr;
+                        const appointmentsOnDate = calendar.getEvents().filter(event => {
+                            return event.startStr.split('T')[0] === clickedDate;
                         });
-
+                    
+                        let listHtml = '';
+                        if (appointmentsOnDate.length > 0) {
+                            listHtml = `<div class="list-group mt-3">`;
+                            appointmentsOnDate.forEach(app => {
+                                // สร้างการ์ดของแต่ละคน
+                                listHtml += `
+                                    <div class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div>
+                                            <strong>${app.title}</strong><br>
+                                            <small>⏰ เวลา: ${app.extendedProps.time} น.</small>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-sm btn-warning" onclick="editApp(${app.extendedProps.row}, '${app.start.toISOString().slice(0, 16)}')">✏️</button>
+                                            <button class="btn btn-sm btn-danger" onclick="deleteApp(${app.extendedProps.row})">🗑️</button>
+                                        </div>
+                                    </div>`;
+                            });
+                            listHtml += `</div>`;
+                        } else {
+                            listHtml = `<p class="mt-3 text-muted">วันนี้ยังไม่มีนัดหมาย</p>`;
+                        }
+                    
+                        // 2. แสดงผลด้วย SweetAlert2
                         Swal.fire({
-                            title: '📅 เพิ่มการนัดหมาย',
+                            title: `📅 นัดหมายวันที่ ${clickedDate}`,
                             html: `
-                                <div class="mb-3 text-start mt-3">
-                                    <label class="form-label fw-bold">เลือกคนไข้:</label>
-                                    <select id="swal-patient-select" class="form-select">
-                                        ${optionsHtml}
-                                    </select>
-                                </div>
-                                <div class="mb-3 text-start">
-                                    <label class="form-label fw-bold">วันที่และเวลานัด:</label>
-                                    <input type="datetime-local" id="swal-app-date" class="form-control" value="${info.dateStr}T09:00">
-                                </div>
+                                ${listHtml}
+                                <hr>
+                                <button class="btn btn-primary w-100" onclick="showAddForm('${clickedDate}')">+ เพิ่มนัดหมายใหม่</button>
                             `,
-                            showCancelButton: true,
-                            confirmButtonText: 'บันทึกนัดหมาย',
-                            cancelButtonText: 'ยกเลิก',
-                            preConfirm: () => {
-                                const selectEl = document.getElementById('swal-patient-select');
-                                const pId = selectEl.value;
-                                const pName = selectEl.options[selectEl.selectedIndex] ? selectEl.options[selectEl.selectedIndex].getAttribute('data-name') : null;
-                                const dateVal = document.getElementById('swal-app-date').value;
-                                
-                                if (!pId || !dateVal) {
-                                    Swal.showValidationMessage('กรุณาเลือกคนไข้และเวลาให้ครบถ้วน');
-                                    return false;
-                                }
-                                return { id: pId, name: pName, date: dateVal };
-                            }
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                Swal.fire({title: 'กำลังบันทึก...', allowOutsideClick: false});
-                                Swal.showLoading();
-                                
-                                fetch(SCRIPT_URL, {
-                                    method: 'POST',
-                                    body: JSON.stringify({ 
-                                        action: 'addBulkAppointments', 
-                                        patients: JSON.stringify([{id: result.value.id, name: result.value.name}]), 
-                                        appointment_date: result.value.date 
-                                    })
-                                }).then(() => {
-                                    showToast("บันทึกสำเร็จ!");
-                                    loadAppointments(); 
-                                }).catch(err => console.error("Error saving:", err));
-                            }
+                            showConfirmButton: false,
+                            showCloseButton: true
                         });
                     },
                     
