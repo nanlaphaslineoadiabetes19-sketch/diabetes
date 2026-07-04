@@ -93,6 +93,7 @@
                 calendar = new FullCalendar.Calendar(calendarEl, {
                     initialView: 'dayGridMonth',
                     locale: 'th',
+                    height: 'auto', /* เพิ่มบรรทัดนี้เข้าไปเพื่อให้สูงพอดีกับเนื้อหา */
                     events: events,
                     eventClick: function(info) {
                         Swal.fire({
