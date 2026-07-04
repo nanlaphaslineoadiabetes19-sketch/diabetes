@@ -193,6 +193,61 @@
             .catch(err => console.error("Error loading appointments:", err));
         }
 
+        function showAddForm(dateStr) {
+            // ปิดหน้าต่างรายการนัดหมายอันเก่าก่อน
+            Swal.close();
+        
+            // เปิดฟอร์มเพิ่มนัดหมาย (ดึงโค้ดมาจาก dateClick เดิมของคุณ)
+            let optionsHtml = '<option value="">-- กรุณาเลือกคนไข้ --</option>';
+            globalPatients.forEach(p => {
+                optionsHtml += `<option value="${p.line_id}" data-name="${p.line_name}">${p.line_name}</option>`;
+            });
+        
+            Swal.fire({
+                title: '📅 เพิ่มการนัดหมาย',
+                html: `
+                    <div class="mb-3 text-start mt-3">
+                        <label class="form-label fw-bold">เลือกคนไข้:</label>
+                        <select id="swal-patient-select" class="form-select">${optionsHtml}</select>
+                    </div>
+                    <div class="mb-3 text-start">
+                        <label class="form-label fw-bold">วันที่และเวลานัด:</label>
+                        <input type="datetime-local" id="swal-app-date" class="form-control" value="${dateStr}T09:00">
+                    </div>
+                `,
+                showCancelButton: true,
+                confirmButtonText: 'บันทึกนัดหมาย',
+                preConfirm: () => {
+                    const selectEl = document.getElementById('swal-patient-select');
+                    const pId = selectEl.value;
+                    const pName = selectEl.options[selectEl.selectedIndex] ? selectEl.options[selectEl.selectedIndex].getAttribute('data-name') : null;
+                    const dateVal = document.getElementById('swal-app-date').value;
+                    if (!pId || !dateVal) {
+                        Swal.showValidationMessage('กรุณาเลือกคนไข้และเวลาให้ครบถ้วน');
+                        return false;
+                    }
+                    return { id: pId, name: pName, date: dateVal };
+                }
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    Swal.fire({title: 'กำลังบันทึก...', allowOutsideClick: false});
+                    Swal.showLoading();
+                    
+                    fetch(SCRIPT_URL, {
+                        method: 'POST',
+                        body: JSON.stringify({ 
+                            action: 'addBulkAppointments', 
+                            patients: JSON.stringify([{id: result.value.id, name: result.value.name}]), 
+                            appointment_date: result.value.date 
+                        })
+                    }).then(() => {
+                        showToast("บันทึกสำเร็จ!");
+                        loadAppointments(); 
+                    }).catch(err => console.error("Error saving:", err));
+                }
+            });
+        }
+
         function showToast(text, icon = 'success') {
             Swal.fire({ text: text, icon: icon, toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
         }
