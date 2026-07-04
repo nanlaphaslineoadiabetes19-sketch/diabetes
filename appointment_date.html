@@ -43,13 +43,6 @@
                 console.error('Error:', error);
             });
 
-            .then(response => {
-                console.log("Response status:", response.status); // ดูสถานะใน Console
-                return response.json();
-            })
-            .then(data => console.log("Data received:", data)) // ดูข้อมูลที่ได้รับ
-            .catch(error => console.error('Error details:', error));
-
         function showAppointments(data) {
             const container = document.getElementById('appointment-list');
             if (data.length === 0) {
