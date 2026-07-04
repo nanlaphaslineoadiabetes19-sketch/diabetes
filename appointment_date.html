@@ -19,8 +19,8 @@
         const urlParams = new URLSearchParams(window.location.search);
         
         // 2. ดึงค่า line_id ออกมา (ตรวจสอบให้แน่ใจว่าใน URL มีการส่ง ?line_id=... มาด้วย)
-       // const myLineId = urlParams.get('line_id');
-        const myLineId = 'Ubb14a9e757138710939fd9b7d49efe3c';
+        const myLineId = urlParams.get('line_id');
+      //  const myLineId = 'Ubb14a9e757138710939fd9b7d49efe3c';
         
         // 3. กำหนด URL ของ Web App ที่ได้จากการ Deploy
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec'; // ต้องได้มาจากตอน Deploy
