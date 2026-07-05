@@ -1,68 +1,120 @@
 <!DOCTYPE html>
-<html>
+<html lang="th">
 <head>
+    <meta charset="UTF-8">
+    <!-- 🌟 บรรทัดหัวใจสำคัญ: บังคับให้หน้าเว็บขยายพอดีกับจอมือถือ 100% 🌟 -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    
+    <title>ตารางนัดหมายของฉัน</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
     <style>
-        body { background-color: #f8f9fa; }
-        .appointment-card { transition: transform 0.2s; border-left: 5px solid #0d6efd; }
-        .appointment-card:hover { transform: scale(1.02); }
+        /* ปรับแต่งสีพื้นหลังและฟอนต์ให้ดูนุ่มนวล สบายตา */
+        body { 
+            background-color: #f4f7f6; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        /* บีบความกว้างไม่ให้บานเกินไปหากเปิดใน iPad หรือคอมพิวเตอร์ */
+        .container {
+            max-width: 600px; 
+        }
+
+        /* ตกแต่งการ์ดนัดหมายให้ดูมีมิติ มุมมน และมีเส้นนำสายตาสีน้ำเงิน */
+        .appointment-card { 
+            border: none;
+            border-left: 8px solid #0d6efd; 
+            border-radius: 12px; 
+            background: #ffffff;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .appointment-card:active { 
+            transform: scale(0.98); /* เอฟเฟกต์ยุบตัวเวลากดทัชสกรีน */
+        }
+
+        /* ปรับขนาดตัวหนังสือให้ใหญ่ชัดเจนสำหรับมือถือ */
+        .card-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+        }
+        .time-text {
+            font-size: 1.15rem;
+            color: #444;
+        }
+        .status-badge {
+            font-size: 0.95rem;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 500;
+        }
     </style>
-    <!-- 1. เพิ่ม Script ของ LINE LIFF -->
+    
+    <!-- Script ของ LINE LIFF -->
     <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
-<body class="p-3">
-    <div class="container mt-4">
-        <h3 class="mb-4 text-center">📅 ตารางนัดหมายของฉัน</h3>
-        <div id="appointment-list">กำลังเชื่อมต่อกับ LINE...</div>
+<body class="p-3 pb-5">
+    <div class="container mt-3">
+        <h3 class="mb-4 text-center fw-bold" style="color: #2c3e50;">📅 ตารางนัดหมาย</h3>
+        <div id="appointment-list">
+            <div class="text-center text-muted mt-5">
+                <div class="spinner-border text-primary mb-3" role="status"></div>
+                <p>กำลังเชื่อมต่อข้อมูล...</p>
+            </div>
+        </div>
     </div>
 
     <script>
         const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec'; 
 
-        // 2. เริ่มต้นการทำงานของ LIFF
+        // 1. ดึงค่าจาก URL parameter (สำหรับทดสอบบนเบราว์เซอร์ปกติ)
+        const urlParams = new URLSearchParams(window.location.search);
+        let myLineId = urlParams.get('line_id');
+        
+        // 2. ถ้ามี line_id ใน URL ให้โหลดเลย (เพื่อความสะดวกในการรันเทสของคุณ)
+        if (myLineId) {
+            fetchAppointments(myLineId);
+        } else {
+            // 3. ถ้าไม่มี ค่อยพึ่งพา LIFF (สำหรับการใช้งานจริงใน LINE)
+            initializeLiff();
+        }
+
         async function initializeLiff() {
             try {
-                // ใส่ LIFF ID ของคุณที่ได้จาก LINE Developers ลงในช่องนี้
                 await liff.init({ liffId: "2009966517-g4zfasyj" }); 
-                
                 if (liff.isLoggedIn()) {
-                    // ดึง Profile ของผู้ใช้ และดึง userId ออกมา
                     const profile = await liff.getProfile();
-                    const myLineId = profile.userId;
-                    
-                    document.getElementById('appointment-list').innerHTML = 'กำลังโหลดข้อมูล...';
-                    fetchAppointments(myLineId); // เรียกฟังก์ชันดึงข้อมูลนัดหมาย
+                    fetchAppointments(profile.userId); 
                 } else {
-                    liff.login(); // บังคับล็อกอินถ้าเปิดบนเบราว์เซอร์ภายนอก
+                    document.getElementById('appointment-list').innerHTML = 
+                        '<div class="alert alert-warning text-center rounded-4 shadow-sm p-4">กรุณาเปิดผ่านแอปพลิเคชัน LINE</div>';
                 }
             } catch (err) {
-                console.error('LIFF Initialization failed', err);
-                document.getElementById('appointment-list').innerHTML = '<div class="alert alert-danger">ไม่สามารถเชื่อมต่อกับบัญชี LINE ได้</div>';
+                console.error('LIFF Error', err);
             }
         }
 
-        // 3. ฟังก์ชันสำหรับดึงข้อมูล (โค้ดเดิมของคุณ)
-        function fetchAppointments(myLineId) {
-            fetch(`${SCRIPT_URL}?action=getAppointments&lineId=${myLineId}`)
+        function fetchAppointments(lineId) {
+            fetch(`${SCRIPT_URL}?action=getAppointments&lineId=${lineId}`)
                 .then(response => response.json())
                 .then(data => {
                     if (Array.isArray(data)) {
                         showAppointments(data);
                     } else {
                         document.getElementById('appointment-list').innerHTML = 
-                            '<div class="alert alert-warning">ไม่พบข้อมูลนัดหมาย</div>';
+                            '<div class="alert alert-warning text-center rounded-4 shadow-sm p-4"><b>ไม่พบข้อมูลนัดหมาย</b><br>ระบบยังไม่มีข้อมูลการนัดหมายของคุณในขณะนี้</div>';
                     }
                 })
                 .catch(error => {
                     document.getElementById('appointment-list').innerHTML = 
-                        '<div class="alert alert-danger">เกิดข้อผิดพลาดในการโหลดข้อมูล</div>';
+                        '<div class="alert alert-danger text-center rounded-4 shadow-sm p-4">เกิดข้อผิดพลาดในการโหลดข้อมูล</div>';
                 });
         }
 
         function showAppointments(data) {
             const container = document.getElementById('appointment-list');
             if (data.length === 0) {
-                container.innerHTML = '<div class="alert alert-info">ยังไม่มีนัดหมายในขณะนี้</div>';
+                container.innerHTML = '<div class="alert alert-info text-center rounded-4 shadow-sm p-4"><b>ยังไม่มีนัดหมายในขณะนี้</b></div>';
                 return;
             }
     
@@ -71,21 +123,21 @@
                 const d = new Date(item.app_date || item.date); 
                 const dateStr = d.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
                 const timeStr = d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
-    
+                
+                // ตกแต่งป้ายสถานะให้ดูดีขึ้น
+                let statusText = item.status || 'ยืนยันแล้ว';
+                
                 html += `
-                <div class="card mb-3 appointment-card shadow-sm">
-                    <div class="card-body">
-                        <h5 class="card-title text-primary">${dateStr}</h5>
-                        <p class="card-text mb-1">⏰ เวลา: <strong>${timeStr} น.</strong></p>
-                        <span class="badge bg-success">${item.status || 'confirmed'}</span>
+                <div class="card mb-4 appointment-card shadow-sm">
+                    <div class="card-body p-4">
+                        <h4 class="card-title text-primary mb-3">${dateStr}</h4>
+                        <p class="card-text time-text mb-3">⏰ เวลา: <strong>${timeStr} น.</strong></p>
+                        <span class="badge bg-success status-badge">✅ ${statusText}</span>
                     </div>
                 </div>`;
             });
             container.innerHTML = html;
         }
-
-        // เรียกใช้งาน LIFF ทันทีที่โหลดหน้าเว็บ
-        initializeLiff();
     </script>
 </body>
 </html>
