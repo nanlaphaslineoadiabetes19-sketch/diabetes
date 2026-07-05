@@ -58,7 +58,7 @@
     
         /* 2. ตั้งค่าให้ Title (ก.ค. 69) เป็นตัวหนาและอยู่ตรงกลาง */
         .fc .fc-toolbar-title {
-            font-size: 1rem !important;
+            font-size: 1.1rem !important;
             font-weight: bold;
         }
     
@@ -83,11 +83,10 @@
         .fc .fc-toolbar.fc-header-toolbar {
             display: flex;
             flex-wrap: wrap;             /* ยอมให้ขึ้นบรรทัดใหม่เมื่อหน้าจอแคบ */
-         /*   flex-direction: row;  */   /* เรียงแนวนอน */
             justify-content: space-between;
             align-items: center;
             gap: 5px !important;         /* ระยะห่างระหว่างปุ่ม/หัวข้อ */
-         /*    margin-bottom: 0.5em !important; */ 
+            margin-bottom: 0.5em !important;
         }
     </style>
     
@@ -118,7 +117,7 @@
 
         <!-- ส่วนของปฏิทิน -->
         <div class="card p-0 calendar-container">
-          <!-- <h4 class="mb-3">📅 ปฏิทินนัดหมาย</h4> -->
+            <h4 class="text-center mt-2 mb-0" style="font-size: 1.3rem;">📅 ปฏิทินนัดหมาย</h4>
             <div id="calendar"></div>
         </div>
     </div>
@@ -177,14 +176,8 @@
 
                     headerToolbar: {
                         left: 'title',             // ชื่อเดือน/ปี (ก.ค. 69) ย้ายมาไว้ซ้าย
-                        center: 'myCustomTitle',   // หัวข้อปฏิทินย้ายมาไว้ตรงกลาง
+                        center: '',               // ว่างไว้
                         right: 'today prev,next'   // ปุ่มควบคุมอยู่ขวาเหมือนเดิม
-                    },
-
-                    customButtons: {
-                        myCustomTitle: {
-                            text: '📅 ปฏิทินนัดหมาย'
-                        }
                     },
 
                     // --- ชื่อเดือนย่อ และ พ.ศ. ---
