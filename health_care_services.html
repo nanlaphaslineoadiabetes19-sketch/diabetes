@@ -126,6 +126,12 @@
                     height: 'auto',
                     events: events,
 
+                    // เพิ่มส่วนนี้ เพื่อปรับชื่อวันให้เป็นตัวย่อ อา-ส
+                    dayHeaderContent: function(arg) {
+                        const shortDays = ['อา', 'จ', 'อ', 'พ', 'พฤ', 'ศ', 'ส'];
+                        return shortDays[arg.date.getDay()];
+                    },
+
                     // ปรับการแสดงผลในปฏิทินให้เป็น เวลา + ชื่อคนไข้
                     eventContent: function(arg) {
                         return {
