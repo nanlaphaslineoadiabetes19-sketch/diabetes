@@ -80,13 +80,14 @@
     
         /* 2. ตั้งค่าให้ Title (ก.ค. 69) เป็นตัวหนาและอยู่ตรงกลาง */
         .fc .fc-toolbar-title {
-            font-size: 0.6rem !important;
+            font-size: 1rem !important; /* ปรับขนาดให้พอดีตา */
+            font-weight: bold !important;
         }
     
         /* 3. ปรับขนาดปุ่ม today และ < > ให้เล็กลง */
         .fc .fc-button {
-            padding: 0.1rem 0.3rem !important;
-            font-size: 0.5rem !important;
+            padding: 0.4rem 0.6rem !important;
+            font-size: 0.9rem !important;
         }
 
         .fc-theme-standard th {
@@ -296,10 +297,12 @@
                 html: `
                     <div class="mb-3 text-start">
                         <label class="form-label fw-bold">เลือกคนไข้:</label>
-                        <div id="selected-patient-box" class="form-control mb-2 p-2 border-primary" style="cursor:pointer; background:#fff;">
+                        <!-- ปรับให้ div นี้กดได้โดยตรง เพื่อเรียก renderPatientList แทนการมีปุ่มแยก -->
+                        <div id="selected-patient-box" class="form-control mb-2 p-2 border-primary" 
+                             style="cursor:pointer; background:#fff;" 
+                             onclick="renderPatientList('${dateStr}')">
                             ${pName}
                         </div>
-                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="renderPatientList('${dateStr}')">เปลี่ยนคนไข้</button>
                     </div>
                     <div class="mb-3 text-start">
                         <label class="form-label fw-bold">วันที่และเวลานัด:</label>
@@ -310,7 +313,6 @@
                 confirmButtonText: 'บันทึกนัดหมาย',
                 preConfirm: () => {
                     const dateVal = document.getElementById('swal-app-date').value;
-                    // ตรวจสอบว่าเลือกคนไข้แล้วหรือยัง
                     if (!pId || pId === '' || pId === 'undefined') {
                         Swal.showValidationMessage('กรุณาเลือกคนไข้ก่อน');
                         return false;
@@ -320,7 +322,6 @@
                         return false;
                     }
                     
-                    // --- ตรงนี้สำคัญ: อัปเดตค่าที่หน้าจอหลักก่อนส่งไปบันทึก ---
                     document.getElementById('selected-patient-id').value = pId;
                     document.getElementById('selected-patient-name').innerText = pName;
                     
@@ -328,7 +329,6 @@
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // เรียกใช้ฟังก์ชันเดิมของคุณเพื่อส่งข้อมูล
                     saveAppointmentsFromSwal(result.value);
                 }
             });
