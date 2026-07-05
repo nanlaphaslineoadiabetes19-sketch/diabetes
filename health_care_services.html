@@ -42,6 +42,13 @@
         .nav-bar-fixed { position: fixed; top: 15px; left: 15px; z-index: 999; }
         .btn-back { padding: 10px 22px; background: rgba(255, 255, 255, 0.8); color: #555; border: 1px solid #ddd; border-radius: 50px; cursor: pointer; font-size: 15px; font-weight: 700; box-shadow: 0 4px 15px rgba(0,0,0,0.1); backdrop-filter: blur(8px); }
 
+        input[type="datetime-local"]:invalid::before {
+            content: 'ระบุ วัน/เดือน/ปี และเวลา';
+            color: #999;
+        }
+        input[type="datetime-local"]:focus::before {
+            content: '';
+        }
     </style>
     
 </head>
@@ -63,7 +70,9 @@
                 <option value="">-- กรุณาเลือกคนไข้ --</option>
             </select>
 
+            <label class="form-label" style="font-size: 0.9em; color: #6c757d; margin-top: 10px;">📅 เลือกวันที่และเวลานัดหมาย:</label>
             <input type="datetime-local" id="app-date" class="form-control mb-3">
+            
             <button class="btn btn-primary w-100" onclick="saveAppointments()">ลงวันนัดหมาย</button>
         </div>
 
