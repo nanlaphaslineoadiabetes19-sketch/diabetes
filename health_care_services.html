@@ -56,9 +56,10 @@
             margin: 0 !important;
         }
     
-        /* 2. ปรับขนาดตัวหนังสือ ก.ค. 69 ให้เล็กลง */
+        /* 2. ตั้งค่าให้ Title (ก.ค. 69) เป็นตัวหนาและอยู่ตรงกลาง */
         .fc .fc-toolbar-title {
-            font-size: 1.1rem !important;
+            font-size: 1rem !important;
+            font-weight: bold;
         }
     
         /* 3. ปรับขนาดปุ่ม today และ < > ให้เล็กลง */
@@ -74,16 +75,19 @@
             color: #333 !important;
             font-weight: bold;
             font-size: 1.1em;
-            cursor: default !important;
+            padding: 0 !important;
+      /*       cursor: default !important; */
         }
         
         /* ปรับแต่ง Toolbar สำหรับมือถือ */
         .fc .fc-toolbar.fc-header-toolbar {
             display: flex;
             flex-wrap: wrap;             /* ยอมให้ขึ้นบรรทัดใหม่เมื่อหน้าจอแคบ */
+         /*   flex-direction: row;  */   /* เรียงแนวนอน */
             justify-content: space-between;
+            align-items: center;
             gap: 5px !important;         /* ระยะห่างระหว่างปุ่ม/หัวข้อ */
-            margin-bottom: 0.5em !important;
+         /*    margin-bottom: 0.5em !important; */ 
         }
     </style>
     
@@ -172,9 +176,9 @@
                     events: events,
 
                     headerToolbar: {
-                        left: 'myCustomTitle', // เรียกใช้ชื่อที่กำหนดเอง
-                        center: '',
-                        right: 'today prev,next'
+                        left: 'title',             // ชื่อเดือน/ปี (ก.ค. 69) ย้ายมาไว้ซ้าย
+                        center: 'myCustomTitle',   // หัวข้อปฏิทินย้ายมาไว้ตรงกลาง
+                        right: 'today prev,next'   // ปุ่มควบคุมอยู่ขวาเหมือนเดิม
                     },
 
                     customButtons: {
@@ -183,9 +187,6 @@
                         }
                     },
 
-                    // --- ชื่อเดือนย่อ ---
-                    // titleFormat: { year: 'numeric', month: 'short' },
-                    
                     // --- ชื่อเดือนย่อ และ พ.ศ. ---
                     titleFormat: { year: '2-digit', month: 'short' },
 
