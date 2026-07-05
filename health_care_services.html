@@ -129,10 +129,12 @@
         <div class="card p-4 mb-4">
             <label class="form-label h5 mb-2">ลงนัดหมายด่วน</label>
             
-            <!-- เปลี่ยนมาใช้ Select มาตรฐานแทน เพื่อเอา Radio ออก -->
-            <select id="main-patient-select" class="form-select custom-dropdown-btn mb-3">
-                <option value="">-- กรุณาเลือกคนไข้ --</option>
-            </select>
+            <button type="button" id="patient-display-btn" class="form-control custom-dropdown-btn mb-3 text-start d-flex justify-content-between align-items-center" onclick="showPatientPicker()">
+                <span id="selected-patient-name">-- กรุณาเลือกคนไข้ --</span>
+                <span>▼</span>
+            </button>
+            <!-- เพิ่ม Input Hidden ไว้เก็บค่า ID -->
+            <input type="hidden" id="selected-patient-id">
 
             <label class="form-label" style="font-size: 0.9em; color: #6c757d; margin-top: 10px;">📅 เลือกวันที่และเวลานัดหมาย:</label>
             <input type="datetime-local" id="app-date" class="form-control mb-3">
@@ -353,11 +355,12 @@
         // 3. ฟังก์ชันบันทึกนัดหมาย (ดึงค่าจาก Select แทน)
         function saveAppointments() {
             const selectEl = document.getElementById('main-patient-select');
-            const pId = selectEl.value;
-            
+            const pId = document.getElementById('selected-patient-id').value; // ดึงจาก Input hidden
+    
             if(!pId) return showToast("กรุณาเลือกคนไข้", "error");
             
-            const pName = selectEl.options[selectEl.selectedIndex].getAttribute('data-name');
+            const pName = document.getElementById('selected-patient-name').innerText;
+
             const date = document.getElementById('app-date').value;
             
             if(!date) return showToast("กรุณาเลือกวันและเวลา", "error");
@@ -425,6 +428,31 @@
 
         function goBackMain() {
             window.location.href = 'https://liff.line.me/2009966517-pPEyRumg';
+        }
+
+        function showPatientPicker() {
+            let optionsHtml = '';
+            globalPatients.forEach(p => {
+                optionsHtml += `
+                    <button type="button" class="btn btn-outline-secondary w-100 mb-2 py-3" 
+                            onclick="selectPatient('${p.line_id}', '${p.line_name}')">
+                        ${p.line_name}
+                    </button>`;
+            });
+        
+            Swal.fire({
+                title: 'เลือกคนไข้',
+                html: optionsHtml,
+                showConfirmButton: false,
+                showCloseButton: true,
+                customClass: { popup: 'p-3' }
+            });
+        }
+        
+        function selectPatient(id, name) {
+            document.getElementById('selected-patient-id').value = id;
+            document.getElementById('selected-patient-name').innerText = name;
+            Swal.close();
         }
         
         window.addEventListener('load', function() {
