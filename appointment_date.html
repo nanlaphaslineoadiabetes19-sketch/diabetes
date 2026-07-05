@@ -2,7 +2,7 @@
 <html lang="th">
 <head>
     <meta charset="UTF-8">
-    <!-- 🌟 บรรทัดหัวใจสำคัญ: บังคับให้หน้าเว็บขยายพอดีกับจอมือถือ 100% 🌟 -->
+    <!-- บังคับให้หน้าเว็บขยายพอดีกับจอมือถือ 100% -->
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     
     <title>ตารางนัดหมายของฉัน</title>
@@ -71,7 +71,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         let myLineId = urlParams.get('line_id');
         
-        // 2. ถ้ามี line_id ใน URL ให้โหลดเลย (เพื่อความสะดวกในการรันเทสของคุณ)
+        // 2. ถ้ามี line_id ใน URL ให้โหลดเลย (เพื่อความสะดวกในการรันเทส)
         if (myLineId) {
             fetchAppointments(myLineId);
         } else {
