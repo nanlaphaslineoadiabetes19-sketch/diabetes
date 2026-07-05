@@ -95,8 +95,23 @@
                 }
             } catch (err) {
                 console.error('LIFF init failed', err);
+                // แสดงข้อความในหน้าเว็บว่าเกิดปัญหา
+                document.getElementById('appointment-list').innerHTML = 
+                    '<div class="alert alert-danger">ไม่สามารถเชื่อมต่อ LINE ได้ กรุณาลองใหม่อีกครั้ง</div>';
             }
         }
+
+        // ตรวจสอบตอนโหลดหน้าเว็บ
+        window.onload = () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            let myLineId = urlParams.get('line_id');
+            
+            if (myLineId) {
+                fetchAppointments(myLineId);
+            } else {
+                initializeLiff();
+            }
+        };
 
         function fetchAppointments(lineId) {
             fetch(`${SCRIPT_URL}?action=getAppointments&lineId=${lineId}`)
