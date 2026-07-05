@@ -66,10 +66,23 @@
             padding: 0.2rem 0.5rem !important;
             font-size: 0.8rem !important;
         }
-    
-        /* 4. ปรับระยะห่างของ Header ให้แน่นขึ้นเพื่อไม่ให้ซ้อนกัน */
+
+        /* ปรับให้ปุ่ม Calendar Title ไม่เป็นรูปแบบปุ่มกด (ไม่ต้องมีสีพื้นหลัง) */
+        .fc .fc-myCustomTitle-button {
+            background: transparent !important;
+            border: none !important;
+            color: #333 !important;
+            font-weight: bold;
+            font-size: 1.1em;
+            cursor: default !important;
+        }
+        
+        /* ปรับแต่ง Toolbar สำหรับมือถือ */
         .fc .fc-toolbar.fc-header-toolbar {
-            gap: 5px !important;
+            display: flex;
+            flex-wrap: wrap;             /* ยอมให้ขึ้นบรรทัดใหม่เมื่อหน้าจอแคบ */
+            justify-content: space-between;
+            gap: 5px !important;         /* ระยะห่างระหว่างปุ่ม/หัวข้อ */
             margin-bottom: 0.5em !important;
         }
     </style>
@@ -159,9 +172,15 @@
                     events: events,
 
                     headerToolbar: {
-                        left: 'title', // แสดงชื่อเดือนปีตรงนี้
+                        left: 'myCustomTitle', // เรียกใช้ชื่อที่กำหนดเอง
                         center: '',
-                        right: 'today prev,next' // ย้ายปุ่มมาไว้ขวา
+                        right: 'today prev,next'
+                    },
+
+                    customButtons: {
+                        myCustomTitle: {
+                            text: '📅 ปฏิทินนัดหมาย'
+                        }
                     },
 
                     // --- ชื่อเดือนย่อ ---
