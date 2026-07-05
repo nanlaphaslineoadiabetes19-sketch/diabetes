@@ -369,22 +369,21 @@
             Swal.fire({ text: text, icon: icon, toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
         }
 
-        // 3. ฟังก์ชันบันทึกนัดหมาย (ดึงค่าจาก Select แทน)
+        // 3. ฟังก์ชันบันทึกนัดหมาย
         function saveAppointments() {
-            const selectEl = document.getElementById('main-patient-select');
-            const pId = document.getElementById('selected-patient-id').value; // ดึงจาก Input hidden
-    
-            if(!pId) return showToast("กรุณาเลือกคนไข้", "error");
+            // แก้ไข: ดึงจาก Input hidden ที่ชื่อ 'selected-patient-id'
+            const pId = document.getElementById('selected-patient-id').value; 
+            
+            if(!pId || pId === "") return showToast("กรุณาเลือกคนไข้", "error");
             
             const pName = document.getElementById('selected-patient-name').innerText;
-
             const date = document.getElementById('app-date').value;
             
             if(!date) return showToast("กรุณาเลือกวันและเวลา", "error");
-
+        
             Swal.fire({title: 'กำลังบันทึก...', allowOutsideClick: false});
             Swal.showLoading();
-
+        
             fetch(SCRIPT_URL, {
                 method: 'POST',
                 body: JSON.stringify({ 
@@ -392,13 +391,18 @@
                     patients: JSON.stringify([{id: pId, name: pName}]), 
                     appointment_date: date 
                 })
-            }).then(() => {
+            }).then(res => res.json())
+            .then(() => {
                 showToast("บันทึกสำเร็จ!");
+                // รีเซ็ตค่า
                 document.getElementById('app-date').value = ''; 
                 document.getElementById('selected-patient-id').value = ''; 
                 document.getElementById('selected-patient-name').innerText = '-- กรุณาเลือกคนไข้ --';
-                loadAppointments(); // เรียกโหลดใหม่ทั้งปฏิทินเพื่อความชัวร์
-            }).catch(err => console.error("Error saving:", err));
+                loadAppointments(); // โหลดปฏิทินใหม่
+            }).catch(err => {
+                console.error("Error saving:", err);
+                Swal.close();
+            });
         }
 
         // 4. ฟังก์ชันลบนัดหมาย
