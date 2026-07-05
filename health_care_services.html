@@ -294,21 +294,30 @@
         }
 
         function showAddForm(dateStr) {
-            // ปิดหน้าต่างรายการนัดหมายอันเก่าก่อน
             Swal.close();
         
-            // เปิดฟอร์มเพิ่มนัดหมาย (ดึงโค้ดมาจาก dateClick เดิมของคุณ)
-            let optionsHtml = '<option value="">-- กรุณาเลือกคนไข้ --</option>';
+            // 1. สร้างปุ่มเลือกคนไข้แทนการใช้ <select>
+            let buttonsHtml = '';
             globalPatients.forEach(p => {
-                optionsHtml += `<option value="${p.line_id}" data-name="${p.line_name}">${p.line_name}</option>`;
+                buttonsHtml += `
+                    <button type="button" class="btn btn-outline-secondary w-100 mb-2 py-3" 
+                            onclick="selectPatientForForm('${p.line_id}', '${p.line_name}')">
+                        ${p.line_name}
+                    </button>`;
             });
         
             Swal.fire({
                 title: '📅 เพิ่มการนัดหมาย',
                 html: `
-                    <div class="mb-3 text-start mt-3">
+                    <div class="mb-3 text-start">
                         <label class="form-label fw-bold">เลือกคนไข้:</label>
-                        <select id="swal-patient-select" class="form-select">${optionsHtml}</select>
+                        <!-- แสดงชื่อที่เลือกไว้ -->
+                        <div id="selected-patient-box" class="form-control mb-2 p-2 border-primary" style="cursor:pointer;" onclick="reOpenPatientPicker()">
+                            -- กรุณาเลือกคนไข้ --
+                        </div>
+                        <!-- Hidden inputs สำหรับเก็บค่า -->
+                        <input type="hidden" id="swal-p-id">
+                        <input type="hidden" id="swal-p-name">
                     </div>
                     <div class="mb-3 text-start">
                         <label class="form-label fw-bold">วันที่และเวลานัด:</label>
@@ -318,35 +327,39 @@
                 showCancelButton: true,
                 confirmButtonText: 'บันทึกนัดหมาย',
                 preConfirm: () => {
-                    const selectEl = document.getElementById('swal-patient-select');
-                    const pId = selectEl.value;
-                    const pName = selectEl.options[selectEl.selectedIndex] ? selectEl.options[selectEl.selectedIndex].getAttribute('data-name') : null;
+                    const pId = document.getElementById('swal-p-id').value;
                     const dateVal = document.getElementById('swal-app-date').value;
                     if (!pId || !dateVal) {
                         Swal.showValidationMessage('กรุณาเลือกคนไข้และเวลาให้ครบถ้วน');
                         return false;
                     }
-                    return { id: pId, name: pName, date: dateVal };
+                    return { id: pId, name: document.getElementById('swal-p-name').value, date: dateVal };
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    Swal.fire({title: 'กำลังบันทึก...', allowOutsideClick: false});
-                    Swal.showLoading();
-                    
-                    fetch(SCRIPT_URL, {
-                        method: 'POST',
-                        body: JSON.stringify({ 
-                            action: 'addBulkAppointments', 
-                            patients: JSON.stringify([{id: result.value.id, name: result.value.name}]), 
-                            appointment_date: result.value.date 
-                        })
-                    }).then(() => {
-                        showToast("บันทึกสำเร็จ!");
-                        loadAppointments(); // เรียกโหลดใหม่ทั้งปฏิทินเพื่อความชัวร์
-                    }).catch(err => console.error("Error saving:", err));
+                    // ส่วนการบันทึก fetch เหมือนเดิมของคุณ...
+                    saveAppointmentToServer(result.value); 
                 }
             });
+        
+            // ฟังก์ชันเสริมเพื่อแสดงรายการคนไข้
+            window.reOpenPatientPicker = function() {
+                Swal.fire({
+                    title: 'เลือกคนไข้',
+                    html: buttonsHtml,
+                    showConfirmButton: false,
+                    showCloseButton: true
+                });
+            };
         }
+        
+        // ฟังก์ชันสำหรับกดเลือกใน popup
+        window.selectPatientForForm = function(id, name) {
+            document.getElementById('swal-p-id').value = id;
+            document.getElementById('swal-p-name').value = name;
+            document.getElementById('selected-patient-box').innerText = name;
+            Swal.close(); // ปิด popup รายชื่อแล้วกลับมาที่ฟอร์มหลัก
+        };
 
         function showToast(text, icon = 'success') {
             Swal.fire({ text: text, icon: icon, toast: true, position: 'top-end', showConfirmButton: false, timer: 3000 });
