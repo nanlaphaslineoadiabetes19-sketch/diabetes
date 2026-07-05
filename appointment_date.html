@@ -76,7 +76,11 @@
             fetchAppointments(myLineId);
         } else {
             // 3. สั่งให้ LIFF ทำการ Login ผ่านหน้าเว็บ
-            liff.login();
+            liff.init({ liffId: "2009966517-g4zfasyj" }).then(() => {
+                liff.login();
+            }).catch((err) => {
+                console.error('LIFF init failed', err);
+            });
         }
 
         async function initializeLiff() {
