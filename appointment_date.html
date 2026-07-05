@@ -113,22 +113,32 @@
 
         function showAppointments(data) {
             const container = document.getElementById('appointment-list');
-            if (data.length === 0) {
+            
+            // 1. กรองข้อมูล (Filter): ป้องกันแถวว่าง หรือแถวที่วันที่ผิดพลาด
+            const validData = data.filter(item => {
+                // ดึงค่าไม่ว่า Apps Script จะส่งชื่ออะไรมาก็ตาม
+                const dateVal = item.app_date || item.date || item.appointment_date;
+                // เช็คว่ามีค่า และแปลงเป็นวันที่ได้จริงๆ
+                return dateVal && !isNaN(new Date(dateVal).getTime());
+            });
+
+            // ตรวจสอบว่าหลังจากกรองแถวว่างแล้ว เหลือข้อมูลนัดหมายหรือไม่
+            if (validData.length === 0) {
                 container.innerHTML = '<div class="alert alert-info text-center rounded-4 shadow-sm p-4"><b>ยังไม่มีนัดหมายในขณะนี้</b></div>';
                 return;
             }
     
-            // 1. ส่วนจัดเรียงวันที่: กลับมาใช้ Key เดิมที่เชื่อมต่อกับ Apps Script 
-            data.sort((a, b) => {
-                const dateA = new Date(a.app_date || a.date);
-                const dateB = new Date(b.app_date || b.date);
-                return dateA - dateB; // เรียงจากอดีตไปอนาคต
+            // 2. จัดเรียงวันที่ (Sort): อดีต ไป อนาคต
+            validData.sort((a, b) => {
+                const dateA = new Date(a.app_date || a.date || a.appointment_date);
+                const dateB = new Date(b.app_date || b.date || b.appointment_date);
+                return dateA - dateB; 
             });
 
+            // 3. แสดงผล (Render)
             let html = '';
-            data.forEach(item => {
-                // 2. ส่วนแสดงผล: กลับมาใช้ Key เดิม 
-                const d = new Date(item.app_date || item.date); 
+            validData.forEach(item => {
+                const d = new Date(item.app_date || item.date || item.appointment_date); 
                 const dateStr = d.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
                 const timeStr = d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
                 
