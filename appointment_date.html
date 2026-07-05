@@ -113,32 +113,27 @@
 
         function showAppointments(data) {
             const container = document.getElementById('appointment-list');
-            
-            // 1. กรองข้อมูล (Filter): ป้องกันแถวว่าง หรือแถวที่วันที่ผิดพลาด
-            const validData = data.filter(item => {
-                // ดึงค่าไม่ว่า Apps Script จะส่งชื่ออะไรมาก็ตาม
-                const dateVal = item.app_date || item.date || item.appointment_date;
-                // เช็คว่ามีค่า และแปลงเป็นวันที่ได้จริงๆ
-                return dateVal && !isNaN(new Date(dateVal).getTime());
-            });
-
-            // ตรวจสอบว่าหลังจากกรองแถวว่างแล้ว เหลือข้อมูลนัดหมายหรือไม่
-            if (validData.length === 0) {
+            if (!data || data.length === 0) {
                 container.innerHTML = '<div class="alert alert-info text-center rounded-4 shadow-sm p-4"><b>ยังไม่มีนัดหมายในขณะนี้</b></div>';
                 return;
             }
-    
-            // 2. จัดเรียงวันที่ (Sort): อดีต ไป อนาคต
-            validData.sort((a, b) => {
-                const dateA = new Date(a.app_date || a.date || a.appointment_date);
-                const dateB = new Date(b.app_date || b.date || b.appointment_date);
-                return dateA - dateB; 
+        
+            // เรียงลำดับโดยใช้คีย์ app_date ที่มาจากโค้ดเดิมของคุณ
+            data.sort((a, b) => {
+                return new Date(a.app_date) - new Date(b.app_date);
             });
-
-            // 3. แสดงผล (Render)
+        
             let html = '';
-            validData.forEach(item => {
-                const d = new Date(item.app_date || item.date || item.appointment_date); 
+            data.forEach(item => {
+                // ใช้ Date Object ปกติ ถ้า app_date เป็น Text ระบบจะพยายามแปลงให้เอง
+                const d = new Date(item.app_date); 
+                
+                // ตรวจสอบว่าถ้าแปลงแล้วพัง (Invalid Date) ให้แสดงข้อความแจ้งเตือนแทน
+                if (isNaN(d.getTime())) {
+                    console.warn("พบข้อมูลวันที่ผิดปกติในแถวที่:", item.row);
+                    return; // ข้ามแถวนี้ไปเลยเพื่อไม่ให้หน้าเว็บพัง
+                }
+        
                 const dateStr = d.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
                 const timeStr = d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
                 
@@ -153,7 +148,7 @@
                     </div>
                 </div>`;
             });
-            container.innerHTML = html;
+            container.innerHTML = html || '<div class="alert alert-warning">ไม่พบข้อมูลนัดหมายที่ถูกต้อง</div>';
         }
     </script>
 </body>
