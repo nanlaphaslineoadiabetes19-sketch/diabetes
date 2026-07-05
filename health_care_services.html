@@ -311,18 +311,14 @@
                 html: `
                     <div class="mb-3 text-start">
                         <label class="form-label fw-bold">เลือกคนไข้:</label>
-                        <!-- แสดงชื่อที่เลือกไว้ -->
                         <div id="selected-patient-box" class="form-control mb-2 p-2 border-primary" style="cursor:pointer;" onclick="reOpenPatientPicker()">
                             -- กรุณาเลือกคนไข้ --
                         </div>
-                        <!-- Hidden inputs สำหรับเก็บค่า -->
+                        <!-- สำคัญ: ต้องมี ID เหล่านี้อยู่ใน HTML ตอนที่ Swal แสดงผล -->
                         <input type="hidden" id="swal-p-id">
                         <input type="hidden" id="swal-p-name">
                     </div>
-                    <div class="mb-3 text-start">
-                        <label class="form-label fw-bold">วันที่และเวลานัด:</label>
-                        <input type="datetime-local" id="swal-app-date" class="form-control" value="${dateStr}T09:00">
-                    </div>
+                    ...
                 `,
                 showCancelButton: true,
                 confirmButtonText: 'บันทึกนัดหมาย',
@@ -355,10 +351,20 @@
         
         // ฟังก์ชันสำหรับกดเลือกใน popup
         window.selectPatientForForm = function(id, name) {
-            document.getElementById('swal-p-id').value = id;
-            document.getElementById('swal-p-name').value = name;
-            document.getElementById('selected-patient-box').innerText = name;
-            Swal.close(); // ปิด popup รายชื่อแล้วกลับมาที่ฟอร์มหลัก
+            const pIdEl = document.getElementById('swal-p-id');
+            const pNameEl = document.getElementById('swal-p-name');
+            const pBox = document.getElementById('selected-patient-box');
+        
+            // ตรวจสอบว่ามี element เหล่านี้ไหมก่อนจะสั่ง .value
+            if(pIdEl && pNameEl && pBox) {
+                pIdEl.value = id;
+                pNameEl.value = name;
+                pBox.innerText = name;
+                Swal.close(); // ปิดหน้าต่างเลือกคนไข้
+            } else {
+                // ถ้าอยู่คนละหน้าต่าง ให้ลองใช้ Swal.fire ตัวใหม่ซ้อนไปเลย
+                console.error("ไม่พบช่องกรอกข้อมูลในฟอร์ม");
+            }
         };
 
         function showToast(text, icon = 'success') {
