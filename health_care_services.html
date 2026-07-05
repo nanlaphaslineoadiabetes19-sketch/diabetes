@@ -49,6 +49,29 @@
         input[type="datetime-local"]:focus::before {
             content: '';
         }
+
+        /* 1. ขยายการ์ดปฏิทินให้ชิดขอบจอ */
+        .calendar-container {
+            padding: 0 !important;
+            margin: 0 !important;
+        }
+    
+        /* 2. ปรับขนาดตัวหนังสือ ก.ค. 69 ให้เล็กลง */
+        .fc .fc-toolbar-title {
+            font-size: 1.1rem !important;
+        }
+    
+        /* 3. ปรับขนาดปุ่ม today และ < > ให้เล็กลง */
+        .fc .fc-button {
+            padding: 0.2rem 0.5rem !important;
+            font-size: 0.8rem !important;
+        }
+    
+        /* 4. ปรับระยะห่างของ Header ให้แน่นขึ้นเพื่อไม่ให้ซ้อนกัน */
+        .fc .fc-toolbar.fc-header-toolbar {
+            gap: 5px !important;
+            margin-bottom: 0.5em !important;
+        }
     </style>
     
 </head>
@@ -77,7 +100,8 @@
         </div>
 
         <!-- ส่วนของปฏิทิน -->
-        <div class="card p-4">
+        // <div class="card p-4">
+        <div class="card p-0 calendar-container">
             <h4 class="mb-3">📅 ปฏิทินนัดหมาย</h4>
             <div id="calendar"></div>
         </div>
