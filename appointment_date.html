@@ -7,42 +7,57 @@
         .appointment-card { transition: transform 0.2s; border-left: 5px solid #0d6efd; }
         .appointment-card:hover { transform: scale(1.02); }
     </style>
+    <!-- 1. เพิ่ม Script ของ LINE LIFF -->
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
 <body class="p-3">
     <div class="container mt-4">
         <h3 class="mb-4 text-center">📅 ตารางนัดหมายของฉัน</h3>
-        <div id="appointment-list">กำลังโหลดข้อมูล...</div>
+        <div id="appointment-list">กำลังเชื่อมต่อกับ LINE...</div>
     </div>
 
     <script>
-        // 1. ประกาศตัวแปร urlParams ให้ถูกต้องก่อนใช้งาน
-        const urlParams = new URLSearchParams(window.location.search);
-        
-        // 2. ดึงค่า line_id ออกมา (ตรวจสอบให้แน่ใจว่าใน URL มีการส่ง ?line_id=... มาด้วย)
-        const myLineId = urlParams.get('line_id');
-      //  const myLineId = 'Ubb14a9e757138710939fd9b7d49efe3c';
-        
-        // 3. กำหนด URL ของ Web App ที่ได้จากการ Deploy
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec'; // ต้องได้มาจากตอน Deploy
-        
-        // 4. เรียกใช้ fetch เพื่อดึงข้อมูล
-        fetch(`${SCRIPT_URL}?action=getAppointments&lineId=${myLineId}`)
-            .then(response => response.json())
-            .then(data => {
-                // เพิ่มการตรวจสอบว่า data เป็น Array หรือไม่ก่อนส่งให้ฟังก์ชัน
-                if (Array.isArray(data)) {
-                    showAppointments(data);
+        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec'; 
+
+        // 2. เริ่มต้นการทำงานของ LIFF
+        async function initializeLiff() {
+            try {
+                // ใส่ LIFF ID ของคุณที่ได้จาก LINE Developers ลงในช่องนี้
+                await liff.init({ liffId: "2009966517-g4zfasyj" }); 
+                
+                if (liff.isLoggedIn()) {
+                    // ดึง Profile ของผู้ใช้ และดึง userId ออกมา
+                    const profile = await liff.getProfile();
+                    const myLineId = profile.userId;
+                    
+                    document.getElementById('appointment-list').innerHTML = 'กำลังโหลดข้อมูล...';
+                    fetchAppointments(myLineId); // เรียกฟังก์ชันดึงข้อมูลนัดหมาย
                 } else {
-                    document.getElementById('appointment-list').innerHTML = 
-                        '<div class="alert alert-warning">ไม่พบข้อมูลนัดหมาย</div>';
-                    console.log("Data returned is not an array:", data);
+                    liff.login(); // บังคับล็อกอินถ้าเปิดบนเบราว์เซอร์ภายนอก
                 }
-            })
-            .catch(error => {
-                document.getElementById('appointment-list').innerHTML = 
-                    '<div class="alert alert-danger">เกิดข้อผิดพลาดในการโหลดข้อมูล</div>';
-                console.error('Error:', error);
-            });
+            } catch (err) {
+                console.error('LIFF Initialization failed', err);
+                document.getElementById('appointment-list').innerHTML = '<div class="alert alert-danger">ไม่สามารถเชื่อมต่อกับบัญชี LINE ได้</div>';
+            }
+        }
+
+        // 3. ฟังก์ชันสำหรับดึงข้อมูล (โค้ดเดิมของคุณ)
+        function fetchAppointments(myLineId) {
+            fetch(`${SCRIPT_URL}?action=getAppointments&lineId=${myLineId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (Array.isArray(data)) {
+                        showAppointments(data);
+                    } else {
+                        document.getElementById('appointment-list').innerHTML = 
+                            '<div class="alert alert-warning">ไม่พบข้อมูลนัดหมาย</div>';
+                    }
+                })
+                .catch(error => {
+                    document.getElementById('appointment-list').innerHTML = 
+                        '<div class="alert alert-danger">เกิดข้อผิดพลาดในการโหลดข้อมูล</div>';
+                });
+        }
 
         function showAppointments(data) {
             const container = document.getElementById('appointment-list');
@@ -68,6 +83,9 @@
             });
             container.innerHTML = html;
         }
+
+        // เรียกใช้งาน LIFF ทันทีที่โหลดหน้าเว็บ
+        initializeLiff();
     </script>
 </body>
 </html>
