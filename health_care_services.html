@@ -342,7 +342,11 @@
                         })
                     }).then(() => {
                         showToast("บันทึกสำเร็จ!");
-                        loadAppointments(); 
+                        if (calendar) {
+                            calendar.refetchEvents(); // อัปเดตปฏิทินทันที
+                        } else {
+                            loadAppointments(); 
+                        }
                     }).catch(err => console.error("Error saving:", err));
                 }
             });
