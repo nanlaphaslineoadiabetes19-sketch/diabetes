@@ -76,6 +76,7 @@
             margin-top: 0 !important;
             padding: 0 5px !important;
             margin-bottom: 0.5em !important;
+        }
     
         /* 2. ตั้งค่าให้ Title (ก.ค. 69) เป็นตัวหนาและอยู่ตรงกลาง */
         .fc .fc-toolbar-title {
@@ -289,80 +290,86 @@
             .catch(err => console.error("Error loading appointments:", err));
         }
 
-        function showAddForm(dateStr) {
-            Swal.close();
-        
-            // 1. สร้างปุ่มเลือกคนไข้แทนการใช้ <select>
-            let buttonsHtml = '';
-            globalPatients.forEach(p => {
-                buttonsHtml += `
-                    <button type="button" class="btn btn-outline-secondary w-100 mb-2 py-3" 
-                            onclick="selectPatientForForm('${p.line_id}', '${p.line_name}')">
-                        ${p.line_name}
-                    </button>`;
-            });
-        
+        function showAddForm(dateStr, pId = '', pName = '-- กรุณาเลือกคนไข้ --') {
             Swal.fire({
                 title: '📅 เพิ่มการนัดหมาย',
                 html: `
                     <div class="mb-3 text-start">
                         <label class="form-label fw-bold">เลือกคนไข้:</label>
-                        <div id="selected-patient-box" class="form-control mb-2 p-2 border-primary" style="cursor:pointer;" onclick="reOpenPatientPicker()">
-                            -- กรุณาเลือกคนไข้ --
+                        <div id="selected-patient-box" class="form-control mb-2 p-2 border-primary" style="cursor:pointer; background:#fff;">
+                            ${pName}
                         </div>
-                        <input type="hidden" id="swal-p-id">
-                        <input type="hidden" id="swal-p-name">
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="renderPatientList('${dateStr}')">เปลี่ยนคนไข้</button>
                     </div>
                     <div class="mb-3 text-start">
                         <label class="form-label fw-bold">วันที่และเวลานัด:</label>
-                        <input type="datetime-local" id="swal-app-date" class="form-control" value="${dateStr}T09:00">
+                        <input type="datetime-local" id="swal-app-date" class="form-control" value="${dateStr.includes('T') ? dateStr : dateStr + 'T09:00'}">
                     </div>
                 `,
                 showCancelButton: true,
                 confirmButtonText: 'บันทึกนัดหมาย',
                 preConfirm: () => {
-                    const pId = document.getElementById('swal-p-id').value;
                     const dateVal = document.getElementById('swal-app-date').value;
-                    if (!pId || !dateVal) {
-                        Swal.showValidationMessage('กรุณาเลือกคนไข้และเวลาให้ครบถ้วน');
+                    // ตรวจสอบว่าเลือกคนไข้แล้วหรือยัง
+                    if (!pId || pId === '' || pId === 'undefined') {
+                        Swal.showValidationMessage('กรุณาเลือกคนไข้ก่อน');
                         return false;
                     }
-                    return { id: pId, name: document.getElementById('swal-p-name').value, date: dateVal };
+                    if (!dateVal) {
+                        Swal.showValidationMessage('กรุณาเลือกเวลา');
+                        return false;
+                    }
+                    
+                    // --- ตรงนี้สำคัญ: อัปเดตค่าที่หน้าจอหลักก่อนส่งไปบันทึก ---
+                    document.getElementById('selected-patient-id').value = pId;
+                    document.getElementById('selected-patient-name').innerText = pName;
+                    
+                    return { id: pId, name: pName, date: dateVal };
                 }
             }).then((result) => {
                 if (result.isConfirmed) {
-                    // ส่วนการบันทึก fetch เหมือนเดิมของคุณ...
-                    saveAppointmentToServer(result.value); 
+                    // เรียกใช้ฟังก์ชันเดิมของคุณเพื่อส่งข้อมูล
+                    saveAppointmentsFromSwal(result.value);
                 }
             });
-        
-            // ฟังก์ชันเสริมเพื่อแสดงรายการคนไข้
-            window.reOpenPatientPicker = function() {
-                Swal.fire({
-                    title: 'เลือกคนไข้',
-                    html: buttonsHtml,
-                    showConfirmButton: false,
-                    showCloseButton: true
-                });
-            };
         }
+
+        function saveAppointmentsFromSwal(data) {
+            // ใช้ logic การ fetch แบบเดียวกับ saveAppointments ของคุณ
+            Swal.fire({title: 'กำลังบันทึก...', allowOutsideClick: false});
+            Swal.showLoading();
         
-        // ฟังก์ชันสำหรับกดเลือกใน popup
-        window.selectPatientForForm = function(id, name) {
-            const pIdEl = document.getElementById('swal-p-id');
-            const pNameEl = document.getElementById('swal-p-name');
-            const pBox = document.getElementById('selected-patient-box');
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({ 
+                    action: 'addBulkAppointments', 
+                    patients: JSON.stringify([{id: data.id, name: data.name}]), 
+                    appointment_date: data.date 
+                })
+            }).then(res => res.json())
+            .then(() => {
+                showToast("บันทึกสำเร็จ!");
+                loadAppointments();
+            }).catch(err => {
+                console.error(err);
+                Swal.close();
+            });
+        }
+
+        window.renderPatientList = function(dateStr) {
+            let buttonsHtml = globalPatients.map(p => `
+                <button type="button" class="btn btn-outline-secondary w-100 mb-2 py-2" 
+                        onclick="showAddForm('${dateStr}', '${p.line_id}', '${p.line_name}')">
+                    ${p.line_name}
+                </button>
+            `).join('');
         
-            // ตรวจสอบว่ามี element เหล่านี้ไหมก่อนจะสั่ง .value
-            if(pIdEl && pNameEl && pBox) {
-                pIdEl.value = id;
-                pNameEl.value = name;
-                pBox.innerText = name;
-                Swal.close(); // ปิดหน้าต่างเลือกคนไข้
-            } else {
-                // ถ้าอยู่คนละหน้าต่าง ให้ลองใช้ Swal.fire ตัวใหม่ซ้อนไปเลย
-                console.error("ไม่พบช่องกรอกข้อมูลในฟอร์ม");
-            }
+            Swal.fire({
+                title: 'เลือกคนไข้',
+                html: `<div style="max-height: 300px; overflow-y: auto;">${buttonsHtml}</div>`,
+                showConfirmButton: false,
+                showCloseButton: true
+            });
         };
 
         function showToast(text, icon = 'success') {
