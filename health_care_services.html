@@ -244,7 +244,14 @@
 
                     // --- ปรับปรุง dateClick เพื่อให้แสดงรายการนัดหมายของวันนั้นๆ ---
                     dateClick: function(info) {
-                        // 1. กรองหานัดหมายที่ตรงกับวันที่คลิก
+                        // 1. แปลงวันที่ที่คลิกเป็นรูปแบบ วัน/เดือนย่อ/พ.ศ.ย่อ
+                        const d = new Date(info.dateStr);
+                        const day = d.getDate();
+                        const monthShort = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'][d.getMonth()];
+                        const yearThaiShort = (d.getFullYear() + 543).toString().slice(-2); // แปลง พ.ศ. และเอาแค่ 2 หลักสุดท้าย
+                        const formattedDate = `${day} ${monthShort} ${yearThaiShort}`;
+                        
+                        // 2. กรองหานัดหมายที่ตรงกับวันที่คลิก
                         const clickedDate = info.dateStr;
                         const appointmentsOnDate = calendar.getEvents().filter(event => {
                             return event.startStr.split('T')[0] === clickedDate;
@@ -272,9 +279,9 @@
                             listHtml = `<p class="mt-3 text-muted">วันนี้ยังไม่มีนัดหมาย</p>`;
                         }
                     
-                        // 2. แสดงผลด้วย SweetAlert2
+                        // 3. แสดงผลโดยใช้ formattedDate ที่สร้างไว้
                         Swal.fire({
-                            title: `📅 นัดหมายวันที่ ${clickedDate}`,
+                            title: `📅 นัดหมายวันที่ ${formattedDate}`, // ใช้ตัวแปรที่ปรับรูปแบบแล้ว
                             html: `
                                 ${listHtml}
                                 <hr>
