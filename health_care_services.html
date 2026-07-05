@@ -49,7 +49,7 @@
     <div class="nav-bar-fixed">
         <button class="btn-back" onclick="goBackMain()">⬅ ย้อนกลับ</button>
     </div>
-    <br><br>
+    <br><br><br>
     
     <div style="width: 100%; padding: 5px;">
         <h2 class="mb-4">📋 ระบบนัดหมายคนไข้</h2>
@@ -127,7 +127,10 @@
                     events: events,
 
                     // --- ชื่อเดือนย่อ ---
-                    titleFormat: { year: 'numeric', month: 'short' },
+                    // titleFormat: { year: 'numeric', month: 'short' },
+                    
+                    // --- ชื่อเดือนย่อ และ พ.ศ. ---
+                    titleFormat: { year: '2-digit', month: 'short' },
 
                     // เพิ่มส่วนนี้ เพื่อปรับชื่อวันให้เป็นตัวย่อ อา-ส
                     dayHeaderContent: function(arg) {
