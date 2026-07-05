@@ -359,6 +359,14 @@
             window.location.href = 'https://liff.line.me/2009966517-pPEyRumg';
         }
         
+        window.addEventListener('load', function() {
+            const dateInput = document.getElementById('app-date');
+            const now = new Date();
+            // ปรับให้เป็นรูปแบบที่ input ยอมรับ (YYYY-MM-DDThh:mm)
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            dateInput.value = now.toISOString().slice(0,16);
+        });
+        
     </script>
     
     <!-- Bootstrap JS -->
