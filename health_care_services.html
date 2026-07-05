@@ -101,7 +101,7 @@
 
         <!-- ส่วนของปฏิทิน -->
         <div class="card p-0 calendar-container">
-            <h4 class="mb-3">📅 ปฏิทินนัดหมาย</h4>
+          <!-- <h4 class="mb-3">📅 ปฏิทินนัดหมาย</h4> -->
             <div id="calendar"></div>
         </div>
     </div>
@@ -157,6 +157,12 @@
                     locale: 'th',
                     height: 'auto',
                     events: events,
+
+                    headerToolbar: {
+                        left: 'title', // แสดงชื่อเดือนปีตรงนี้
+                        center: '',
+                        right: 'today prev,next' // ย้ายปุ่มมาไว้ขวา
+                    },
 
                     // --- ชื่อเดือนย่อ ---
                     // titleFormat: { year: 'numeric', month: 'short' },
