@@ -378,8 +378,15 @@
             }).then(() => {
                 showToast("บันทึกสำเร็จ!");
                 document.getElementById('app-date').value = ''; 
-                selectEl.value = ''; // รีเซ็ต Dropdown กลับเป็นค่าว่าง
-                loadAppointments(); 
+                document.getElementById('selected-patient-id').value = ''; // รีเซ็ต ID
+                document.getElementById('selected-patient-name').innerText = '-- กรุณาเลือกคนไข้ --'; // รีเซ็ตชื่อ
+                
+                if (calendar) {
+                    calendar.refetchEvents(); // สั่งดึงข้อมูลใหม่และแสดงผลทันที
+                } else {
+                    loadAppointments(); // ถ้ายังไม่มีปฏิทินให้โหลดใหม่
+                }
+
             }).catch(err => console.error("Error saving:", err));
         }
 
