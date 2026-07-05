@@ -54,7 +54,25 @@
         .calendar-container {
             padding: 0 !important;
             margin: 0 !important;
+            position: relative !important;
         }
+
+        .calendar-title-top {
+            position: absolute !important;
+            top: 5px !important;
+            left: 0 !important;
+            right: 0 !important;
+            text-align: center !important;
+            font-size: 1.3rem !important;
+            font-weight: bold !important;
+            margin: 0 !important;
+            z-index: 10 !important;
+        }
+
+        /* บีบให้ Toolbar ของปฏิทินที่เหลืออยู่ชิดกันมากขึ้น */
+        .fc-header-toolbar {
+            margin-top: 0 !important;
+            padding: 0 5px !important;
     
         /* 2. ตั้งค่าให้ Title (ก.ค. 69) เป็นตัวหนาและอยู่ตรงกลาง */
         .fc .fc-toolbar-title {
@@ -117,7 +135,8 @@
 
         <!-- ส่วนของปฏิทิน -->
         <div class="card p-0 calendar-container">
-            <h4 class="text-center mt-2 mb-0" style="font-size: 1.3rem;">📅 ปฏิทินนัดหมาย</h4>
+            <!-- ใส่ class พิเศษเพื่อดึงไปไว้ด้านบน -->
+            <h4 class="calendar-title-top">📅 ปฏิทินนัดหมาย</h4>
             <div id="calendar"></div>
         </div>
     </div>
