@@ -75,26 +75,26 @@
         if (myLineId) {
             fetchAppointments(myLineId);
         } else {
-            // 3. สั่งให้ LIFF ทำการ Login ผ่านหน้าเว็บ
-            liff.init({ liffId: "2009966517-g4zfasyj" }).then(() => {
-                liff.login();
-            }).catch((err) => {
-                console.error('LIFF init failed', err);
-            });
+            // 3. ถ้าไม่มี ให้เริ่ม LIFF เพื่อเช็กสถานะ
+            initializeLiff();
         }
 
         async function initializeLiff() {
             try {
                 await liff.init({ liffId: "2009966517-g4zfasyj" }); 
+
+                // **หัวใจสำคัญ:** เช็กว่าล็อกอินหรือยัง
                 if (liff.isLoggedIn()) {
+                    // ถ้าล็อกอินแล้ว ให้ดึงข้อมูลเลย
                     const profile = await liff.getProfile();
                     fetchAppointments(profile.userId); 
                 } else {
-                    document.getElementById('appointment-list').innerHTML = 
-                        '<div class="alert alert-warning text-center rounded-4 shadow-sm p-4">กรุณาเปิดผ่านแอปพลิเคชัน LINE</div>';
+                    // ถ้ายังไม่ได้ล็อกอิน ค่อยสั่ง Login
+                    // เมื่อ login สำเร็จ มันจะ reload หน้าเว็บและกลับมาเข้าเงื่อนไข liff.isLoggedIn() ข้างบน
+                    liff.login();
                 }
             } catch (err) {
-                console.error('LIFF Error', err);
+                console.error('LIFF init failed', err);
             }
         }
 
