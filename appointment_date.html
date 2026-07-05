@@ -75,8 +75,8 @@
         if (myLineId) {
             fetchAppointments(myLineId);
         } else {
-            // 3. ถ้าไม่มี ค่อยพึ่งพา LIFF (สำหรับการใช้งานจริงใน LINE)
-            initializeLiff();
+            // 3. สั่งให้ LIFF ทำการ Login ผ่านหน้าเว็บ
+            liff.login();
         }
 
         async function initializeLiff() {
