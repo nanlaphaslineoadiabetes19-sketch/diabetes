@@ -193,7 +193,7 @@
                 const calendarEl = document.getElementById('calendar');
                 
                 if (calendar) {
-                    calendar.destroy();
+                    calendar.destroy();  // ล้างปฏิทินเก่าออกก่อน
                 }
 
                 calendar = new FullCalendar.Calendar(calendarEl, {
@@ -342,11 +342,7 @@
                         })
                     }).then(() => {
                         showToast("บันทึกสำเร็จ!");
-                        if (calendar) {
-                            calendar.refetchEvents(); // อัปเดตปฏิทินทันที
-                        } else {
-                            loadAppointments(); 
-                        }
+                        loadAppointments(); // เรียกโหลดใหม่ทั้งปฏิทินเพื่อความชัวร์
                     }).catch(err => console.error("Error saving:", err));
                 }
             });
@@ -382,15 +378,9 @@
             }).then(() => {
                 showToast("บันทึกสำเร็จ!");
                 document.getElementById('app-date').value = ''; 
-                document.getElementById('selected-patient-id').value = ''; // รีเซ็ต ID
-                document.getElementById('selected-patient-name').innerText = '-- กรุณาเลือกคนไข้ --'; // รีเซ็ตชื่อ
-                
-                if (calendar) {
-                    calendar.refetchEvents(); // สั่งดึงข้อมูลใหม่และแสดงผลทันที
-                } else {
-                    loadAppointments(); // ถ้ายังไม่มีปฏิทินให้โหลดใหม่
-                }
-
+                document.getElementById('selected-patient-id').value = ''; 
+                document.getElementById('selected-patient-name').innerText = '-- กรุณาเลือกคนไข้ --';
+                loadAppointments(); // เรียกโหลดใหม่ทั้งปฏิทินเพื่อความชัวร์
             }).catch(err => console.error("Error saving:", err));
         }
 
