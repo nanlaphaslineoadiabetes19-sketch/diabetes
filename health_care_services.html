@@ -161,10 +161,6 @@
             .then(res => res.json())
             .then(data => {
                 globalPatients = data; 
-                const select = document.getElementById('main-patient-select');
-                data.forEach(p => {
-                    select.insertAdjacentHTML('beforeend', `<option value="${p.line_id}" data-name="${p.line_name}">${p.line_name}</option>`);
-                });
             })
             .catch(err => console.error("Error loading patients:", err));
 
@@ -314,11 +310,13 @@
                         <div id="selected-patient-box" class="form-control mb-2 p-2 border-primary" style="cursor:pointer;" onclick="reOpenPatientPicker()">
                             -- กรุณาเลือกคนไข้ --
                         </div>
-                        <!-- สำคัญ: ต้องมี ID เหล่านี้อยู่ใน HTML ตอนที่ Swal แสดงผล -->
                         <input type="hidden" id="swal-p-id">
                         <input type="hidden" id="swal-p-name">
                     </div>
-                    ...
+                    <div class="mb-3 text-start">
+                        <label class="form-label fw-bold">วันที่และเวลานัด:</label>
+                        <input type="datetime-local" id="swal-app-date" class="form-control" value="${dateStr}T09:00">
+                    </div>
                 `,
                 showCancelButton: true,
                 confirmButtonText: 'บันทึกนัดหมาย',
