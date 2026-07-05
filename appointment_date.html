@@ -120,18 +120,17 @@
 
             // เรียงลำดับวันที่จากน้อยไปมาก
             data.sort((a, b) => {
-                const dateA = new Date(a.app_date || a.date);
-                const dateB = new Date(b.app_date || b.date);
-                return dateA - dateB;
+                const dateA = new Date(a.appointment_date);
+                const dateB = new Date(b.appointment_date);
+                return dateA - dateB; // น้อยไปมาก
             });
     
             let html = '';
             data.forEach(item => {
-                const d = new Date(item.app_date || item.date); 
+                const d = new Date(item.appointment_date); 
                 const dateStr = d.toLocaleDateString('th-TH', { year: 'numeric', month: 'long', day: 'numeric' });
                 const timeStr = d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
                 
-                // ตกแต่งป้ายสถานะให้ดูดีขึ้น
                 let statusText = item.status || 'ยืนยันแล้ว';
                 
                 html += `
