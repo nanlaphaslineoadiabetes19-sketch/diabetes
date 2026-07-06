@@ -9,14 +9,15 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
 
     <style>
-        body { background-color: #f4f7f6; font-family: 'Prompt', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f4f7f6; font-family: 'Prompt', sans-serif; }
         .card { border: none; border-radius: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
         .card-header { background: linear-gradient(135deg, #0d6efd, #0dcaf0); color: white; border-radius: 15px 15px 0 0 !important; }
         .form-label { font-weight: 600; color: #495057; }
         .required::after { content: " *"; color: red; }
-        .hidden-field { display: none; }
     </style>
 </head>
 <body class="p-4">
@@ -24,8 +25,8 @@
     <div class="container" style="max-width: 800px;">
         <div class="card">
             <div class="card-header p-4">
-                <h4 class="mb-0">💊 ตั้งเวลาทานยา</h4>
-                <p class="mb-0 mt-1" style="font-size: 0.9rem; opacity: 0.9;">บริหารจัดการรอบการทานยา</p>
+                <h4 class="mb-0">💊 ตั้งเวลาทานยา (Set Medicine)</h4>
+                <p class="mb-0 mt-1" style="font-size: 0.9rem; opacity: 0.9;">บริหารจัดการรอบการทานยาและคลังยาของผู้ป่วย</p>
             </div>
             
             <div class="card-body p-4">
@@ -33,10 +34,9 @@
                     
                     <!-- ส่วนที่ 1: เลือกคนไข้ -->
                     <div class="mb-4">
-                        <label for="patientSelect" class="form-label required">เลือกรายชื่อ</label>
+                        <label for="patientSelect" class="form-label required">เลือกรายชื่อคนไข้ (ดึงจากระบบชีท pretest)</label>
                         <select class="form-select form-select-lg" id="patientSelect" required>
-                            <option value="">-- กำลังโหลดรายชื่อ --</option>
-                            <!-- รายชื่อจะถูกนำมาใส่ตรงนี้ผ่าน JS -->
+                            <option value="">-- กำลังโหลดรายชื่อผู้ป่วย... --</option>
                         </select>
                         <input type="hidden" id="line_name"> <!-- เก็บชื่อเพื่อส่งลงชีท -->
                     </div>
@@ -61,7 +61,7 @@
                         <div class="col-md-4 mt-3 mt-md-0">
                             <label for="pillsCount" class="form-label required">จำนวนยาที่จ่าย (เม็ด)</label>
                             <input type="number" class="form-control form-select-lg" id="pillsCount" min="1" placeholder="เช่น 30" required>
-                            <div class="form-text text-success" style="font-size: 0.8rem;">*ระบบจะหักลบอัตโนมัติเมื่อคนไข้กดทานยา</div>
+                            <div class="form-text text-success" style="font-size: 0.8rem;">*ระบบจะหักลบอัตโนมัติเมื่อแจ้งเตือนผู้ป่วย</div>
                         </div>
                     </div>
 
@@ -86,27 +86,25 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm">💾 บันทึกการตั้งค่า</button>
+                    <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm">💾 บันทึกการตั้งค่าลงชีท</button>
                 </form>
             </div>
         </div>
     </div>
 
     <script>
-        // ใส่ URL ของ Google Apps Script ของคุณที่นี่
+        // ⚠️ นำ Web App URL จาก Google Apps Script มาวางแทนที่ตรงนี้
         const SCRIPT_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"; 
 
-        // 1. ฟังก์ชันโหลดรายชื่อผู้ป่วยจากชีท pretest
+        // 1. ฟังก์ชันโหลดรายชื่อผู้ป่วยจริงจากชีท pretest
         async function loadPatients() {
             try {
-                // สมมติว่าใน Apps Script มีการรับ action=getPatients
                 const response = await fetch(SCRIPT_URL + "?action=getPatients");
                 const patients = await response.json();
                 
                 const select = document.getElementById("patientSelect");
                 select.innerHTML = '<option value="">-- กรุณาเลือกคนไข้ --</option>';
                 
-                // คาดหวังข้อมูลแบบ [{ line_id: "U123...", line_name: "John Doe" }, ...]
                 patients.forEach(p => {
                     let option = document.createElement("option");
                     option.value = p.line_id;
@@ -115,25 +113,23 @@
                 });
             } catch (error) {
                 console.error("Error loading patients", error);
-                document.getElementById("patientSelect").innerHTML = '<option value="">โหลดข้อมูลล้มเหลว (ทดสอบ UI ให้เลือกข้ามได้)</option>';
-                
-                // Mock Data ไว้สำหรับการทดสอบ UI ตอนยังไม่ต่อ Backend
+                // Fallback แสดงกรณีติดต่อ Server ไม่ได้เพื่อทดสอบ UI
                 const mockSelect = document.getElementById("patientSelect");
                 mockSelect.innerHTML = `
-                    <option value="">-- กรุณาเลือกคนไข้ --</option>
-                    <option value="Ubb14a9e...">Thawatchai 慈德</option>
-                    <option value="U1740114...">Nanlaphas K.Beebo</option>
+                    <option value="">-- กรุณาเลือกคนไข้ (โหลดจริงล้มเหลว) --</option>
+                    <option value="Ubb14a9e757138710939fd9b7d49efe3c">Thawatchai 慈德</option>
+                    <option value="U174011434f0eb90f0b2950ad305c1610">Nanlaphas K.Beebo</option>
                 `;
             }
         }
 
-        // 2. ฟังก์ชันจับคู่ชื่อและไอดีคนไข้
+        // 2. จับคู่ชื่อเก็บบันทึกลงตัวแปรซ่อน
         document.getElementById("patientSelect").addEventListener("change", function() {
             const selectedOption = this.options[this.selectedIndex];
-            document.getElementById("line_name").value = selectedOption.text;
+            document.getElementById("line_name").value = selectedOption.value ? selectedOption.text : "";
         });
 
-        // 3. ฟังก์ชันเปิด/ปิด ช่องกรอกเวลาให้สัมพันธ์กับประเภทยา
+        // 3. เปิด/ปิด การบันทึกเวลาตามประเภทเงื่อนไขยา
         function toggleTimeFields() {
             const medSelect = document.getElementById("medType");
             const selectedOption = medSelect.options[medSelect.selectedIndex];
@@ -142,26 +138,21 @@
             const beforeInput = document.getElementById("timeBefore");
             const afterInput = document.getElementById("timeAfter");
 
-            // ล้างค่าเก่า
             beforeInput.value = "";
             afterInput.value = "";
 
             if (timeRequired === "before") {
                 beforeInput.disabled = false;
                 beforeInput.required = true;
-                
                 afterInput.disabled = true;
                 afterInput.required = false;
-                
                 document.getElementById("beforeField").style.opacity = "1";
                 document.getElementById("afterField").style.opacity = "0.4";
             } else if (timeRequired === "after") {
                 beforeInput.disabled = true;
                 beforeInput.required = false;
-                
                 afterInput.disabled = false;
                 afterInput.required = true;
-
                 document.getElementById("beforeField").style.opacity = "0.4";
                 document.getElementById("afterField").style.opacity = "1";
             } else {
@@ -172,9 +163,9 @@
             }
         }
 
-        // 4. ฟังก์ชันบันทึกข้อมูล
+        // 4. บันทึกข้อมูลส่งกลับไปที่ Google Sheet
         function saveMedicine(event) {
-            event.preventDefault(); // ป้องกันหน้าเว็บโหลดใหม่
+            event.preventDefault();
             
             const payload = {
                 action: "saveMedicine",
@@ -186,38 +177,31 @@
                 after: document.getElementById("timeAfter").value || ""
             };
 
-            Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
+            Swal.fire({ title: 'กำลังบันทึกข้อมูลยาสู่ระบบ...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
 
-            // ส่งข้อมูลไปยัง Google Apps Script
             fetch(SCRIPT_URL, {
                 method: "POST",
                 body: JSON.stringify(payload)
             })
             .then(response => response.json())
             .then(data => {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'บันทึกสำเร็จ!',
-                    text: 'ตั้งเวลาทานยาเรียบร้อยแล้ว',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-                document.getElementById("medicineForm").reset();
-                toggleTimeFields(); // รีเซ็ตสถานะช่องเวลา
+                if(data.status === "success") {
+                    Swal.fire({ icon: 'success', title: 'บันทึกข้อมูลสำเร็จ!', text: 'ระบบตั้งค่ารอบทานยาเรียบร้อยแล้ว', timer: 2000, showConfirmButton: false });
+                    document.getElementById("medicineForm").reset();
+                    toggleTimeFields();
+                } else {
+                    Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาดจากระบบ', text: data.message });
+                }
             })
             .catch(error => {
                 console.error('Error:', error);
-                // แสดง Success ปลอมสำหรับการทดสอบหน้าเว็บ
-                Swal.fire({ icon: 'success', title: 'จำลองการบันทึกสำเร็จ!', text: 'เนื่องจากยังไม่ได้ผูก URL ระบบจึงจำลองการทำงาน' });
-                document.getElementById("medicineForm").reset();
-                toggleTimeFields();
+                Swal.fire({ icon: 'error', title: 'การเชื่อมต่อขัดข้อง', text: 'กรุณาตรวจสอบการตั้งค่า URL ของ Apps Script' });
             });
         }
 
-        // เริ่มโหลดข้อมูลเมื่อเปิดหน้าเว็บ
         window.onload = function() {
             loadPatients();
-            toggleTimeFields(); // ตั้งค่าเริ่มต้นให้ช่องเวลา
+            toggleTimeFields();
         };
     </script>
 </body>
