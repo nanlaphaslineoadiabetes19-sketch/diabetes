@@ -24,8 +24,8 @@
     <div class="container" style="max-width: 800px;">
         <div class="card">
             <div class="card-header p-4">
-                <h4 class="mb-0">💊 ระบบตั้งเวลาแจ้งเตือนทานยา (สำหรับ Admin)</h4>
-                <p class="mb-0 mt-1" style="font-size: 0.9rem; opacity: 0.9;">บริหารจัดการข้อมูลและรอบการทานยาของผู้ป่วย</p>
+                <h4 class="mb-0">💊 ตั้งเวลาทานยา</h4>
+                <p class="mb-0 mt-1" style="font-size: 0.9rem; opacity: 0.9;">บริหารจัดการรอบการทานยา</p>
             </div>
             
             <div class="card-body p-4">
@@ -33,9 +33,9 @@
                     
                     <!-- ส่วนที่ 1: เลือกคนไข้ -->
                     <div class="mb-4">
-                        <label for="patientSelect" class="form-label required">1. เลือกผู้ป่วย (ดึงจากชีท Pretest)</label>
+                        <label for="patientSelect" class="form-label required">เลือกรายชื่อ</label>
                         <select class="form-select form-select-lg" id="patientSelect" required>
-                            <option value="">-- กำลังโหลดรายชื่อผู้ป่วย --</option>
+                            <option value="">-- กำลังโหลดรายชื่อ --</option>
                             <!-- รายชื่อจะถูกนำมาใส่ตรงนี้ผ่าน JS -->
                         </select>
                         <input type="hidden" id="line_name"> <!-- เก็บชื่อเพื่อส่งลงชีท -->
@@ -44,7 +44,7 @@
                     <!-- ส่วนที่ 2: ข้อมูลยา -->
                     <div class="row mb-4">
                         <div class="col-md-8">
-                            <label for="medType" class="form-label required">2. เลือกชนิดยาและวิธีใช้</label>
+                            <label for="medType" class="form-label required">เลือกชนิดยาและวิธีใช้</label>
                             <select class="form-select form-select-lg" id="medType" onchange="toggleTimeFields()" required>
                                 <option value="">-- กรุณาเลือกยา --</option>
                                 <optgroup label="🔹 ทานก่อนอาหาร">
