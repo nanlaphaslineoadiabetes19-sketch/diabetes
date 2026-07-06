@@ -25,8 +25,8 @@
     <div class="container" style="max-width: 800px;">
         <div class="card">
             <div class="card-header p-4">
-                <h4 class="mb-0">💊 ตั้งเวลาทานยา (Set Medicine)</h4>
-                <p class="mb-0 mt-1" style="font-size: 0.9rem; opacity: 0.9;">บริหารจัดการรอบการทานยาและคลังยาของผู้ป่วย</p>
+                <h4 class="mb-0">💊 ตั้งเวลาทานยา</h4>
+                <p class="mb-0 mt-1" style="font-size: 0.9rem; opacity: 0.9;">บริหารจัดการรอบการทานยา</p>
             </div>
             
             <div class="card-body p-4">
@@ -34,7 +34,7 @@
                     
                     <!-- ส่วนที่ 1: เลือกคนไข้ -->
                     <div class="mb-4">
-                        <label for="patientSelect" class="form-label required">เลือกรายชื่อคนไข้ (ดึงจากระบบชีท pretest)</label>
+                        <label for="patientSelect" class="form-label required">เลือกรายชื่อ</label>
                         <select class="form-select form-select-lg" id="patientSelect" required>
                             <option value="">-- กำลังโหลดรายชื่อผู้ป่วย... --</option>
                         </select>
@@ -67,7 +67,7 @@
 
                     <!-- ส่วนที่ 3: ตั้งเวลา -->
                     <div class="p-3 mb-4 rounded" style="background-color: #f8f9fa; border: 1px solid #dee2e6;">
-                        <label class="form-label required mb-3">3. ตั้งวันที่และเวลาเริ่มทานยา</label>
+                        <label class="form-label required mb-3">ตั้งวันที่และเวลาทานยา</label>
                         
                         <div class="row">
                             <!-- ช่องเวลาก่อนอาหาร -->
@@ -86,7 +86,7 @@
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm">💾 บันทึกการตั้งค่าลงชีท</button>
+                    <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm">💾 บันทึก</button>
                 </form>
             </div>
         </div>
@@ -94,7 +94,7 @@
 
     <script>
         // ⚠️ นำ Web App URL จาก Google Apps Script มาวางแทนที่ตรงนี้
-        const SCRIPT_URL = "https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec"; 
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec"; 
 
         // 1. ฟังก์ชันโหลดรายชื่อผู้ป่วยจริงจากชีท pretest
         async function loadPatients() {
