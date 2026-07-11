@@ -50,77 +50,51 @@
                         </div>
                     </div>
 
-                    <!-- 6. ระบบตั้งเวลา -->
-                    <div class="p-4 mb-4 rounded time-box">
-                        <label class="form-label required mb-3 text-primary">ระบบตั้งเวลาทานยาประจำวัน (ทุกวัน)</label>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="timeBefore" class="form-label" style="color: #0d6efd;">⏰ เวลาก่อนอาหาร</label>
-                                <input type="time" class="form-control form-control-lg" id="timeBefore" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="timeAfter" class="form-label" style="color: #d39e00;">⏰ เวลาหลังอาหาร</label>
-                                <input type="time" class="form-control form-control-lg" id="timeAfter" required>
-                            </div>
-                        </div>
-                    </div>
-
+                    <!-- 📝 รายการยาที่สั่งจ่าย -->
                     <h5 class="fw-bold mb-3 text-primary mt-4">📝 รายการยาที่สั่งจ่าย</h5>
                     
-                    <!-- 3. ยามื้อเช้า -->
-                    <div class="row mb-3 align-items-center">
-                        <div class="col-8">
+                    <!-- มื้อเช้า -->
+                    <div class="row mb-3 align-items-end">
+                        <div class="col-12 col-md-5">
                             <label class="form-label text-success">🌅 ยามื้อเช้า</label>
                             <select class="form-select" id="medMorning">
                                 <option value="">-- เลือกชื่อยา --</option>
-                                <option value="Glipizide 5mg (1 เม็ด)">กลิพิไซด์ (Glipizide) 5mg 1 เม็ด</option>
-                                <option value="Metformin 500mg (1 เม็ด)">เมทฟอร์มิน (Metformin) 500mg 1 เม็ด</option>
-                                <option value="Metformin 500mg (2 เม็ด)">เมทฟอร์มิน (Metformin) 500mg 2 เม็ด</option>
-                                <option value="Pioglitazone 30mg (1/2 เม็ด)">ไพโอกลิตาโซน (Pioglitazone) 30mg 1/2 เม็ด</option>
-                                <option value="Pioglitazone 30mg (1 เม็ด)">ไพโอกลิตาโซน (Pioglitazone) 30mg 1 เม็ด</option>
+                                <option value="Metformin 500mg">Metformin 500mg</option>
                             </select>
                         </div>
-                        <div class="col-4">
-                            <label class="form-label">จำนวน (เม็ด)</label>
-                            <input type="number" class="form-control" id="doseMorning" min="0" placeholder="0">
-                        </div>
+                        <div class="col-4 col-md-2"><select class="form-select" id="typeMorning"><option value="ก่อน">ก่อน</option><option value="หลัง">หลัง</option></select></div>
+                        <div class="col-4 col-md-3"><input type="time" class="form-control" id="timeMorning"></div>
+                        <div class="col-4 col-md-2"><input type="number" class="form-control" id="doseMorning" placeholder="จำนวน" min="0"></div>
                     </div>
-
-                    <!-- 4. ยามื้อกลางวัน -->
-                    <div class="row mb-3 align-items-center">
-                        <div class="col-8">
+                    
+                    <!-- มื้อกลางวัน -->
+                    <div class="row mb-3 align-items-end">
+                        <div class="col-12 col-md-5">
                             <label class="form-label text-warning" style="color: #d39e00 !important;">☀️ ยามื้อกลางวัน</label>
                             <select class="form-select" id="medLunch">
                                 <option value="">-- เลือกชื่อยา --</option>
-                                <option value="Metformin 500mg (1 เม็ด)">เมทฟอร์มิน (Metformin) 500mg 1 เม็ด</option>
-                                <option value="Metformin 500mg (2 เม็ด)">เมทฟอร์มิน (Metformin) 500mg 2 เม็ด</option>
+                                <option value="Metformin 500mg">Metformin 500mg</option>
                             </select>
                         </div>
-                        <div class="col-4">
-                            <label class="form-label">จำนวน (เม็ด)</label>
-                            <input type="number" class="form-control" id="doseLunch" min="0" placeholder="0">
-                        </div>
+                        <div class="col-4 col-md-2"><select class="form-select" id="typeLunch"><option value="ก่อน">ก่อน</option><option value="หลัง">หลัง</option></select></div>
+                        <div class="col-4 col-md-3"><input type="time" class="form-control" id="timeLunch"></div>
+                        <div class="col-4 col-md-2"><input type="number" class="form-control" id="doseLunch" placeholder="จำนวน" min="0"></div>
                     </div>
-
-                    <!-- 5. ยามื้อเย็น -->
-                    <div class="row mb-4 align-items-center">
-                        <div class="col-8">
+                    
+                    <!-- มื้อเย็น -->
+                    <div class="row mb-4 align-items-end">
+                        <div class="col-12 col-md-5">
                             <label class="form-label text-info">🌙 ยามื้อเย็น</label>
                             <select class="form-select" id="medDinner">
                                 <option value="">-- เลือกชื่อยา --</option>
-                                <option value="Glipizide 5mg (1 เม็ด)">กลิพิไซด์ (Glipizide) 5mg 1 เม็ด</option>
-                                <option value="Metformin 500mg (1 เม็ด)">เมทฟอร์มิน (Metformin) 500mg 1 เม็ด</option>
-                                <option value="Metformin 500mg (2 เม็ด)">เมทฟอร์มิน (Metformin) 500mg 2 เม็ด</option>
-                                <option value="Pioglitazone 30mg (1/2 เม็ด)">ไพโอกลิตาโซน (Pioglitazone) 30mg 1/2 เม็ด</option>
-                                <option value="Pioglitazone 30mg (1 เม็ด)">ไพโอกลิตาโซน (Pioglitazone) 30mg 1 เม็ด</option>
+                                <option value="Glipizide 5mg">Glipizide 5mg</option>
                             </select>
                         </div>
-                        <div class="col-4">
-                            <label class="form-label">จำนวน (เม็ด)</label>
-                            <input type="number" class="form-control" id="doseDinner" min="0" placeholder="0">
-                        </div>
+                        <div class="col-4 col-md-2"><select class="form-select" id="typeDinner"><option value="ก่อน">ก่อน</option><option value="หลัง">หลัง</option></select></div>
+                        <div class="col-4 col-md-3"><input type="time" class="form-control" id="timeDinner"></div>
+                        <div class="col-4 col-md-2"><input type="number" class="form-control" id="doseDinner" placeholder="จำนวน" min="0"></div>
                     </div>
-
+                    
                     <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm" style="border-radius: 10px; font-weight: 600; letter-spacing: 1px;">
                         💾 บันทึก
                     </button>
@@ -194,16 +168,21 @@
                 action: "saveMedicineDaily",
                 line_id: document.getElementById("patientSelect").value,
                 line_name: document.getElementById("line_name").value,
-                // ยามื้อเช้า/กลางวัน/เย็น
+                
+                // มื้อเช้า
                 med_morning: document.getElementById("medMorning").value,
                 dose_morning: document.getElementById("doseMorning").value || 0,
+                time_morning: `${document.getElementById("typeMorning").value} ${document.getElementById("timeMorning").value}`,
+                
+                // มื้อกลางวัน
                 med_lunch: document.getElementById("medLunch").value,
                 dose_lunch: document.getElementById("doseLunch").value || 0,
+                time_lunch: `${document.getElementById("typeLunch").value} ${document.getElementById("timeLunch").value}`,
+                
+                // มื้อเย็น
                 med_dinner: document.getElementById("medDinner").value,
                 dose_dinner: document.getElementById("doseDinner").value || 0,
-                // ค่าเวลาใหม่
-                time_before: document.getElementById("timeBefore").value || "",
-                time_after: document.getElementById("timeAfter").value || ""
+                time_dinner: `${document.getElementById("typeDinner").value} ${document.getElementById("timeDinner").value}`
             };
 
             Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
