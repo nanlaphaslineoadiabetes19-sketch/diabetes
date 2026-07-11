@@ -203,22 +203,22 @@
                 line_name: document.getElementById("line_name").value,
                 
                 // มื้อเช้า
-                med_morning: document.getElementById("medMorning").value,
-                dose_morning: document.getElementById("doseMorning").value,
-                time_morning_before: document.getElementById("timeMorningBefore").value,
-                time_morning_after: document.getElementById("timeMorningAfter").value,
+                morning_before_dose: document.getElementById("doseMorningBefore").value || 0,
+                morning_before_time: document.getElementById("timeMorningBefore").value,
+                morning_after_dose: document.getElementById("doseMorningAfter").value || 0,
+                morning_after_time: document.getElementById("timeMorningAfter").value,
                 
                 // มื้อกลางวัน
-                med_morning: document.getElementById("medLunch").value,
-                dose_morning: document.getElementById("doseLunch").value,
-                time_morning_before: document.getElementById("timeLunchBefore").value,
-                time_morning_after: document.getElementById("timeLunchAfter").value,
-                            
+                lunch_before_dose: document.getElementById("doseLunchBefore").value || 0,
+                lunch_before_time: document.getElementById("timeLunchBefore").value,
+                lunch_after_dose: document.getElementById("doseLunchAfter").value || 0,
+                lunch_after_time: document.getElementById("timeLunchAfter").value,
+                
                 // มื้อเย็น
-                med_morning: document.getElementById("medDinner").value,
-                dose_morning: document.getElementById("doseDinner").value,
-                time_morning_before: document.getElementById("timeDinnerBefore").value,
-                time_morning_after: document.getElementById("timeDinnerAfter").value}`
+                dinner_before_dose: document.getElementById("doseDinnerBefore").value || 0,
+                dinner_before_time: document.getElementById("timeDinnerBefore").value,
+                dinner_after_dose: document.getElementById("doseDinnerAfter").value || 0,
+                dinner_after_time: document.getElementById("timeDinnerAfter").value
             };
 
             Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
