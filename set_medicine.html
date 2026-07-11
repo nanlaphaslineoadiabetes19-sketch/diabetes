@@ -54,45 +54,78 @@
                     <h5 class="fw-bold mb-3 text-primary mt-4">📝 รายการยาที่สั่งจ่าย</h5>
                     
                     <!-- มื้อเช้า -->
-                    <div class="row mb-3 align-items-end">
-                        <div class="col-12 col-md-5">
-                            <label class="form-label text-success">🌅 ยามื้อเช้า</label>
+                    <h5 class="fw-bold mt-4 text-success">🌅 ยามื้อเช้า</h5>
+                    <div class="row mb-2">
+                        <div class="col-8">
                             <select class="form-select" id="medMorning">
                                 <option value="">-- เลือกชื่อยา --</option>
                                 <option value="Metformin 500mg">Metformin 500mg</option>
                             </select>
                         </div>
-                        <div class="col-4 col-md-2"><select class="form-select" id="typeMorning"><option value="ก่อน">ก่อน</option><option value="หลัง">หลัง</option></select></div>
-                        <div class="col-4 col-md-3"><input type="time" class="form-control" id="timeMorning"></div>
-                        <div class="col-4 col-md-2"><input type="number" class="form-control" id="doseMorning" placeholder="จำนวน" min="0"></div>
+                        <div class="col-4">
+                            <input type="number" class="form-control" id="doseMorning" placeholder="จำนวน (เม็ด)">
+                        </div>
+                    </div>
+                    <!-- แถวสำหรับ ก่อน/หลัง -->
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label text-primary">ก่อนอาหาร</label>
+                            <input type="time" class="form-control" id="timeMorningBefore">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label text-warning">หลังอาหาร</label>
+                            <input type="time" class="form-control" id="timeMorningAfter">
+                        </div>
                     </div>
                     
                     <!-- มื้อกลางวัน -->
-                    <div class="row mb-3 align-items-end">
-                        <div class="col-12 col-md-5">
-                            <label class="form-label text-warning" style="color: #d39e00 !important;">☀️ ยามื้อกลางวัน</label>
+                    <h5 class="fw-bold mt-4 text-success">🌅 ยามื้อเช้า</h5>
+                    <div class="row mb-2">
+                        <div class="col-8">
                             <select class="form-select" id="medLunch">
                                 <option value="">-- เลือกชื่อยา --</option>
                                 <option value="Metformin 500mg">Metformin 500mg</option>
                             </select>
                         </div>
-                        <div class="col-4 col-md-2"><select class="form-select" id="typeLunch"><option value="ก่อน">ก่อน</option><option value="หลัง">หลัง</option></select></div>
-                        <div class="col-4 col-md-3"><input type="time" class="form-control" id="timeLunch"></div>
-                        <div class="col-4 col-md-2"><input type="number" class="form-control" id="doseLunch" placeholder="จำนวน" min="0"></div>
+                        <div class="col-4">
+                            <input type="number" class="form-control" id="doseLunch" placeholder="จำนวน (เม็ด)">
+                        </div>
+                    </div>
+                    <!-- แถวสำหรับ ก่อน/หลัง -->
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label text-primary">ก่อนอาหาร</label>
+                            <input type="time" class="form-control" id="timeLunchBefore">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label text-warning">หลังอาหาร</label>
+                            <input type="time" class="form-control" id="timeLunchAfter">
+                        </div>
                     </div>
                     
                     <!-- มื้อเย็น -->
-                    <div class="row mb-4 align-items-end">
-                        <div class="col-12 col-md-5">
-                            <label class="form-label text-info">🌙 ยามื้อเย็น</label>
+                    <h5 class="fw-bold mt-4 text-success">🌅 ยามื้อเช้า</h5>
+                    <div class="row mb-2">
+                        <div class="col-8">
                             <select class="form-select" id="medDinner">
                                 <option value="">-- เลือกชื่อยา --</option>
-                                <option value="Glipizide 5mg">Glipizide 5mg</option>
+                                <option value="Metformin 500mg">Metformin 500mg</option>
                             </select>
                         </div>
-                        <div class="col-4 col-md-2"><select class="form-select" id="typeDinner"><option value="ก่อน">ก่อน</option><option value="หลัง">หลัง</option></select></div>
-                        <div class="col-4 col-md-3"><input type="time" class="form-control" id="timeDinner"></div>
-                        <div class="col-4 col-md-2"><input type="number" class="form-control" id="doseDinner" placeholder="จำนวน" min="0"></div>
+                        <div class="col-4">
+                            <input type="number" class="form-control" id="doseDinner" placeholder="จำนวน (เม็ด)">
+                        </div>
+                    </div>
+                    <!-- แถวสำหรับ ก่อน/หลัง -->
+                    <div class="row mb-3">
+                        <div class="col-6">
+                            <label class="form-label text-primary">ก่อนอาหาร</label>
+                            <input type="time" class="form-control" id="timeDinnerBefore">
+                        </div>
+                        <div class="col-6">
+                            <label class="form-label text-warning">หลังอาหาร</label>
+                            <input type="time" class="form-control" id="timeDinnerAfter">
+                        </div>
                     </div>
                     
                     <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm" style="border-radius: 10px; font-weight: 600; letter-spacing: 1px;">
