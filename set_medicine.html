@@ -162,18 +162,20 @@
                 stockContent.innerHTML = "<div class='col-12 text-muted'>กำลังโหลดข้อมูลยาคงเหลือ...</div>";
                 
                 try {
-                    // สร้าง Action ใหม่ "getMedStock" ส่งไปหา Apps Script
                     const response = await fetch(SCRIPT_URL + "?action=getMedStock&line_id=" + lineId);
-                    const stockData = await response.json();
+                    const result = await response.json(); // ข้อมูลใหม่จะเป็น {list: [], totalSum: 0}
                     
-                    if(stockData && stockData.length > 0) {
+                    if(result.list && result.list.length > 0) {
+                        // อัปเดตหัวข้อพร้อมวงเล็บรวม (แก้ตรงนี้)
+                        document.getElementById("stockHeader").innerHTML = `📦 รายการยาคงเหลือ (${result.totalSum} เม็ด)`;
+                        
                         let html = "";
-                        stockData.forEach((item, index) => {
+                        result.list.forEach((item, index) => {
                             html += `<div class="col-12 col-md-4 mb-2">${index+1}. ${item.med_name} <span class="float-end fw-bold text-primary">${item.total_pills} เม็ด</span></div>`;
                         });
                         stockContent.innerHTML = html;
                     } else {
-                        stockContent.innerHTML = "<div class='col-12 text-danger'>ไม่พบประวัติยาคงเหลือของลูกค้ารายนี้</div>";
+                        stockContent.innerHTML = "<div class='col-12 text-danger'>ไม่พบข้อมูลยาคงเหลือ</div>";
                     }
                 } catch (error) {
                     stockContent.innerHTML = "<div class='col-12 text-warning'>ดึงข้อมูลล้มเหลว (ต้องเพิ่ม action=getMedStock ในรหัส.gs)</div>";
