@@ -15,9 +15,10 @@
         .card-header { background: linear-gradient(135deg, #0d6efd, #0dcaf0); color: white; border-radius: 15px 15px 0 0 !important; }
         .form-label { font-weight: 600; color: #495057; }
         .required::after { content: " *"; color: red; }
-        .stock-box { border: 1.5px solid #495057; border-radius: 10px; padding: 15px; background-color: #fff; }
-        .stock-box h6 { font-weight: 600; color: #333; margin-bottom: 15px; text-decoration: underline; }
-        .meal-box { background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 10px; padding: 15px; margin-bottom: 15px; }
+        .time-box { background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 10px; padding: 15px; transition: 0.3s; }
+        .time-box:focus-within { border-color: #0d6efd; background-color: #f1f8ff; box-shadow: 0 4px 10px rgba(13, 110, 253, 0.1); }
+        .stock-box { border: 2px solid #495057; border-radius: 10px; padding: 15px; background-color: #fff; display: none; }
+        .stock-box h6 { font-weight: 600; color: #333; margin-bottom: 15px; }
     </style>
 </head>
 <body class="p-3 p-md-4">
@@ -26,7 +27,7 @@
         <div class="card">
             <div class="card-header p-4 text-center">
                 <h3 class="mb-0">💊 ตั้งเวลาทานยา (Daily)</h3>
-                <p class="mb-0 mt-1" style="font-size: 0.95rem; opacity: 0.9;">ระบบตั้งค่าจ่ายยาและแจ้งเตือนเข้าฐานข้อมูล</p>
+                <p class="mb-0 mt-1" style="font-size: 0.95rem; opacity: 0.9;">ระบบแจ้งเตือนทานยาประจำวัน</p>
             </div>
             
             <div class="card-body p-4 p-md-5">
@@ -41,96 +42,84 @@
                         <input type="hidden" id="line_name">
                     </div>
 
-                    <!-- กล่องแสดงรายการยาคงเหลือ (ตามดีไซน์เดิมที่ต้องการ) -->
-                    <div class="stock-box mb-4">
-                        <h6>รายการยาคงเหลือ (เม็ด)</h6>
-                        <div class="row">
-                            <div class="col-12 col-md-4 mb-2">1. กลิพิไซด์ <span class="float-end">...... เม็ด</span></div>
-                            <div class="col-12 col-md-4 mb-2">2. เมทฟอร์มิน <span class="float-end">...... เม็ด</span></div>
-                            <div class="col-12 col-md-4 mb-2">3. ไพโอกลิตาโซน <span class="float-end">...... เม็ด</span></div>
+                    <!-- 2. รายการยาคงเหลือ (จะแสดงเมื่อเลือกชื่อคน) -->
+                    <div class="stock-box mb-4" id="stockBox">
+                        <h6>📦 รายการยาคงเหลือ (เม็ด)</h6>
+                        <div id="stockContent" class="row">
+                            <!-- ข้อมูลยาจะถูกดึงมาแสดงที่นี่ -->
                         </div>
                     </div>
 
-                    <!-- 2. เลือกยาที่จะตั้งค่า และ ใส่จำนวนสต๊อก (ให้ตรงกับคอลัมน์ med_name และ total_pills) -->
-                    <h5 class="fw-bold mb-3 text-primary">📝 ข้อมูลการสั่งจ่ายยา (1 ชนิด/การบันทึก)</h5>
-                    <div class="row mb-4">
-                        <div class="col-md-7 mb-3 mb-md-0">
-                            <label class="form-label required">ชื่อยา (med_name)</label>
-                            <select class="form-select form-select-lg" id="medName" required>
+                    <h5 class="fw-bold mb-3 text-primary mt-4">📝 รายการยาที่สั่งจ่าย</h5>
+                    
+                    <!-- 3. ยามื้อเช้า -->
+                    <div class="row mb-3 align-items-center">
+                        <div class="col-8">
+                            <label class="form-label text-success">🌅 ยามื้อเช้า</label>
+                            <select class="form-select" id="medMorning">
                                 <option value="">-- เลือกชื่อยา --</option>
                                 <option value="Glipizide 5mg">กลิพิไซด์ (Glipizide) 5mg</option>
                                 <option value="Metformin 500mg">เมทฟอร์มิน (Metformin) 500mg</option>
                                 <option value="Pioglitazone 30mg">ไพโอกลิตาโซน (Pioglitazone) 30mg</option>
                             </select>
                         </div>
-                        <div class="col-md-5">
-                            <label class="form-label required">จ่ายยาทั้งหมดกี่เม็ด (total_pills)</label>
-                            <input type="number" class="form-control form-control-lg" id="totalPills" min="1" placeholder="เช่น 30" required>
+                        <div class="col-4">
+                            <label class="form-label">จำนวน (เม็ด)</label>
+                            <input type="number" class="form-control" id="doseMorning" min="0" placeholder="0">
                         </div>
                     </div>
 
-                    <!-- 3. ตั้งค่ามื้ออาหารและเวลา (ให้ตรงกับคอลัมน์ morning_, lunch_, dinner_ dose และ time) -->
-                    <h5 class="fw-bold mb-3 text-primary">⏰ ตั้งค่ามื้ออาหารและเวลาแจ้งเตือน</h5>
-                    
-                    <!-- มื้อเช้า -->
-                    <div class="meal-box">
-                        <div class="row align-items-center">
-                            <div class="col-md-4"><label class="form-label text-success fw-bold mb-0">🌅 มื้อเช้า</label></div>
-                            <div class="col-md-4 mt-2 mt-md-0">
-                                <div class="input-group">
-                                    <span class="input-group-text">ทานกี่เม็ด</span>
-                                    <input type="number" class="form-control" id="morningDose" placeholder="0 หรือเว้นว่างถ้าไม่ทาน">
-                                </div>
-                            </div>
-                            <div class="col-md-4 mt-2 mt-md-0">
-                                <div class="input-group">
-                                    <span class="input-group-text">เวลาเตือน</span>
-                                    <input type="time" class="form-control" id="morningTime">
-                                </div>
-                            </div>
+                    <!-- 4. ยามื้อกลางวัน -->
+                    <div class="row mb-3 align-items-center">
+                        <div class="col-8">
+                            <label class="form-label text-warning" style="color: #d39e00 !important;">☀️ ยามื้อกลางวัน</label>
+                            <select class="form-select" id="medLunch">
+                                <option value="">-- เลือกชื่อยา --</option>
+                                <option value="Glipizide 5mg">กลิพิไซด์ (Glipizide) 5mg</option>
+                                <option value="Metformin 500mg">เมทฟอร์มิน (Metformin) 500mg</option>
+                                <option value="Pioglitazone 30mg">ไพโอกลิตาโซน (Pioglitazone) 30mg</option>
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label">จำนวน (เม็ด)</label>
+                            <input type="number" class="form-control" id="doseLunch" min="0" placeholder="0">
                         </div>
                     </div>
 
-                    <!-- มื้อกลางวัน -->
-                    <div class="meal-box">
-                        <div class="row align-items-center">
-                            <div class="col-md-4"><label class="form-label fw-bold mb-0" style="color: #d39e00;">☀️ มื้อกลางวัน</label></div>
-                            <div class="col-md-4 mt-2 mt-md-0">
-                                <div class="input-group">
-                                    <span class="input-group-text">ทานกี่เม็ด</span>
-                                    <input type="number" class="form-control" id="lunchDose" placeholder="0 หรือเว้นว่างถ้าไม่ทาน">
-                                </div>
-                            </div>
-                            <div class="col-md-4 mt-2 mt-md-0">
-                                <div class="input-group">
-                                    <span class="input-group-text">เวลาเตือน</span>
-                                    <input type="time" class="form-control" id="lunchTime">
-                                </div>
-                            </div>
+                    <!-- 5. ยามื้อเย็น -->
+                    <div class="row mb-4 align-items-center">
+                        <div class="col-8">
+                            <label class="form-label text-info">🌙 ยามื้อเย็น</label>
+                            <select class="form-select" id="medDinner">
+                                <option value="">-- เลือกชื่อยา --</option>
+                                <option value="Glipizide 5mg">กลิพิไซด์ (Glipizide) 5mg</option>
+                                <option value="Metformin 500mg">เมทฟอร์มิน (Metformin) 500mg</option>
+                                <option value="Pioglitazone 30mg">ไพโอกลิตาโซน (Pioglitazone) 30mg</option>
+                            </select>
+                        </div>
+                        <div class="col-4">
+                            <label class="form-label">จำนวน (เม็ด)</label>
+                            <input type="number" class="form-control" id="doseDinner" min="0" placeholder="0">
                         </div>
                     </div>
 
-                    <!-- มื้อเย็น -->
-                    <div class="meal-box">
-                        <div class="row align-items-center">
-                            <div class="col-md-4"><label class="form-label text-info fw-bold mb-0">🌙 มื้อเย็น</label></div>
-                            <div class="col-md-4 mt-2 mt-md-0">
-                                <div class="input-group">
-                                    <span class="input-group-text">ทานกี่เม็ด</span>
-                                    <input type="number" class="form-control" id="dinnerDose" placeholder="0 หรือเว้นว่างถ้าไม่ทาน">
-                                </div>
+                    <!-- 6. ระบบตั้งเวลา -->
+                    <div class="p-4 mb-4 rounded time-box">
+                        <label class="form-label required mb-3 text-primary">ระบบตั้งเวลาทานยาประจำวัน (ทุกวัน)</label>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="timeBefore" class="form-label" style="color: #0d6efd;">⏰ เวลาก่อนอาหาร</label>
+                                <input type="time" class="form-control form-control-lg" id="timeBefore" required>
                             </div>
-                            <div class="col-md-4 mt-2 mt-md-0">
-                                <div class="input-group">
-                                    <span class="input-group-text">เวลาเตือน</span>
-                                    <input type="time" class="form-control" id="dinnerTime">
-                                </div>
+                            <div class="col-md-6">
+                                <label for="timeAfter" class="form-label" style="color: #d39e00;">⏰ เวลาหลังอาหาร</label>
+                                <input type="time" class="form-control form-control-lg" id="timeAfter" required>
                             </div>
                         </div>
                     </div>
 
-                    <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm mt-3" style="border-radius: 10px; font-weight: 600; letter-spacing: 1px;">
-                        💾 บันทึกลงฐานข้อมูล
+                    <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm" style="border-radius: 10px; font-weight: 600; letter-spacing: 1px;">
+                        💾 บันทึก
                     </button>
                 </form>
             </div>
@@ -138,7 +127,7 @@
     </div>
 
     <script>
-        // ⚠️ โค้ดเดิมของคุณทั้งหมด (SCRIPT_URL และ loadPatients) ไม่ถูกดัดแปลง
+        // ⚠️ นำ Web App URL ของคุณมาวางตรงนี้
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec"; 
 
         async function loadPatients() {
@@ -146,7 +135,7 @@
                 const response = await fetch(SCRIPT_URL + "?action=getPatients");
                 const patients = await response.json();
                 const select = document.getElementById("patientSelect");
-                select.innerHTML = '<option value="">-- กรุณาเลือกลูกค้า/รายชื่อ --</option>';
+                select.innerHTML = '<option value="">-- กรุณาเลือกคนไข้ --</option>';
                 patients.forEach(p => {
                     let option = document.createElement("option");
                     option.value = p.line_id;
@@ -158,30 +147,60 @@
             }
         }
 
-        document.getElementById("patientSelect").addEventListener("change", function() {
+        // เมื่อเปลี่ยนชื่อคนไข้ ให้ดึงข้อมูลยาคงเหลือ
+        document.getElementById("patientSelect").addEventListener("change", async function() {
             const opt = this.options[this.selectedIndex];
-            document.getElementById("line_name").value = opt.value ? opt.text : "";
+            const lineName = opt.value ? opt.text : "";
+            const lineId = opt.value;
+            
+            document.getElementById("line_name").value = lineName;
+            const stockBox = document.getElementById("stockBox");
+            const stockContent = document.getElementById("stockContent");
+
+            if (lineId) {
+                stockBox.style.display = "block";
+                stockContent.innerHTML = "<div class='col-12 text-muted'>กำลังโหลดข้อมูลยาคงเหลือ...</div>";
+                
+                try {
+                    // สร้าง Action ใหม่ "getMedStock" ส่งไปหา Apps Script
+                    const response = await fetch(SCRIPT_URL + "?action=getMedStock&line_id=" + lineId);
+                    const stockData = await response.json();
+                    
+                    if(stockData && stockData.length > 0) {
+                        let html = "";
+                        stockData.forEach((item, index) => {
+                            html += `<div class="col-12 col-md-4 mb-2">${index+1}. ${item.med_name} <span class="float-end fw-bold text-primary">${item.total_pills} เม็ด</span></div>`;
+                        });
+                        stockContent.innerHTML = html;
+                    } else {
+                        stockContent.innerHTML = "<div class='col-12 text-danger'>ไม่พบประวัติยาคงเหลือของลูกค้ารายนี้</div>";
+                    }
+                } catch (error) {
+                    stockContent.innerHTML = "<div class='col-12 text-warning'>ดึงข้อมูลล้มเหลว (ต้องเพิ่ม action=getMedStock ในรหัส.gs)</div>";
+                }
+            } else {
+                stockBox.style.display = "none";
+            }
         });
 
-        // แพ็กข้อมูลให้คีย์ (Key) ตรงกับคอลัมน์ใน Sheet แบบ 100%
         function saveMedicine(event) {
             event.preventDefault();
-            
             const payload = {
-                action: "saveMedicine",
+                action: "saveMedicineDaily",
                 line_id: document.getElementById("patientSelect").value,
                 line_name: document.getElementById("line_name").value,
-                med_name: document.getElementById("medName").value,
-                total_pills: document.getElementById("totalPills").value,
                 
-                morning_dose: document.getElementById("morningDose").value || 0,
-                morning_time: document.getElementById("morningTime").value || "",
+                med_morning: document.getElementById("medMorning").value,
+                dose_morning: document.getElementById("doseMorning").value || 0,
                 
-                lunch_dose: document.getElementById("lunchDose").value || 0,
-                lunch_time: document.getElementById("lunchTime").value || "",
+                med_lunch: document.getElementById("medLunch").value,
+                dose_lunch: document.getElementById("doseLunch").value || 0,
                 
-                dinner_dose: document.getElementById("dinnerDose").value || 0,
-                dinner_time: document.getElementById("dinnerTime").value || ""
+                med_dinner: document.getElementById("medDinner").value,
+                dose_dinner: document.getElementById("doseDinner").value || 0,
+                
+                time_before: document.getElementById("timeBefore").value || "",
+                time_after: document.getElementById("timeAfter").value || ""
             };
 
             Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
@@ -193,8 +212,9 @@
             .then(response => response.json())
             .then(data => {
                 if(data.status === "success") {
-                    Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ!', text: 'อัปเดตข้อมูลยาเรียบร้อยแล้ว', timer: 2000, showConfirmButton: false });
+                    Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ!', text: 'ตั้งค่ารอบทานยาเรียบร้อยแล้ว', timer: 2000, showConfirmButton: false });
                     document.getElementById("medicineForm").reset();
+                    document.getElementById("stockBox").style.display = "none";
                 } else {
                     Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: data.message });
                 }
