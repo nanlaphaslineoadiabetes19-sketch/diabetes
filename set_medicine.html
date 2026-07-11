@@ -204,18 +204,21 @@
                 
                 // มื้อเช้า
                 med_morning: document.getElementById("medMorning").value,
-                dose_morning: document.getElementById("doseMorning").value || 0,
-                time_morning: `${document.getElementById("typeMorning").value} ${document.getElementById("timeMorning").value}`,
+                dose_morning: document.getElementById("doseMorning").value,
+                time_morning_before: document.getElementById("timeMorningBefore").value,
+                time_morning_after: document.getElementById("timeMorningAfter").value,
                 
                 // มื้อกลางวัน
-                med_lunch: document.getElementById("medLunch").value,
-                dose_lunch: document.getElementById("doseLunch").value || 0,
-                time_lunch: `${document.getElementById("typeLunch").value} ${document.getElementById("timeLunch").value}`,
-                
+                med_morning: document.getElementById("medLunch").value,
+                dose_morning: document.getElementById("doseLunch").value,
+                time_morning_before: document.getElementById("timeLunchBefore").value,
+                time_morning_after: document.getElementById("timeLunchAfter").value,
+                            
                 // มื้อเย็น
-                med_dinner: document.getElementById("medDinner").value,
-                dose_dinner: document.getElementById("doseDinner").value || 0,
-                time_dinner: `${document.getElementById("typeDinner").value} ${document.getElementById("timeDinner").value}`
+                med_morning: document.getElementById("medDinner").value,
+                dose_morning: document.getElementById("doseDinner").value,
+                time_morning_before: document.getElementById("timeDinnerBefore").value,
+                time_morning_after: document.getElementById("timeDinnerAfter").value}`
             };
 
             Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
