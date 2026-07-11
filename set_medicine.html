@@ -169,33 +169,6 @@
             }
         }
 
-        // ฟังก์ชันสำหรับใส่ชื่อยาเข้าไปในช่อง Select
-        function populateMedSelects(medList) {
-            console.log("กำลังจะเติมยา...", medList);
-            
-            if (!medList || medList.length === 0) {
-                console.warn("ไม่พบรายการยาใน medList");
-                return;
-            }
-            
-            const selects = ["medMorning", "medLunch", "medDinner"];
-            selects.forEach(selectId => {
-                const select = document.getElementById(selectId);
-                // เก็บ Option แรกไว้ (ที่เขียนว่า -- เลือกชื่อยา --)
-                const firstOption = select.options[0];
-                select.innerHTML = '';
-                select.appendChild(firstOption);
-        
-                // เติมยาจาก Database เข้าไป
-                medList.forEach(item => {
-                    let option = document.createElement("option");
-                    option.value = item.med_name; // ใช้ชื่อยาเป็น value
-                    option.text = item.med_name;
-                    select.appendChild(option);
-                });
-            });
-        }
-
         // เมื่อเปลี่ยนชื่อคนไข้ ให้ดึงข้อมูลยาคงเหลือ
         document.getElementById("patientSelect").addEventListener("change", async function() {
             const opt = this.options[this.selectedIndex];
@@ -224,9 +197,6 @@
                             html += `<div class="col-12 col-md-4 mb-2">${index+1}. ${item.med_name} <span class="float-end fw-bold text-primary">${item.total_pills} เม็ด</span></div>`;
                         });
                         stockContent.innerHTML = html;
-
-                        // 🔥 เรียกฟังก์ชันเพิ่มชื่อยาลง Select ตรงนี้!
-                        populateMedSelects(result.list);
                         
                     } else {
                         stockContent.innerHTML = "<div class='col-12 text-danger'>ไม่พบข้อมูลยาคงเหลือ</div>";
@@ -291,38 +261,37 @@
         }
 
 
-        // ฟังก์ชันดึงรายชื่อยาจาก Sheet
+        // 1. ฟังก์ชันโหลดรายการยา (เรียกใช้ครั้งเดียวตอนเปิดหน้าเว็บ)
         async function loadMedicineList() {
             try {
                 const response = await fetch(SCRIPT_URL + "?action=getMedicineList");
-                const medList = await response.json();
+                const medList = await response.json(); // ได้ Array รายชื่อยามา
                 
                 const selects = ["medMorning", "medLunch", "medDinner"];
-                
                 selects.forEach(selectId => {
                     const select = document.getElementById(selectId);
-                    // ล้างค่าเก่า (ยกเว้นตัวเลือกแรก)
+                    // เก็บตัวเลือกแรกไว้ -- เลือกยา --
                     const firstOption = select.options[0];
                     select.innerHTML = '';
                     select.appendChild(firstOption);
                     
-                    // ใส่ยาใหม่
-                    medList.forEach(item => {
+                    // เติมรายชื่อยาจากที่ดึงมา
+                    medList.forEach(med => {
                         let option = document.createElement("option");
-                        option.value = item.med_name;
-                        option.text = item.med_name;
+                        option.value = med;
+                        option.text = med;
                         select.appendChild(option);
                     });
                 });
             } catch (error) {
-                console.error("โหลดรายการยาไม่สำเร็จ:", error);
+                console.error("โหลดรายการยาไม่สำเร็จ", error);
             }
         }
         
-
+        // 2. ปรับปรุง window.onload ให้เรียกฟังก์ชันนี้
         window.onload = function() { 
-            loadPatients(); 
-            loadMedicineList(); 
+            loadPatients();      // โหลดชื่อคนไข้
+            loadMedicineList();  // โหลดรายการยา (ทำแยกกัน ไม่เกี่ยวกันแล้ว)
         };
     </script>
 </body>
