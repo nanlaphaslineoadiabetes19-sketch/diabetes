@@ -19,6 +19,15 @@
         .time-box:focus-within { border-color: #0d6efd; background-color: #f1f8ff; box-shadow: 0 4px 10px rgba(13, 110, 253, 0.1); }
         .stock-box { border: 2px solid #495057; border-radius: 10px; padding: 15px; background-color: #fff; display: none; }
         .stock-box h6 { font-weight: 600; color: #333; margin-bottom: 15px; }
+        
+        .meal-section {
+            border: 1px solid #dee2e6; /* เส้นขอบบางๆ */
+            border-radius: 12px;       /* มุมมน */
+            padding: 15px;             /* เว้นระยะขอบ */
+            background-color: #ffffff; /* พื้นหลังสีขาว */
+            margin-bottom: 20px;       /* เว้นระยะห่างระหว่างมื้อ */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05); /* เงาบางๆ ให้ดูมีมิติ */
+        }
     </style>
 </head>
 <body class="p-3 p-md-4">
@@ -54,74 +63,80 @@
                     <h5 class="fw-bold mb-3 text-primary mt-4">📝 รายการยาที่สั่งจ่าย</h5>
                     
                     <!-- มื้อเช้า -->
-                    <h5 class="fw-bold mt-4 text-success">🌅 ยามื้อเช้า</h5>
-                    <div class="row mb-2">
-                        <div class="col-8">
-                            <select class="form-select" id="medMorning">
-                                <option value="">-- เลือกยา --</option>
-                            </select>
+                    <div class="meal-section">
+                        <h5 class="fw-bold mt-4 text-success">🌅 ยามื้อเช้า</h5>
+                        <div class="row mb-2">
+                            <div class="col-8">
+                                <select class="form-select" id="medMorning">
+                                    <option value="">-- เลือกยา --</option>
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <input type="number" class="form-control" id="doseMorning" placeholder="จำนวน(เม็ด)">
+                            </div>
                         </div>
-                        <div class="col-4">
-                            <input type="number" class="form-control" id="doseMorning" placeholder="จำนวน(เม็ด)">
-                        </div>
-                    </div>
-                    <!-- แถวสำหรับ ก่อน/หลัง -->
-                    <div class="row mb-3">
-                        <div class="col-6">
-                            <label class="form-label text-primary">ก่อนอาหาร</label>
-                            <input type="time" class="form-control" id="timeMorningBefore">
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label text-warning">หลังอาหาร</label>
-                            <input type="time" class="form-control" id="timeMorningAfter">
+                        <!-- แถวสำหรับ ก่อน/หลัง -->
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label class="form-label text-primary">ก่อนอาหาร</label>
+                                <input type="time" class="form-control" id="timeMorningBefore">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label text-warning">หลังอาหาร</label>
+                                <input type="time" class="form-control" id="timeMorningAfter">
+                            </div>
                         </div>
                     </div>
                     
                     <!-- มื้อกลางวัน -->
-                    <h5 class="fw-bold mt-4 text-success">🌅 ยามื้อกลางวัน</h5>
-                    <div class="row mb-2">
-                        <div class="col-8">
-                            <select class="form-select" id="medLunch">
-                                <option value="">-- เลือกยา --</option>
-                            </select>
+                    <div class="meal-section">
+                        <h5 class="fw-bold mt-4 text-success">🌅 ยามื้อกลางวัน</h5>
+                        <div class="row mb-2">
+                            <div class="col-8">
+                                <select class="form-select" id="medLunch">
+                                    <option value="">-- เลือกยา --</option>
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <input type="number" class="form-control" id="doseLunch" placeholder="จำนวน(เม็ด)">
+                            </div>
                         </div>
-                        <div class="col-4">
-                            <input type="number" class="form-control" id="doseLunch" placeholder="จำนวน(เม็ด)">
-                        </div>
-                    </div>
-                    <!-- แถวสำหรับ ก่อน/หลัง -->
-                    <div class="row mb-3">
-                        <div class="col-6">
-                            <label class="form-label text-primary">ก่อนอาหาร</label>
-                            <input type="time" class="form-control" id="timeLunchBefore">
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label text-warning">หลังอาหาร</label>
-                            <input type="time" class="form-control" id="timeLunchAfter">
+                        <!-- แถวสำหรับ ก่อน/หลัง -->
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label class="form-label text-primary">ก่อนอาหาร</label>
+                                <input type="time" class="form-control" id="timeLunchBefore">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label text-warning">หลังอาหาร</label>
+                                <input type="time" class="form-control" id="timeLunchAfter">
+                            </div>
                         </div>
                     </div>
                     
                     <!-- มื้อเย็น -->
-                    <h5 class="fw-bold mt-4 text-success">🌅 ยามื้อเย็น</h5>
-                    <div class="row mb-2">
-                        <div class="col-8">
-                            <select class="form-select" id="medDinner">
-                                <option value="">-- เลือกยา --</option>
-                            </select>
+                    <div class="meal-section">
+                        <h5 class="fw-bold mt-4 text-success">🌅 ยามื้อเย็น</h5>
+                        <div class="row mb-2">
+                            <div class="col-8">
+                                <select class="form-select" id="medDinner">
+                                    <option value="">-- เลือกยา --</option>
+                                </select>
+                            </div>
+                            <div class="col-4">
+                                <input type="number" class="form-control" id="doseDinner" placeholder="จำนวน(เม็ด)">
+                            </div>
                         </div>
-                        <div class="col-4">
-                            <input type="number" class="form-control" id="doseDinner" placeholder="จำนวน(เม็ด)">
-                        </div>
-                    </div>
-                    <!-- แถวสำหรับ ก่อน/หลัง -->
-                    <div class="row mb-3">
-                        <div class="col-6">
-                            <label class="form-label text-primary">ก่อนอาหาร</label>
-                            <input type="time" class="form-control" id="timeDinnerBefore">
-                        </div>
-                        <div class="col-6">
-                            <label class="form-label text-warning">หลังอาหาร</label>
-                            <input type="time" class="form-control" id="timeDinnerAfter">
+                        <!-- แถวสำหรับ ก่อน/หลัง -->
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <label class="form-label text-primary">ก่อนอาหาร</label>
+                                <input type="time" class="form-control" id="timeDinnerBefore">
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label text-warning">หลังอาหาร</label>
+                                <input type="time" class="form-control" id="timeDinnerAfter">
+                            </div>
                         </div>
                     </div>
                     
@@ -156,6 +171,13 @@
 
         // ฟังก์ชันสำหรับใส่ชื่อยาเข้าไปในช่อง Select
         function populateMedSelects(medList) {
+            console.log("กำลังจะเติมยา...", medList);
+            
+            if (!medList || medList.length === 0) {
+                console.warn("ไม่พบรายการยาใน medList");
+                return;
+            }
+            
             const selects = ["medMorning", "medLunch", "medDinner"];
             selects.forEach(selectId => {
                 const select = document.getElementById(selectId);
@@ -191,6 +213,7 @@
                 try {
                     const response = await fetch(SCRIPT_URL + "?action=getMedStock&line_id=" + lineId);
                     const result = await response.json(); // result ที่ได้จะมี {list: [], totalSum: ...}
+                    console.log("API ตอบกลับมาว่า:", result); // <--- เช็คบรรทัดนี้ใน Console ว่ามันมี list ส่งมาจริงไหม
                     
                     // เปลี่ยนหัวข้อเป็นจำนวนรวม
                     document.getElementById("stockHeader").innerText = "📦 รายการยาคงเหลือ (" + result.totalSum + " เม็ด)";
@@ -209,6 +232,7 @@
                         stockContent.innerHTML = "<div class='col-12 text-danger'>ไม่พบข้อมูลยาคงเหลือ</div>";
                     }
                 } catch (error) {
+                    console.error("Error เกิดจาก:", error); // <--- ถ้าพัง มันจะฟ้องที่นี่
                     stockContent.innerHTML = "<div class='col-12 text-danger'>เชื่อมต่อ Server ล้มเหลว</div>";
                 }
             } else {
