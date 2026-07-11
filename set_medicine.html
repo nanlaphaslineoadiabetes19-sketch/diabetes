@@ -44,7 +44,7 @@
 
                     <!-- 2. รายการยาคงเหลือ (จะแสดงเมื่อเลือกชื่อคน) -->
                     <div class="stock-box mb-4" id="stockBox">
-                        <h6>📦 รายการยาคงเหลือ (เม็ด)</h6>
+                        <h6 id="stockHeader">📦 รายการยาคงเหลือ (เม็ด)</h6>
                         <div id="stockContent" class="row">
                             <!-- ข้อมูลยาจะถูกดึงมาแสดงที่นี่ -->
                         </div>
@@ -163,12 +163,12 @@
                 
                 try {
                     const response = await fetch(SCRIPT_URL + "?action=getMedStock&line_id=" + lineId);
-                    const result = await response.json(); // ข้อมูลใหม่จะเป็น {list: [], totalSum: 0}
+                    const result = await response.json(); // result ที่ได้จะมี {list: [], totalSum: ...}
+                    
+                    // เปลี่ยนหัวข้อเป็นจำนวนรวม
+                    document.getElementById("stockHeader").innerText = "📦 รายการยาคงเหลือ (" + result.totalSum + " เม็ด)";
                     
                     if(result.list && result.list.length > 0) {
-                        // อัปเดตหัวข้อพร้อมวงเล็บรวม (แก้ตรงนี้)
-                        document.getElementById("stockHeader").innerHTML = `📦 รายการยาคงเหลือ (${result.totalSum} เม็ด)`;
-                        
                         let html = "";
                         result.list.forEach((item, index) => {
                             html += `<div class="col-12 col-md-4 mb-2">${index+1}. ${item.med_name} <span class="float-end fw-bold text-primary">${item.total_pills} เม็ด</span></div>`;
@@ -178,7 +178,7 @@
                         stockContent.innerHTML = "<div class='col-12 text-danger'>ไม่พบข้อมูลยาคงเหลือ</div>";
                     }
                 } catch (error) {
-                    stockContent.innerHTML = "<div class='col-12 text-warning'>ดึงข้อมูลล้มเหลว (ต้องเพิ่ม action=getMedStock ในรหัส.gs)</div>";
+                    stockContent.innerHTML = "<div class='col-12 text-danger'>เชื่อมต่อ Server ล้มเหลว</div>";
                 }
             } else {
                 stockBox.style.display = "none";
