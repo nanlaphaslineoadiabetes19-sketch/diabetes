@@ -157,6 +157,26 @@
             }
         }
 
+        // ฟังก์ชันสำหรับใส่ชื่อยาเข้าไปในช่อง Select
+        function populateMedSelects(medList) {
+            const selects = ["medMorning", "medLunch", "medDinner"];
+            selects.forEach(selectId => {
+                const select = document.getElementById(selectId);
+                // เก็บ Option แรกไว้ (ที่เขียนว่า -- เลือกชื่อยา --)
+                const firstOption = select.options[0];
+                select.innerHTML = '';
+                select.appendChild(firstOption);
+        
+                // เติมยาจาก Database เข้าไป
+                medList.forEach(item => {
+                    let option = document.createElement("option");
+                    option.value = item.med_name; // ใช้ชื่อยาเป็น value
+                    option.text = item.med_name;
+                    select.appendChild(option);
+                });
+            });
+        }
+
         // เมื่อเปลี่ยนชื่อคนไข้ ให้ดึงข้อมูลยาคงเหลือ
         document.getElementById("patientSelect").addEventListener("change", async function() {
             const opt = this.options[this.selectedIndex];
@@ -184,6 +204,10 @@
                             html += `<div class="col-12 col-md-4 mb-2">${index+1}. ${item.med_name} <span class="float-end fw-bold text-primary">${item.total_pills} เม็ด</span></div>`;
                         });
                         stockContent.innerHTML = html;
+
+                        // 🔥 เรียกฟังก์ชันเพิ่มชื่อยาลง Select ตรงนี้!
+                        populateMedSelects(result.list);
+                        
                     } else {
                         stockContent.innerHTML = "<div class='col-12 text-danger'>ไม่พบข้อมูลยาคงเหลือ</div>";
                     }
@@ -202,22 +226,25 @@
                 line_id: document.getElementById("patientSelect").value,
                 line_name: document.getElementById("line_name").value,
                 
-                // มื้อเช้า
-                morning_before_dose: document.getElementById("doseMorningBefore").value || 0,
+                // มื้อเช้า + ชื่อยา
+                med_morning: document.getElementById("medMorning").value,
+                morning_before_dose: document.getElementById("doseMorning").value || 0, // ปรับ ID ให้ตรงกับ HTML
                 morning_before_time: document.getElementById("timeMorningBefore").value,
-                morning_after_dose: document.getElementById("doseMorningAfter").value || 0,
+                morning_after_dose: 0, // หรือเพิ่มช่องใน HTML ถ้าต้องการ
                 morning_after_time: document.getElementById("timeMorningAfter").value,
                 
-                // มื้อกลางวัน
-                lunch_before_dose: document.getElementById("doseLunchBefore").value || 0,
+                // มื้อกลางวัน + ชื่อยา
+                med_lunch: document.getElementById("medLunch").value,
+                lunch_before_dose: document.getElementById("doseLunch").value || 0,
                 lunch_before_time: document.getElementById("timeLunchBefore").value,
-                lunch_after_dose: document.getElementById("doseLunchAfter").value || 0,
+                lunch_after_dose: 0,
                 lunch_after_time: document.getElementById("timeLunchAfter").value,
                 
-                // มื้อเย็น
-                dinner_before_dose: document.getElementById("doseDinnerBefore").value || 0,
+                // มื้อเย็น + ชื่อยา
+                med_dinner: document.getElementById("medDinner").value,
+                dinner_before_dose: document.getElementById("doseDinner").value || 0,
                 dinner_before_time: document.getElementById("timeDinnerBefore").value,
-                dinner_after_dose: document.getElementById("doseDinnerAfter").value || 0,
+                dinner_after_dose: 0,
                 dinner_after_time: document.getElementById("timeDinnerAfter").value
             };
 
