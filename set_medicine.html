@@ -1,250 +1,217 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ตั้งเวลาแจ้งเตือนทานยา - Admin</title>
-    
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;600&display=swap" rel="stylesheet">
-
-    <style>
-        body { background-color: #f4f7f6; font-family: 'Prompt', sans-serif; }
-        .card { border: none; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
-        .card-header { background: linear-gradient(135deg, #0d6efd, #0dcaf0); color: white; border-radius: 15px 15px 0 0 !important; }
-        .form-label { font-weight: 600; color: #495057; }
-        .required::after { content: " *"; color: red; }
-        .time-box { background-color: #f8f9fa; border: 1px solid #e9ecef; border-radius: 10px; padding: 15px; transition: 0.3s; }
-        .time-box.active { border-color: #0d6efd; background-color: #f1f8ff; box-shadow: 0 4px 10px rgba(13, 110, 253, 0.1); }
-    </style>
+  <base target="_top">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ตั้งค่าการทานยา</title>
+  
+  <!-- เรียกใช้ Bootstrap 5 เพื่อความสวยงามและ Responsive -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  
+  <style>
+    body {
+      background-color: #f4f7f6;
+      font-family: 'Sarabun', sans-serif;
+    }
+    .card-form {
+      max-width: 500px;
+      margin: 20px auto;
+      padding: 20px;
+      border-radius: 12px;
+      background: #fff;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+    /* ซ่อนกล่องตั้งค่าจำนวนยา/เวลาไว้ก่อน จะโชว์เมื่อติ๊ก Checkbox */
+    .meal-setup {
+      display: none; 
+      padding: 10px; 
+      border-left: 4px solid #0d6efd; 
+      background-color: #f8f9fa; 
+      margin-top: 10px;
+      border-radius: 0 8px 8px 0;
+    }
+  </style>
 </head>
-<body class="p-3 p-md-4">
+<body>
 
-    <div class="container" style="max-width: 800px;">
-        <div class="card">
-            <div class="card-header p-4 text-center">
-                <h3 class="mb-0">💊 ตั้งเวลาทานยา (Daily)</h3>
-                <p class="mb-0 mt-1" style="font-size: 0.95rem; opacity: 0.9;">ระบบแจ้งเตือนทานยาประจำวัน</p>
-            </div>
-            
-            <div class="card-body p-4 p-md-5">
-                <form id="medicineForm" onsubmit="saveMedicine(event)">
-                    
-                    <div class="mb-4">
-                        <label for="patientSelect" class="form-label required">เลือกรายชื่อผู้ป่วย</label>
-                        <select class="form-select form-select-lg" id="patientSelect" required>
-                            <option value="">-- กำลังโหลดรายชื่อผู้ป่วย... --</option>
-                        </select>
-                        <input type="hidden" id="line_name">
-                    </div>
+  <div class="container">
+    <div class="card-form">
+      <h3 class="text-center mb-4 text-primary">ตั้งค่าการจ่ายยาผู้ป่วย</h3>
+      
+      <form id="medForm" onsubmit="submitForm(event)">
+        
+        <!-- ข้อมูลผู้ป่วย (ซ่อนไว้) คุณสามารถดึงจาก LIFF หรือ URL Parameter มาใส่ value ได้ -->
+        <input type="hidden" id="lineId" value="Uxxxxxxxxx_Dummy_ID">
+        <input type="hidden" id="lineName" value="ชื่อผู้ป่วยทดสอบ">
 
-                    <div class="mb-4">
-                        <label for="mealSelect" class="form-label required">เลือกมื้ออาหาร</label>
-                        <select class="form-select form-select-lg" id="mealSelect" onchange="updateMedOptions()" required>
-                            <option value="">-- กรุณาเลือกมื้อ --</option>
-                            <option value="มื้อเช้า">🌅 ยามื้อเช้า</option>
-                            <option value="มื้อกลางวัน">☀️ ยามื้อกลางวัน</option>
-                            <option value="มื้อเย็น">🌙 ยามื้อเย็น</option>
-                        </select>
-                    </div>
-
-                    <div class="row mb-4">
-                        <div class="col-md-8 mb-3 mb-md-0">
-                            <label for="medType" class="form-label required">เลือกชนิดยาและวิธีใช้</label>
-                            <select class="form-select form-select-lg" id="medType" onchange="toggleTimeFields()" required disabled>
-                                <option value="">-- กรุณาเลือกมื้ออาหารก่อน --</option>
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label for="pillsCount" class="form-label required">จำนวนยาที่จ่าย (เม็ด)</label>
-                            <input type="number" class="form-control form-control-lg" id="pillsCount" min="1" max="50" placeholder="เช่น 30" required disabled>
-                            <div class="form-text text-success" style="font-size: 0.8rem;">*ระบบจะหักลบอัตโนมัติ</div>
-                        </div>
-                    </div>
-
-                    <div class="p-4 mb-4 rounded" style="background-color: #fff; border: 1px solid #dee2e6;">
-                        <label class="form-label required mb-3 text-primary">ตั้งเวลาทานยาประจำวัน (ทุกวัน)</label>
-                        
-                        <div class="row g-3">
-                            <div class="col-md-6" id="beforeField" style="opacity: 0.4;">
-                                <div class="time-box" id="boxBefore">
-                                    <label for="timeBefore" class="form-label" style="color: #0d6efd;">⏰ เวลาก่อนอาหาร (Before)</label>
-                                    <input type="time" class="form-control form-control-lg" id="timeBefore" disabled>
-                                    <div class="form-text mt-2">แจ้งเตือนก่อนเวลานี้ 10 นาที</div>
-                                </div>
-                            </div>
-                            
-                            <div class="col-md-6" id="afterField" style="opacity: 0.4;">
-                                <div class="time-box" id="boxAfter">
-                                    <label for="timeAfter" class="form-label" style="color: #d39e00;">⏰ เวลาหลังอาหาร (After)</label>
-                                    <input type="time" class="form-control form-control-lg" id="timeAfter" disabled>
-                                    <div class="form-text mt-2">แจ้งเตือนก่อนเวลานี้ 10 นาที</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm" style="border-radius: 10px; font-weight: 600; letter-spacing: 1px;">
-                        💾 บันทึกการตั้งค่า
-                    </button>
-                </form>
-            </div>
+        <!-- 1. เลือกชนิดยา -->
+        <div class="mb-3">
+          <label class="form-label fw-bold">1. ชื่อยา (Medicine Name)</label>
+          <select class="form-select" id="medName" required>
+            <option value="" disabled selected>-- เลือกชนิดยา --</option>
+            <option value="Metformin 500mg">เมทฟอร์มิน (Metformin) 500mg</option>
+            <option value="Glipizide 5mg">กลิพิไซด์ (Glipizide) 5mg</option>
+            <option value="Pioglitazone 30mg">ไพโอกลิตาโซน (Pioglitazone) 30mg</option>
+            <!-- เพิ่มชื่อยาอื่นๆ ตรงนี้ -->
+          </select>
         </div>
+
+        <!-- 2. ใส่จำนวนยาที่จ่าย (สต๊อกรวม) -->
+        <div class="mb-4">
+          <label class="form-label fw-bold">2. จำนวนยาที่จ่ายทั้งหมด (เม็ด)</label>
+          <input type="number" class="form-control" id="totalPills" placeholder="ระบุจำนวนยาในกระปุก/แผง" required min="1">
+        </div>
+
+        <!-- 3. เลือกมื้ออาหาร -->
+        <div class="mb-4">
+          <label class="form-label fw-bold">3. เลือกมื้ออาหาร และตั้งเวลา (เลือกได้หลายมื้อ)</label>
+
+          <!-- มื้อเช้า -->
+          <div class="form-check mt-2">
+            <input class="form-check-input" type="checkbox" id="chkMorning" onchange="toggleMeal('morning')">
+            <label class="form-check-label text-success fw-bold">มื้อเช้า</label>
+          </div>
+          <div id="morningSetup" class="meal-setup row g-2">
+            <div class="col-6">
+              <label class="form-label small text-muted">จำนวนเม็ด</label>
+              <input type="number" class="form-control form-control-sm" id="doseMorning" placeholder="เช่น 1 หรือ 2" min="1">
+            </div>
+            <div class="col-6">
+              <label class="form-label small text-muted">เวลาแจ้งเตือน</label>
+              <input type="time" class="form-control form-control-sm" id="timeMorning">
+            </div>
+          </div>
+
+          <!-- มื้อกลางวัน -->
+          <div class="form-check mt-3">
+            <input class="form-check-input" type="checkbox" id="chkLunch" onchange="toggleMeal('lunch')">
+            <label class="form-check-label text-warning fw-bold">มื้อกลางวัน</label>
+          </div>
+          <div id="lunchSetup" class="meal-setup row g-2">
+            <div class="col-6">
+              <label class="form-label small text-muted">จำนวนเม็ด</label>
+              <input type="number" class="form-control form-control-sm" id="doseLunch" placeholder="เช่น 1 หรือ 2" min="1">
+            </div>
+            <div class="col-6">
+              <label class="form-label small text-muted">เวลาแจ้งเตือน</label>
+              <input type="time" class="form-control form-control-sm" id="timeLunch">
+            </div>
+          </div>
+
+          <!-- มื้อเย็น -->
+          <div class="form-check mt-3">
+            <input class="form-check-input" type="checkbox" id="chkDinner" onchange="toggleMeal('dinner')">
+            <label class="form-check-label text-info fw-bold">มื้อเย็น</label>
+          </div>
+          <div id="dinnerSetup" class="meal-setup row g-2">
+            <div class="col-6">
+              <label class="form-label small text-muted">จำนวนเม็ด</label>
+              <input type="number" class="form-control form-control-sm" id="doseDinner" placeholder="เช่น 1 หรือ 2" min="1">
+            </div>
+            <div class="col-6">
+              <label class="form-label small text-muted">เวลาแจ้งเตือน</label>
+              <input type="time" class="form-control form-control-sm" id="timeDinner">
+            </div>
+          </div>
+        </div>
+
+        <hr>
+
+        <button type="submit" class="btn btn-primary w-100 fw-bold py-2" id="btnSubmit">บันทึกข้อมูลลงระบบ</button>
+      
+      </form>
     </div>
+  </div>
 
-    <script>
-        // ⚠️ นำ Web App URL ของคุณมาวางตรงนี้
-        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec"; 
+  <script>
+    // ฟังก์ชันสำหรับ เปิด-ปิด กล่องตั้งค่าจำนวนยา/เวลา เมื่อติ๊ก Checkbox
+    function toggleMeal(mealType) {
+      // ทำให้อักษรตัวแรกพิมพ์ใหญ่เพื่อเรียก id ได้ตรงเป๊ะ (เช่น morning -> Morning)
+      const capMeal = mealType.charAt(0).toUpperCase() + mealType.slice(1);
+      
+      const isChecked = document.getElementById('chk' + capMeal).checked;
+      const setupBox = document.getElementById(mealType + 'Setup');
+      
+      if (isChecked) {
+        setupBox.style.display = 'flex';
+        // บังคับให้กรอกข้อมูลเมื่อติ๊กเลือกมื้อนี้
+        document.getElementById('dose' + capMeal).required = true;
+        document.getElementById('time' + capMeal).required = true;
+      } else {
+        setupBox.style.display = 'none';
+        // ยกเลิกการบังคับกรอก และล้างค่าเดิมทิ้ง
+        document.getElementById('dose' + capMeal).required = false;
+        document.getElementById('time' + capMeal).required = false;
+        document.getElementById('dose' + capMeal).value = '';
+        document.getElementById('time' + capMeal).value = '';
+      }
+    }
 
-        const medData = {
-            "มื้อเช้า": [
-                { group: "🔹 ทานก่อนอาหาร", opts: [{ val: "Glipizide 5mg (1 เม็ด)", text: "กลิพิไซด์ (Glipizide) 5mg - ทาน 1 เม็ด (ก่อนอาหาร 30 นาที)", time: "before" }] },
-                { group: "🔸 ทานหลังอาหาร", opts: [
-                    { val: "Metformin 500mg (1 เม็ด)", text: "เมทฟอร์มิน (Metformin) 500mg - ทาน 1 เม็ด (พร้อม/หลังอาหารทันที)", time: "after" },
-                    { val: "Metformin 500mg (2 เม็ด)", text: "เมทฟอร์มิน (Metformin) 500mg - ทาน 2 เม็ด (พร้อม/หลังอาหารทันที)", time: "after" },
-                    { val: "Pioglitazone 30mg (1 เม็ด)", text: "ไพโอกลิตาโซน (Pioglitazone) 30mg - ทาน 1 เม็ด (หลังอาหาร)", time: "after" },
-                    { val: "Pioglitazone 30mg (1/2 เม็ด)", text: "ไพโอกลิตาโซน (Pioglitazone) 30mg - ทาน 1/2 เม็ด (หลังอาหาร)", time: "after" }
-                ]}
-            ],
-            "มื้อกลางวัน": [
-                { group: "🔸 ทานหลังอาหาร", opts: [
-                    { val: "Metformin 500mg (1 เม็ด)", text: "เมทฟอร์มิน (Metformin) 500mg - ทาน 1 เม็ด (พร้อม/หลังอาหารทันที)", time: "after" },
-                    { val: "Metformin 500mg (2 เม็ด)", text: "เมทฟอร์มิน (Metformin) 500mg - ทาน 2 เม็ด (พร้อม/หลังอาหารทันที)", time: "after" }
-                ]}
-            ],
-            "มื้อเย็น": [
-                { group: "🔹 ทานก่อนอาหาร", opts: [{ val: "Glipizide 5mg (1 เม็ด)", text: "กลิพิไซด์ (Glipizide) 5mg - ทาน 1 เม็ด (ก่อนอาหาร 30 นาที)", time: "before" }] },
-                { group: "🔸 ทานหลังอาหาร", opts: [
-                    { val: "Metformin 500mg (1 เม็ด)", text: "เมทฟอร์มิน (Metformin) 500mg - ทาน 1 เม็ด (พร้อม/หลังอาหารทันที)", time: "after" },
-                    { val: "Metformin 500mg (2 เม็ด)", text: "เมทฟอร์มิน (Metformin) 500mg - ทาน 2 เม็ด (พร้อม/หลังอาหารทันที)", time: "after" },
-                    { val: "Pioglitazone 30mg (1 เม็ด)", text: "ไพโอกลิตาโซน (Pioglitazone) 30mg - ทาน 1 เม็ด (หลังอาหาร)", time: "after" },
-                    { val: "Pioglitazone 30mg (1/2 เม็ด)", text: "ไพโอกลิตาโซน (Pioglitazone) 30mg - ทาน 1/2 เม็ด (หลังอาหาร)", time: "after" }
-                ]}
-            ]
-        };
+    // ฟังก์ชันจัดการตอนกดปุ่ม "บันทึกข้อมูล"
+    function submitForm(event) {
+      event.preventDefault(); // ป้องกันเว็บ Refresh
 
-        async function loadPatients() {
-            try {
-                const response = await fetch(SCRIPT_URL + "?action=getPatients");
-                const patients = await response.json();
-                const select = document.getElementById("patientSelect");
-                select.innerHTML = '<option value="">-- กรุณาเลือกคนไข้ --</option>';
-                patients.forEach(p => {
-                    let option = document.createElement("option");
-                    option.value = p.line_id;
-                    option.text = p.line_name;
-                    select.appendChild(option);
-                });
-            } catch (error) {
-                document.getElementById("patientSelect").innerHTML = '<option value="">-- โหลดรายชื่อล้มเหลว กรุณารีเฟรช --</option>';
-            }
-        }
+      // เช็คก่อนว่าผู้ใช้ได้เลือกมื้ออาหารอย่างน้อย 1 มื้อหรือไม่
+      const hasMorning = document.getElementById('chkMorning').checked;
+      const hasLunch = document.getElementById('chkLunch').checked;
+      const hasDinner = document.getElementById('chkDinner').checked;
 
-        document.getElementById("patientSelect").addEventListener("change", function() {
-            const opt = this.options[this.selectedIndex];
-            document.getElementById("line_name").value = opt.value ? opt.text : "";
-        });
+      if (!hasMorning && !hasLunch && !hasDinner) {
+        alert('กรุณาเลือกมื้ออาหารอย่างน้อย 1 มื้อครับ');
+        return;
+      }
 
-        function updateMedOptions() {
-            const meal = document.getElementById("mealSelect").value;
-            const medSelect = document.getElementById("medType");
-            const pillsInput = document.getElementById("pillsCount");
-            
-            medSelect.innerHTML = '<option value="">-- กรุณาเลือกยา --</option>';
-            
-            if (meal && medData[meal]) {
-                medSelect.disabled = false;
-                pillsInput.disabled = false;
-                
-                medData[meal].forEach(group => {
-                    let optgroup = document.createElement("optgroup");
-                    optgroup.label = group.group;
-                    group.opts.forEach(opt => {
-                        let option = document.createElement("option");
-                        option.value = opt.val;
-                        option.text = opt.text;
-                        option.setAttribute("data-time", opt.time);
-                        optgroup.appendChild(option);
-                    });
-                    medSelect.appendChild(optgroup);
-                });
-            } else {
-                medSelect.disabled = true;
-                pillsInput.disabled = true;
-            }
-            toggleTimeFields();
-        }
+      // ปิดปุ่มกดชั่วคราวเพื่อป้องกันการกดย้ำ (Double Submit)
+      const btn = document.getElementById('btnSubmit');
+      btn.disabled = true;
+      btn.innerText = 'กำลังบันทึกข้อมูล...';
 
-        function toggleTimeFields() {
-            const medSelect = document.getElementById("medType");
-            const beforeInput = document.getElementById("timeBefore");
-            const afterInput = document.getElementById("timeAfter");
-            const boxBefore = document.getElementById("boxBefore");
-            const boxAfter = document.getElementById("boxAfter");
+      // จัดรูป Object ข้อมูล เพื่อเตรียมส่งไปให้ Code.gs (รหัส.gs)
+      const payload = {
+        lineId: document.getElementById('lineId').value,
+        lineName: document.getElementById('lineName').value,
+        medName: document.getElementById('medName').value,
+        totalPills: document.getElementById('totalPills').value,
+        
+        // ถ้าติ๊กมื้อไหน ให้เก็บ object ปริมาณ+เวลา เข้าไป, ถ้าไม่ติ๊กให้เป็น null
+        morning: hasMorning ? {
+          dose: document.getElementById('doseMorning').value,
+          time: document.getElementById('timeMorning').value
+        } : null,
+        
+        lunch: hasLunch ? {
+          dose: document.getElementById('doseLunch').value,
+          time: document.getElementById('timeLunch').value
+        } : null,
+        
+        dinner: hasDinner ? {
+          dose: document.getElementById('doseDinner').value,
+          time: document.getElementById('timeDinner').value
+        } : null
+      };
 
-            beforeInput.value = ""; afterInput.value = "";
-            beforeInput.disabled = true; afterInput.disabled = true;
-            beforeInput.required = false; afterInput.required = false;
-            
-            document.getElementById("beforeField").style.opacity = "0.4";
-            document.getElementById("afterField").style.opacity = "0.4";
-            boxBefore.classList.remove("active");
-            boxAfter.classList.remove("active");
+      console.log("Data to send:", payload);
 
-            if (medSelect.selectedIndex > 0) {
-                const selectedOption = medSelect.options[medSelect.selectedIndex];
-                const timeRequired = selectedOption.getAttribute("data-time");
-
-                if (timeRequired === "before") {
-                    beforeInput.disabled = false;
-                    beforeInput.required = true;
-                    document.getElementById("beforeField").style.opacity = "1";
-                    boxBefore.classList.add("active");
-                } else if (timeRequired === "after") {
-                    afterInput.disabled = false;
-                    afterInput.required = true;
-                    document.getElementById("afterField").style.opacity = "1";
-                    boxAfter.classList.add("active");
-                }
-            }
-        }
-
-        function saveMedicine(event) {
-            event.preventDefault();
-            const payload = {
-                action: "saveMedicine",
-                line_id: document.getElementById("patientSelect").value,
-                line_name: document.getElementById("line_name").value,
-                meal: document.getElementById("mealSelect").value,
-                type: document.getElementById("medType").value,
-                pills: document.getElementById("pillsCount").value,
-                before: document.getElementById("timeBefore").value || "",
-                after: document.getElementById("timeAfter").value || ""
-            };
-
-            Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
-
-            fetch(SCRIPT_URL, {
-                method: "POST",
-                body: JSON.stringify(payload)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if(data.status === "success") {
-                    Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ!', text: 'ตั้งค่ารอบทานยาเรียบร้อยแล้ว', timer: 2000, showConfirmButton: false });
-                    document.getElementById("medicineForm").reset();
-                    updateMedOptions();
-                } else {
-                    Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: data.message });
-                }
-            })
-            .catch(error => {
-                Swal.fire({ icon: 'error', title: 'การเชื่อมต่อขัดข้อง', text: 'กรุณาตรวจสอบอินเทอร์เน็ตหรือ URL' });
-            });
-        }
-
-        window.onload = function() { loadPatients(); };
-    </script>
+      // เรียกใช้ฟังก์ชัน saveMedicine ในไฟล์ รหัส.gs ผ่าน google.script.run
+      google.script.run
+        .withSuccessHandler(function(response) {
+          alert('บันทึกข้อมูลเรียบร้อยแล้ว!');
+          // เคลียร์ฟอร์ม
+          document.getElementById('medForm').reset();
+          // ซ่อนกล่องมื้ออาหารทั้งหมดกลับไปเหมือนเดิม
+          ['morning', 'lunch', 'dinner'].forEach(m => toggleMeal(m));
+          
+          btn.disabled = false;
+          btn.innerText = 'บันทึกข้อมูลลงระบบ';
+        })
+        .withFailureHandler(function(error) {
+          alert('เกิดข้อผิดพลาด: ' + error.message);
+          btn.disabled = false;
+          btn.innerText = 'บันทึกข้อมูลลงระบบ';
+        })
+        .saveMedicine(payload); // <-- ส่งตัวแปร payload ไปให้ Apps Script
+    }
+  </script>
 </body>
 </html>
