@@ -50,6 +50,21 @@
                         </div>
                     </div>
 
+                    <!-- 6. ระบบตั้งเวลา -->
+                    <div class="p-4 mb-4 rounded time-box">
+                        <label class="form-label required mb-3 text-primary">ระบบตั้งเวลาทานยาประจำวัน (ทุกวัน)</label>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label for="timeBefore" class="form-label" style="color: #0d6efd;">⏰ เวลาก่อนอาหาร</label>
+                                <input type="time" class="form-control form-control-lg" id="timeBefore" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="timeAfter" class="form-label" style="color: #d39e00;">⏰ เวลาหลังอาหาร</label>
+                                <input type="time" class="form-control form-control-lg" id="timeAfter" required>
+                            </div>
+                        </div>
+                    </div>
+
                     <h5 class="fw-bold mb-3 text-primary mt-4">📝 รายการยาที่สั่งจ่าย</h5>
                     
                     <!-- 3. ยามื้อเช้า -->
@@ -103,21 +118,6 @@
                         <div class="col-4">
                             <label class="form-label">จำนวน (เม็ด)</label>
                             <input type="number" class="form-control" id="doseDinner" min="0" placeholder="0">
-                        </div>
-                    </div>
-
-                    <!-- 6. ระบบตั้งเวลา -->
-                    <div class="p-4 mb-4 rounded time-box">
-                        <label class="form-label required mb-3 text-primary">ระบบตั้งเวลาทานยาประจำวัน (ทุกวัน)</label>
-                        <div class="row g-3">
-                            <div class="col-md-6">
-                                <label for="timeBefore" class="form-label" style="color: #0d6efd;">⏰ เวลาก่อนอาหาร</label>
-                                <input type="time" class="form-control form-control-lg" id="timeBefore" required>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="timeAfter" class="form-label" style="color: #d39e00;">⏰ เวลาหลังอาหาร</label>
-                                <input type="time" class="form-control form-control-lg" id="timeAfter" required>
-                            </div>
                         </div>
                     </div>
 
@@ -194,16 +194,14 @@
                 action: "saveMedicineDaily",
                 line_id: document.getElementById("patientSelect").value,
                 line_name: document.getElementById("line_name").value,
-                
+                // ยามื้อเช้า/กลางวัน/เย็น
                 med_morning: document.getElementById("medMorning").value,
                 dose_morning: document.getElementById("doseMorning").value || 0,
-                
                 med_lunch: document.getElementById("medLunch").value,
                 dose_lunch: document.getElementById("doseLunch").value || 0,
-                
                 med_dinner: document.getElementById("medDinner").value,
                 dose_dinner: document.getElementById("doseDinner").value || 0,
-                
+                // ค่าเวลาใหม่
                 time_before: document.getElementById("timeBefore").value || "",
                 time_after: document.getElementById("timeAfter").value || ""
             };
