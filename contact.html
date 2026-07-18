@@ -35,15 +35,30 @@
         let userInfo = { id: "", name: "" };
     
         async function init() {
+            // 1. Initialize LIFF
             await liff.init({ liffId: "2010571894-SPkCK10Z" });
-            const profile = await liff.getProfile();
-            userInfo = { id: profile.userId, name: profile.displayName };
-            document.getElementById("user-display").innerText = "ผู้ถาม: " + userInfo.name;
             
-            // เมื่อโหลดหน้าเว็บเสร็จ ให้ดึงประวัติแชททันที
-            loadChat();
-            // ตั้งค่าให้ดึงข้อความใหม่ทุกๆ 3 วินาที (เพื่อให้เห็นข้อความที่พยาบาลตอบกลับ)
-            setInterval(loadChat, 3000); 
+            // 2. ตรวจสอบว่าล็อกอินหรือยัง
+            if (!liff.isLoggedIn()) {
+                // ถ้ายังไม่ล็อกอิน ให้สั่ง login แล้วหยุดการทำงานของฟังก์ชันนี้ไว้ก่อน
+                liff.login();
+                return; 
+            }
+
+            // 3. ถ้าล็อกอินแล้ว ค่อยดึงข้อมูล Profile
+            try {
+                const profile = await liff.getProfile();
+                userInfo = { id: profile.userId, name: profile.displayName };
+                document.getElementById("user-display").innerText = "ผู้ถาม: " + userInfo.name;
+                
+                // เมื่อโหลดหน้าเว็บเสร็จ ให้ดึงประวัติแชททันที
+                loadChat();
+                // ตั้งค่าให้ดึงข้อความใหม่ทุกๆ 3 วินาที (เพื่อให้เห็นข้อความที่พยาบาลตอบกลับ)
+                setInterval(loadChat, 3000); 
+            } catch (err) {
+                console.error("Error getting profile:", err);
+                document.getElementById("user-display").innerText = "เกิดข้อผิดพลาดในการโหลดข้อมูล";
+            }
         }
     
         async function loadChat() {
