@@ -281,8 +281,9 @@
                     
                         // 3. แสดงผลโดยใช้ formattedDate ที่สร้างไว้
                         Swal.fire({
-                            title: `📅 นัดหมายวันที่ ${formattedDate}`, // ใช้ตัวแปรที่ปรับรูปแบบแล้ว
+                            title: ``, // ใช้ตัวแปรที่ปรับรูปแบบแล้ว
                             html: `
+                                <h5 style="font-size: 18px; font-weight: bold; margin-bottom: 15px;">📅 นัดหมายวันที่ ${formattedDate}</h5>
                                 ${listHtml}
                                 <hr>
                                 <button class="btn btn-primary w-100" onclick="showAddForm('${clickedDate}')">+ เพิ่มนัดหมายใหม่</button>
