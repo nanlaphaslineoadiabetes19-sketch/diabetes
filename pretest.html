@@ -519,7 +519,7 @@
 
     async function initLIFF() {
         try {
-            await liff.init({ liffId: "2010014768-MW1xWNz2" });
+            await liff.init({ liffId: "2010011540-I7SEraMX" });
             if (!liff.isLoggedIn()) {
                 liff.login();
             } else {
@@ -641,7 +641,7 @@
             const finalData = new URLSearchParams(formData);
             finalData.append("line_id", lineId);
             finalData.append("line_name", lineName);
-            finalData.append("type", "post");
+            finalData.append("type", "pre");
             
             finalData.append("total_results", totalAvg);
             finalData.append("result1", resultsForSheet.result1);
