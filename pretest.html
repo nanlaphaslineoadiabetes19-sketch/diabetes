@@ -266,7 +266,7 @@
         ตอนที่ 2 แบบประเมินพฤติกรรมการจัดการภาวะเบาหวานด้วยตนเอง
     </div>
 
-    <form id="postTestForm">
+    <form id="preTestForm">
         <div class="section-title">ตอนที่ 1 แบบสอบถามข้อมูลส่วนบุคคลของผู้ตอบแบบสอบถาม</div>
         
         <div class="question-row">
@@ -697,7 +697,7 @@
 
     async function handleCalculateScore() {
         // 1. ดึง Element ฟอร์มออกมาก่อน
-        const form = document.getElementById('postTestForm');
+        const form = document.getElementById('preTestForm');
     
         // 2. เช็ค Validation ทันที: ถ้ากรอกไม่ครบให้หยุดทำงาน (Return)
         if (!form.reportValidity()) {
@@ -844,7 +844,7 @@
             // เพิ่มข้อมูลส่วนที่เหลือ
             finalData.append("line_id", lineId);
             finalData.append("line_name", lineName);
-            finalData.append("type", "post");
+            finalData.append("type", "pre");
             finalData.append("total_results", totalAvg);
             for(let i=1; i<=6; i++) {
                 finalData.append(`result${i}`, resultsForSheet[`result${i}`]);
