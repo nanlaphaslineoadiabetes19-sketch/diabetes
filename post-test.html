@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>แบบประเมินพฤติกรรมการจัดการภาวะเบาหวานด้วยตนเอง (Pre-test)</title>
+    <title>แบบประเมินพฤติกรรมการจัดการภาวะเบาหวานด้วยตนเอง (Post-test)</title>
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-bootstrap-4/bootstrap-4.css" rel="stylesheet">
     <style>
@@ -266,7 +266,7 @@
         ตอนที่ 2 แบบประเมินพฤติกรรมการจัดการภาวะเบาหวานด้วยตนเอง
     </div>
 
-    <form id="preTestForm">
+    <form id="postTestForm">
         <div class="section-title">ตอนที่ 1 แบบสอบถามข้อมูลส่วนบุคคลของผู้ตอบแบบสอบถาม</div>
         
         <div class="question-row">
@@ -697,7 +697,7 @@
 
     async function handleCalculateScore() {
         // 1. ดึง Element ฟอร์มออกมาก่อน
-        const form = document.getElementById('preTestForm');
+        const form = document.getElementById('postTestForm');
     
         // 2. เช็ค Validation ทันที: ถ้ากรอกไม่ครบให้หยุดทำงาน (Return)
         if (!form.reportValidity()) {
@@ -844,7 +844,7 @@
             // เพิ่มข้อมูลส่วนที่เหลือ
             finalData.append("line_id", lineId);
             finalData.append("line_name", lineName);
-            finalData.append("type", "pre");
+            finalData.append("type", "post");
             finalData.append("total_results", totalAvg);
             for(let i=1; i<=6; i++) {
                 finalData.append(`result${i}`, resultsForSheet[`result${i}`]);
