@@ -210,8 +210,8 @@
         async function main() {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('page') === 'registerAdmin') {
-                // บังคับส่งต่อ Query Parameters ทั้งหมด (?page=registerAdmin&t=...) ไปยังหน้าถัดไปด้วย
-                window.location.href = 'register_admin.html' + window.location.search;
+                // ใช้ replace เพื่อแทนที่หน้าปัจจุบัน ไม่สร้างประวัติซ้อน
+                window.location.replace('register_admin.html' + window.location.search);
                 return; 
             }
         
