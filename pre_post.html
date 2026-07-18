@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>สรุปเปรียบเทียบผลการประเมินพฤติกรรม</title>
+    <!-- Tailwind CSS สำหรับดีไซน์ระดับมืออาชีพ -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts - Kanit -->
+    <link href="https://fonts.googleapis.com/css2?family=Kanit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <!-- FontAwesome สำหรับไอคอน -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- SweetAlert2 สำหรับแจ้งเตือน/Loading -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        body { font-family: 'Kanit', sans-serif; background-color: #f4f6f8; }
+        .theme-green { color: #2e7d32; }
+        .bg-theme-green { background-color: #2e7d32; }
+        .border-theme-green { border-color: #2e7d32; }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen pb-12">
+
+    <!-- Header Section -->
+    <div class="bg-theme-green text-white shadow-md py-6 px-4 mb-6">
+        <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <i class="fa-solid fa-chart-line text-3xl"></i>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold">ระบบเปรียบเทียบผลการประเมินพฤติกรรม</h1>
+                    <p class="text-xs text-green-100 opacity-90">การจัดการตนเองของผู้ป่วยโรคเบาหวานและความดันโลหิตสูง</p>
+                </div>
+            </div>
+            <button onclick="goBack()" class="bg-white text-emerald-800 hover:bg-green-50 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow">
+                <i class="fa-solid fa-arrow-left"></i> กลับหน้าหลัก
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <main class="max-w-6xl mx-auto px-4">
+        
+        <!-- Selection Card -->
+        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
+            <label for="patientSelect" class="block text-gray-700 font-medium text-lg mb-2">
+                <i class="fa-solid fa-user-magnifying-glass theme-green mr-2"></i> เลือกรายชื่อคนไข้เพื่อดูผลการประเมิน
+            </label>
+            <div class="relative">
+                <select id="patientSelect" onchange="handlePatientChange(this.value)" class="w-full bg-gray-50 border border-gray-300 text-gray-900 rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block p-3.5 pl-4 text-base appearance-none shadow-sm cursor-pointer transition">
+                    <option value="" selected disabled>-- กรุณาเลือกรายชื่อคนไข้ --</option>
+                </select>
+                <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
+                    <i class="fa-solid fa-chevron-down"></i>
+                </div>
+            </div>
+        </div>
+
+        <!-- Dashboard Container (จะแสดงผลเมื่อเลือกรายชื่อแล้ว) -->
+        <div id="dashboard" class="hidden space-y-6 animate-fade-in">
+            
+            <!-- Patient Profile Card -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="bg-gradient-to-r from-emerald-800 to-emerald-700 px-6 py-4 text-white font-medium flex items-center justify-between">
+                    <span class="text-lg"><i class="fa-solid fa-id-card mr-2"></i>ข้อมูลส่วนตัวคนไข้</span>
+                    <span id="lblLastUpdate" class="text-xs text-emerald-100 bg-emerald-900/40 px-3 py-1 rounded-full"></span>
+                </div>
+                <div class="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
+                    <div><span class="font-medium text-gray-900 block">ชื่อ-นามสกุล:</span> <span id="pName">-</span></div>
+                    <div><span class="font-medium text-gray-900 block">เพศ / อายุ:</span> <span id="pAge">-</span></div>
+                    <div><span class="font-medium text-gray-900 block">สถานภาพ:</span> <span id="pStatus">-</span></div>
+                    <div><span class="font-medium text-gray-900 block">ระดับการศึกษา:</span> <span id="pEdu">-</span></div>
+                    <div><span class="font-medium text-gray-900 block">อาชีพ:</span> <span id="pOcc">-</span></div>
+                    <div><span class="font-medium text-gray-900 block">รายได้เฉลี่ย/เดือน:</span> <span id="pIncome">-</span></div>
+                    <div><span class="font-medium text-gray-900 block">โรคประจำตัว:</span> <span id="pDisease">-</span></div>
+                    <div><span class="font-medium text-gray-900 block">ประวัติการสูบบุหรี่:</span> <span id="pSmoking">-</span></div>
+                </div>
+            </div>
+
+            <!-- Score Summary Compare (Side by Side) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- ก่อนเรียน (ดึงจาก posttest) -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between border-t-4 border-red-500">
+                    <div>
+                        <span class="text-xs font-bold text-red-600 uppercase bg-red-50 px-2.5 py-1 rounded-full tracking-wider">ผลการประเมินชุดที่ 1</span>
+                        <h3 class="text-xl font-bold text-gray-800 mt-2">ผลการประเมินพฤติกรรมก่อนตรวจ</h3>
+                    </div>
+                    <div class="my-6 text-center">
+                        <p class="text-gray-500 text-sm">ค่าเฉลี่ยคะแนนการจัดการตนเองโดยรวม</p>
+                        <div class="text-5xl font-extrabold text-red-600 my-2" id="preTotalAvg">0.00</div>
+                        <div class="inline-block bg-red-50 text-red-700 font-semibold px-4 py-1.5 rounded-xl text-md border border-red-200" id="preTotalLevel">
+                            ระดับ -
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-3 text-xs text-gray-500 flex justify-between items-center">
+                        <span>สัดส่วนน้ำหนัก/ส่วนสูง</span>
+                        <span class="font-medium text-gray-800" id="preBmi">-</span>
+                    </div>
+                </div>
+
+                <!-- หลังเรียน (ดึงจาก pretest) -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between border-t-4 border-emerald-600">
+                    <div>
+                        <span class="text-xs font-bold text-emerald-600 uppercase bg-emerald-50 px-2.5 py-1 rounded-full tracking-wider">ผลการประเมินชุดที่ 2</span>
+                        <h3 class="text-xl font-bold text-gray-800 mt-2">ผลการประเมินพฤติกรรมหลังตรวจ</h3>
+                    </div>
+                    <div class="my-6 text-center">
+                        <p class="text-gray-500 text-sm">ค่าเฉลี่ยคะแนนการจัดการตนเองโดยรวม</p>
+                        <div class="text-5xl font-extrabold text-emerald-600 my-2" id="postTotalAvg">0.00</div>
+                        <div class="inline-block bg-emerald-50 text-emerald-700 font-semibold px-4 py-1.5 rounded-xl text-md border border-emerald-200" id="postTotalLevel">
+                            ระดับ -
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 rounded-xl p-3 text-xs text-gray-500 flex justify-between items-center">
+                        <span>ทิศทางการเปลี่ยนแปลง</span>
+                        <span class="font-bold flex items-center gap-1" id="scoreDirection">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Detailed Section Breakdown Table -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div class="px-6 py-4 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
+                    <h3 class="font-bold text-gray-800 text-lg"><i class="fa-solid fa-list-check theme-green mr-2"></i>เปรียบเทียบคะแนนรายด้าน (คะแนนเต็ม 4.00)</h3>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-gray-100/70 text-gray-700 text-sm font-semibold border-b border-gray-200">
+                                <th class="p-4 pl-6">พฤติกรรมการจัดการตนเองรายด้าน</th>
+                                <th class="p-4 text-center w-32">ก่อนตรวจ</th>
+                                <th class="p-4 text-center w-32">หลังตรวจ</th>
+                                <th class="p-4 text-center w-32">ผลต่าง</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-gray-100 text-sm text-gray-600" id="resultsTableBody">
+                            <!-- จะถูกเรนเดอร์ผ่าน JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Scripts Logic -->
+    <script>
+        // แก้ไข URL เป็น Web App ของคุณ
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbxTB8k2qKX8E8sM5pekLsy8i4uUWhrrmR5MgqiIPsUJQ1iesquTlR80CboO1utPmGl7/exec'; 
+        
+        let allPatientsData = {};
+        const sectionsTitle = [
+            "ด้านการรับประทานยา",
+            "ด้านการรับประทานอาหาร",
+            "ด้านการจัดการกับระดับน้ำตาลในเลือด",
+            "ด้านการออกกำลังกาย",
+            "ด้านการใช้บริการทางด้านสุขภาพ",
+            "ด้านการจัดการกับความเจ็บป่วย"
+        ];
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchDashboardData();
+        });
+
+        async function fetchDashboardData() {
+            Swal.fire({
+                title: 'กำลังโหลดข้อมูล...',
+                text: 'กรุณารอสักครู่ระบบกำลังดึงข้อมูลล่าสุดจากเซิร์ฟเวอร์',
+                allowOutsideClick: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+
+            try {
+                // ดึงข้อมูลแบบ GET โดยกำหนด parameter action
+                const response = await fetch(`${scriptURL}?action=getPrePost`);
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    processData(result.pretest, result.posttest);
+                    Swal.close();
+                } else {
+                    throw new Error(result.message || 'โครงสร้างข้อมูลไม่ถูกต้อง');
+                }
+            } catch (error) {
+                console.error(error);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'เกิดข้อผิดพลาด',
+                    text: 'ไม่สามารถโหลดข้อมูลจาก Google Sheet ได้ กรุณารีเฟรชหน้าจออีกครั้ง',
+                    confirmButtonColor: '#d33'
+                });
+            }
+        }
+
+        function processData(pretestRows, posttestRows) {
+            const tempMap = {};
+
+            // หมายเหตุ: ตามที่ผู้ใช้แจ้ง ข้อมูลเกิดการสลับกัน
+            // ก่อนตรวจ (Pre-test ใน UI) ให้ดึงข้อมูลจากชีท posttestRows
+            // หลังตรวจ (Post-test ใน UI) ให้ดึงข้อมูลจากชีท pretestRows
+
+            // 1. จัดการฝั่ง "ก่อนตรวจ" จากชีท posttest
+            posttestRows.forEach(row => {
+                if (!row.line_id || !row.line_name) return;
+                const id = row.line_id;
+                
+                // แปลงค่าเวลาเปรียบเทียบ
+                const rowDate = new Date(row.update || 0);
+
+                if (!tempMap[id] || new Date(tempMap[id].preRaw?.update || 0) < rowDate) {
+                    if (!tempMap[id]) tempMap[id] = { name: row.line_name, preRaw: null, postRaw: null };
+                    tempMap[id].preRaw = row;
+                }
+            });
+
+            // 2. จัดการฝั่ง "หลังตรวจ" จากชีท pretest
+            pretestRows.forEach(row => {
+                if (!row.line_id) return;
+                const id = row.line_id;
+                const rowDate = new Date(row.update || 0);
+
+                if (tempMap[id]) {
+                    if (!tempMap[id].postRaw || new Date(tempMap[id].postRaw?.update || 0) < rowDate) {
+                        tempMap[id].postRaw = row;
+                    }
+                }
+            });
+
+            allPatientsData = tempMap;
+            populateDropdown();
+        }
+
+        function populateDropdown() {
+            const select = document.getElementById('patientSelect');
+            
+            // เรียงรายชื่อคนไข้ตามตัวอักษร
+            const sortedKeys = Object.keys(allPatientsData).sort((a, b) => 
+                allPatientsData[a].name.localeCompare(b.name, 'th')
+            );
+
+            sortedKeys.forEach(id => {
+                const option = document.createElement('option');
+                option.value = id;
+                option.textContent = allPatientsData[id].name;
+                select.appendChild(option);
+            });
+        }
+
+        function handlePatientChange(lineId) {
+            const patient = allPatientsData[lineId];
+            if (!patient) return;
+
+            document.getElementById('dashboard').classList.remove('hidden');
+
+            const pre = patient.preRaw;  // ข้อมูลจากชีท posttest
+            const post = patient.postRaw; // ข้อมูลจากชีท pretest
+
+            // --- 1. แสดงโปรไฟล์คนไข้ (ดึงส่วนตัวจากฝั่งที่มีชัวร์ๆ คือ pre/ชีท posttest) ---
+            if (pre) {
+                document.getElementById('pName').textContent = pre.line_name || '-';
+                document.getElementById('pAge').textContent = `${pre.sex || '-'} / ${pre.age_year || 0} ปี ${pre.age_month || 0} เดือน`;
+                document.getElementById('pStatus').textContent = pre.status || '-';
+                document.getElementById('pEdu').textContent = pre.education || '-';
+                document.getElementById('pOcc').textContent = pre.occupation === 'อื่นๆ' ? `อื่นๆ (${pre.occupation_detail || '-'})` : (pre.occupation || '-');
+                document.getElementById('pIncome').textContent = pre.income || '-';
+                document.getElementById('pDisease').textContent = pre.disease === 'มี' ? `มี (${pre.disease_detail || '-'})` : (pre.disease || 'ไม่มี');
+                document.getElementById('pSmoking').textContent = pre.smoking === 'สูบ' ? `สูบ (${pre.smoking_detail || '-'})` : (pre.smoking || 'ไม่สูบ');
+                document.getElementById('preBmi').textContent = (pre.weight && pre.height) ? `น้ำหนัก ${pre.weight} กก. ส่วนสูง ${pre.height} ซม.` : '-';
+                document.getElementById('lblLastUpdate').innerHTML = `<i class="fa-regular fa-clock mr-1"></i> อัปเดตล่าสุด: ${pre.update || '-'}`;
+            }
+
+            // --- 2. แสดงคะแนนเฉลี่ยรวม ---
+            const preAvg = pre ? parseFloat(pre.total_results || 0) : 0;
+            const postAvg = post ? parseFloat(post.total_results || 0) : 0;
+
+            document.getElementById('preTotalAvg').textContent = preAvg.toFixed(2);
+            document.getElementById('preTotalLevel').textContent = `ระดับ ${getLevel(preAvg)}`;
+
+            if (post) {
+                document.getElementById('postTotalAvg').textContent = postAvg.toFixed(2);
+                document.getElementById('postTotalLevel').textContent = `ระดับ ${getLevel(postAvg)}`;
+                
+                // ทิศทางการพัฒนา
+                const diffTotal = postAvg - preAvg;
+                const dirEl = document.getElementById('scoreDirection');
+                if (diffTotal > 0) {
+                    dirEl.className = "font-bold text-emerald-600 flex items-center gap-1 text-sm";
+                    dirEl.innerHTML = `<i class="fa-solid fa-circle-arrow-up text-base"></i> พัฒนาขึ้น (+${diffTotal.toFixed(2)})`;
+                } else if (diffTotal < 0) {
+                    dirEl.className = "font-bold text-red-500 flex items-center gap-1 text-sm";
+                    dirEl.innerHTML = `<i class="fa-solid fa-circle-arrow-down text-base"></i> ลดลง (${diffTotal.toFixed(2)})`;
+                } else {
+                    dirEl.className = "font-bold text-gray-500 flex items-center gap-1 text-sm";
+                    dirEl.innerHTML = `<i class="fa-solid fa-circle-minus text-base"></i> คงเดิม`;
+                }
+            } else {
+                document.getElementById('postTotalAvg').textContent = "ไม่มีข้อมูล";
+                document.getElementById('postTotalLevel').textContent = "ระดับ -";
+                document.getElementById('scoreDirection').className = "text-gray-400 text-sm";
+                document.getElementById('scoreDirection').textContent = "รอการประเมินรอบหลังตรวจ";
+            }
+
+            // --- 3. เรนเดอร์ตารางเปรียบเทียบผลรายด้าน 6 ด้าน ---
+            const tbody = document.getElementById('resultsTableBody');
+            tbody.innerHTML = '';
+
+            for (let i = 1; i <= 6; i++) {
+                const rPre = pre ? parseFloat(pre[`result${i}`] || 0) : 0;
+                const rPost = post ? parseFloat(post[`result${i}`] || 0) : null;
+                
+                let diffText = '-';
+                let diffClass = 'text-gray-400 text-center font-medium';
+                
+                if (rPost !== null) {
+                    const diff = rPost - rPre;
+                    if (diff > 0) {
+                        diffText = `+${diff.toFixed(2)}`;
+                        diffClass = 'text-emerald-600 text-center font-bold bg-emerald-50/50';
+                    } else if (diff < 0) {
+                        diffText = `${diff.toFixed(2)}`;
+                        diffClass = 'text-red-500 text-center font-bold bg-red-50/50';
+                    } else {
+                        diffText = '0.00';
+                        diffClass = 'text-gray-500 text-center font-medium';
+                    }
+                }
+
+                const tr = document.createElement('tr');
+                tr.className = "hover:bg-gray-50/80 transition border-b border-gray-100";
+                tr.innerHTML = `
+                    <td class="p-4 pl-6 font-medium text-gray-800">
+                        <div class="text-xs text-gray-400 font-normal mb-0.5">ด้านที่ ${i}</div>
+                        ${sectionsTitle[i-1]}
+                    </td>
+                    <td class="p-4 text-center">
+                        <span class="text-gray-700 font-medium">${rPre.toFixed(2)}</span>
+                        <div class="text-[11px] text-red-500 font-medium">(ระดับ${getLevel(rPre)})</div>
+                    </td>
+                    <td class="p-4 text-center">
+                        ${rPost !== null ? `
+                            <span class="text-gray-700 font-medium">${rPost.toFixed(2)}</span>
+                            <div class="text-[11px] text-emerald-600 font-medium">(ระดับ${getLevel(rPost)})</div>
+                        ` : '<span class="text-gray-400">-</span>'}
+                    </td>
+                    <td class="p-4 ${diffClass}">${diffText}</td>
+                `;
+                tbody.appendChild(tr);
+            }
+        }
+
+        // ฟังก์ชันแปลงคะแนนเฉลี่ยเป็นช่วงระดับตามหลักการวัดผล
+        function getLevel(avg) {
+            const score = parseFloat(avg);
+            if (score >= 3.26) return "ดีมาก";
+            if (score >= 2.51) return "ดี";
+            if (score >= 1.76) return "พอใช้";
+            return "ควรปรับปรุง";
+        }
+
+        function goBack() {
+            var currentPath = window.location.pathname;
+            var directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
+            location.href = directoryPath + '/self.html';
+        }
+    </script>
+</body>
+</html>
