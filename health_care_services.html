@@ -301,8 +301,9 @@
 
         function showAddForm(dateStr, pId = '', pName = '-- กรุณาเลือกคนไข้ --') {
             Swal.fire({
-                title: '📅 เพิ่มการนัดหมาย',
+                title: '',
                 html: `
+                <h5 style="font-size: 18px; font-weight: bold; margin-bottom: 15px;">📅 เพิ่มการนัดหมาย</h5>
                     <div class="mb-3 text-start">
                         <label class="form-label fw-bold">เลือกคนไข้:</label>
                         <!-- ปรับให้ div นี้กดได้โดยตรง เพื่อเรียก renderPatientList แทนการมีปุ่มแยก -->
