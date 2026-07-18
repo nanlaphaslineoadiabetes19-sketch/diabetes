@@ -606,15 +606,16 @@
             html: `
                 <div style="padding: 5px;">
                     <!-- กล่องสรุปคะแนนถูกย้ายขึ้นมาไว้ด้านบนสุด -->
-                    <div style="background: #e8f5e9; padding: 18px; border-radius: 15px; margin-bottom: 25px; border: 2px solid #66bb6a; text-align: center;">
+                    
                         <div style="font-size: 20px; font-weight: bold; color: #2e7d32; line-height: 1.5;">
-                            ค่าเฉลี่ยคะแนนพฤติกรรม<br>การจัดการตนเองโดยรวม = ${totalAvg}<br>
-                            <span style="color: #d32f2f;">(อยู่ในระดับ${totalLevel})</span>
+                            ค่าเฉลี่ยคะแนนพฤติกรรม<br>การจัดการตนเองโดยรวม<br>(คะแนนเต็ม 4 คะแนน) = ${totalAvg}
                         </div>
-                    </div>
 
                     <!-- หัวข้อผลการประเมินที่ย้ายลงมาแสดงที่นี่ -->
-                    <div style="font-size: 26px; color: #2e7d32; font-weight: bold; margin-bottom: 20px;">ผลการประเมินของคุณ</div>
+                    <div style="font-size: 26px; color: #2e7d32; font-weight: bold; margin-bottom: 20px;">ผลการประเมินของคุณ</div><br>
+                    <div style="background: #e8f5e9; padding: 18px; border-radius: 15px; margin-bottom: 25px; border: 2px solid #66bb6a; text-align: center;">
+                        <span style="color: #d32f2f;">(อยู่ในระดับ${totalLevel})</span>
+                    </div>
 
                     <div style="text-align: center; font-size: 22px; font-weight: bold; color: #2e7d32; margin-bottom: 15px;">
                         พฤติกรรมการจัดการตนเอง<span style="color: #d32f2f;">รายด้าน</span>
