@@ -171,8 +171,8 @@
             });
 
             try {
-                // ดึงข้อมูลแบบ GET โดยกำหนด parameter action
-                const response = await fetch(`${scriptURL}?action=getPrePost`);
+                // ดึงข้อมูลแบบ GET โดยกำหนด parameter type
+                const response = await fetch(`${scriptURL}?type=getPrePost`);
                 const result = await response.json();
                 
                 if (result.status === 'success') {
