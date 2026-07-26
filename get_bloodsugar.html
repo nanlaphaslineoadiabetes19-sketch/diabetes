@@ -180,7 +180,7 @@
             Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading(); } });
 
             let formData = new URLSearchParams();
-            formData.append('action', 'insert'); 
+            formData.append('action', 'update_bloodsugar'); 
             formData.append('line_id', lineId);
             formData.append('line_name', lineName);
             formData.append('bloodsugar', bloodsugarValue);
