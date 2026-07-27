@@ -170,29 +170,22 @@
             container.insertAdjacentHTML('beforeend', rowHtml);
         }
 
-        // ฟังก์ชันดึงข้อมูลยาแต่ละมื้อ (ปรับใหม่ให้เก็บเป็น Array แยกกัน)
+        // ฟังก์ชันดึงข้อมูลยาแต่ละมื้อ (ส่งกลับเป็น Array ของ Object { name, dose })
         function extractMealData(mealType) {
             const container = document.getElementById(mealType + 'MedContainer');
             const rows = container.querySelectorAll('.med-row');
-            
             let medList = [];
-            let totalDose = 0;
-
+        
             rows.forEach(row => {
                 const medName = row.querySelector('.med-select').value;
                 const dose = parseFloat(row.querySelector('.dose-input').value) || 0;
                 
                 if (medName && dose > 0) {
-                    // จัดรูปแบบให้เป็น "ชื่อยา = จำนวนเม็ด" ตามที่ต้องการลงคอลัมน์
-                    medList.push(`${medName} = ${dose} เม็ด`);
-                    totalDose += dose;
+                    medList.push({ name: medName, dose: dose });
                 }
             });
-
-            return {
-                medList: medList, // ส่งกลับไปเป็น Array เพื่อให้แยกคอลัมน์ได้
-                totalDose: totalDose
-            };
+        
+            return medList;
         }
 
         // ---------------------------------------------------
@@ -268,53 +261,60 @@
         function saveMedicine(event) {
             event.preventDefault();
             
-            // ดึงข้อมูลรวบยอดของแต่ละมื้อ (แบบเป็น Array)
-            const morningData = extractMealData('morning');
-            const lunchData = extractMealData('lunch');
-            const dinnerData = extractMealData('dinner');
-
-            // จัดโครงสร้าง Payload ใหม่ให้ยาแต่ละชนิดอยู่คนละ Key (รองรับได้สูงสุด 5 ชนิดต่อมื้อ หรือปรับเพิ่มได้)
+            const morningList = extractMealData('morning');
+            const lunchList = extractMealData('lunch');
+            const dinnerList = extractMealData('dinner');
+        
             const payload = {
                 action: "saveMedicineDaily",
                 line_id: document.getElementById("patientSelect").value,
                 line_name: document.getElementById("line_name").value,
                 
-                // มื้อเช้า
-                morning_med_1: morningData.medList[0] || "",
-                morning_med_2: morningData.medList[1] || "",
-                morning_med_3: morningData.medList[2] || "",
-                morning_med_4: morningData.medList[3] || "",
-                morning_med_5: morningData.medList[4] || "",
-                morning_before_dose: document.getElementById("timeMorningBefore").value ? morningData.totalDose : 0,
+                // ยามื้อเช้า
+                morning_med_1: morningList[0]?.name || "",
+                morning_med_1_dose: morningList[0]?.dose || "",
+                morning_med_2: morningList[1]?.name || "",
+                morning_med_2_dose: morningList[1]?.dose || "",
+                morning_med_3: morningList[2]?.name || "",
+                morning_med_3_dose: morningList[2]?.dose || "",
+                morning_med_4: morningList[3]?.name || "",
+                morning_med_4_dose: morningList[3]?.dose || "",
+                morning_med_5: morningList[4]?.name || "",
+                morning_med_5_dose: morningList[4]?.dose || "",
                 morning_before_time: document.getElementById("timeMorningBefore").value,
-                morning_after_dose: document.getElementById("timeMorningAfter").value ? morningData.totalDose : 0,
                 morning_after_time: document.getElementById("timeMorningAfter").value,
                 
-                // มื้อกลางวัน
-                lunch_med_1: lunchData.medList[0] || "",
-                lunch_med_2: lunchData.medList[1] || "",
-                lunch_med_3: lunchData.medList[2] || "",
-                lunch_med_4: lunchData.medList[3] || "",
-                lunch_med_5: lunchData.medList[4] || "",
-                lunch_before_dose: document.getElementById("timeLunchBefore").value ? lunchData.totalDose : 0,
+                // ยามื้อกลางวัน
+                lunch_med_1: lunchList[0]?.name || "",
+                lunch_med_1_dose: lunchList[0]?.dose || "",
+                lunch_med_2: lunchList[1]?.name || "",
+                lunch_med_2_dose: lunchList[1]?.dose || "",
+                lunch_med_3: lunchList[2]?.name || "",
+                lunch_med_3_dose: lunchList[2]?.dose || "",
+                lunch_med_4: lunchList[3]?.name || "",
+                lunch_med_4_dose: lunchList[3]?.dose || "",
+                lunch_med_5: lunchList[4]?.name || "",
+                lunch_med_5_dose: lunchList[4]?.dose || "",
                 lunch_before_time: document.getElementById("timeLunchBefore").value,
-                lunch_after_dose: document.getElementById("timeLunchAfter").value ? lunchData.totalDose : 0,
                 lunch_after_time: document.getElementById("timeLunchAfter").value,
                 
-                // มื้อเย็น
-                dinner_med_1: dinnerData.medList[0] || "",
-                dinner_med_2: dinnerData.medList[1] || "",
-                dinner_med_3: dinnerData.medList[2] || "",
-                dinner_med_4: dinnerData.medList[3] || "",
-                dinner_med_5: dinnerData.medList[4] || "",
-                dinner_before_dose: document.getElementById("timeDinnerBefore").value ? dinnerData.totalDose : 0,
+                // ยามื้อเย็น
+                dinner_med_1: dinnerList[0]?.name || "",
+                dinner_med_1_dose: dinnerList[0]?.dose || "",
+                dinner_med_2: dinnerList[1]?.name || "",
+                dinner_med_2_dose: dinnerList[1]?.dose || "",
+                dinner_med_3: dinnerList[2]?.name || "",
+                dinner_med_3_dose: dinnerList[2]?.dose || "",
+                dinner_med_4: dinnerList[3]?.name || "",
+                dinner_med_4_dose: dinnerList[3]?.dose || "",
+                dinner_med_5: dinnerList[4]?.name || "",
+                dinner_med_5_dose: dinnerList[4]?.dose || "",
                 dinner_before_time: document.getElementById("timeDinnerBefore").value,
-                dinner_after_dose: document.getElementById("timeDinnerAfter").value ? dinnerData.totalDose : 0,
                 dinner_after_time: document.getElementById("timeDinnerAfter").value
             };
-
+        
             Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
-
+        
             fetch(SCRIPT_URL, {
                 method: "POST",
                 redirect: "follow",
@@ -326,7 +326,6 @@
                 if(data.status === "success") {
                     Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ!', text: 'ตั้งค่ารอบทานยาเรียบร้อยแล้ว', timer: 2000, showConfirmButton: false });
                     
-                    // รีเซ็ตฟอร์ม และจัดเรียงแถวกรอกยาใหม่
                     document.getElementById("medicineForm").reset();
                     document.getElementById("stockBox").style.display = "none";
                     document.getElementById("morningMedContainer").innerHTML = "";
