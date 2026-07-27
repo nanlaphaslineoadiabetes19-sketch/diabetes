@@ -170,12 +170,12 @@
             container.insertAdjacentHTML('beforeend', rowHtml);
         }
 
-        // ฟังก์ชันดึงข้อมูลยาทั้งหมดในแต่ละมื้อเพื่อรวบยอด
+        // ฟังก์ชันดึงข้อมูลยาแต่ละมื้อ (ปรับใหม่ให้เก็บเป็น Array แยกกัน)
         function extractMealData(mealType) {
             const container = document.getElementById(mealType + 'MedContainer');
             const rows = container.querySelectorAll('.med-row');
             
-            let medNamesList = [];
+            let medList = [];
             let totalDose = 0;
 
             rows.forEach(row => {
@@ -183,13 +183,14 @@
                 const dose = parseFloat(row.querySelector('.dose-input').value) || 0;
                 
                 if (medName && dose > 0) {
-                    medNamesList.push(`${medName} (${dose} เม็ด)`);
+                    // จัดรูปแบบให้เป็น "ชื่อยา = จำนวนเม็ด" ตามที่ต้องการลงคอลัมน์
+                    medList.push(`${medName} = ${dose} เม็ด`);
                     totalDose += dose;
                 }
             });
 
             return {
-                combinedText: medNamesList.length > 0 ? medNamesList.join(' + ') : "",
+                medList: medList, // ส่งกลับไปเป็น Array เพื่อให้แยกคอลัมน์ได้
                 totalDose: totalDose
             };
         }
@@ -267,33 +268,45 @@
         function saveMedicine(event) {
             event.preventDefault();
             
-            // ดึงข้อมูลรวบยอดของแต่ละมื้อ
+            // ดึงข้อมูลรวบยอดของแต่ละมื้อ (แบบเป็น Array)
             const morningData = extractMealData('morning');
             const lunchData = extractMealData('lunch');
             const dinnerData = extractMealData('dinner');
 
-            // จัดโครงสร้าง Payload ให้ตรงกับฐานข้อมูลเดิมเป๊ะๆ
+            // จัดโครงสร้าง Payload ใหม่ให้ยาแต่ละชนิดอยู่คนละ Key (รองรับได้สูงสุด 5 ชนิดต่อมื้อ หรือปรับเพิ่มได้)
             const payload = {
                 action: "saveMedicineDaily",
                 line_id: document.getElementById("patientSelect").value,
                 line_name: document.getElementById("line_name").value,
                 
                 // มื้อเช้า
-                med_morning: morningData.combinedText,
+                morning_med_1: morningData.medList[0] || "",
+                morning_med_2: morningData.medList[1] || "",
+                morning_med_3: morningData.medList[2] || "",
+                morning_med_4: morningData.medList[3] || "",
+                morning_med_5: morningData.medList[4] || "",
                 morning_before_dose: document.getElementById("timeMorningBefore").value ? morningData.totalDose : 0,
                 morning_before_time: document.getElementById("timeMorningBefore").value,
                 morning_after_dose: document.getElementById("timeMorningAfter").value ? morningData.totalDose : 0,
                 morning_after_time: document.getElementById("timeMorningAfter").value,
                 
                 // มื้อกลางวัน
-                med_lunch: lunchData.combinedText,
+                lunch_med_1: lunchData.medList[0] || "",
+                lunch_med_2: lunchData.medList[1] || "",
+                lunch_med_3: lunchData.medList[2] || "",
+                lunch_med_4: lunchData.medList[3] || "",
+                lunch_med_5: lunchData.medList[4] || "",
                 lunch_before_dose: document.getElementById("timeLunchBefore").value ? lunchData.totalDose : 0,
                 lunch_before_time: document.getElementById("timeLunchBefore").value,
                 lunch_after_dose: document.getElementById("timeLunchAfter").value ? lunchData.totalDose : 0,
                 lunch_after_time: document.getElementById("timeLunchAfter").value,
                 
                 // มื้อเย็น
-                med_dinner: dinnerData.combinedText,
+                dinner_med_1: dinnerData.medList[0] || "",
+                dinner_med_2: dinnerData.medList[1] || "",
+                dinner_med_3: dinnerData.medList[2] || "",
+                dinner_med_4: dinnerData.medList[3] || "",
+                dinner_med_5: dinnerData.medList[4] || "",
                 dinner_before_dose: document.getElementById("timeDinnerBefore").value ? dinnerData.totalDose : 0,
                 dinner_before_time: document.getElementById("timeDinnerBefore").value,
                 dinner_after_dose: document.getElementById("timeDinnerAfter").value ? dinnerData.totalDose : 0,
