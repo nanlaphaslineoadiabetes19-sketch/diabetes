@@ -27,7 +27,6 @@
             margin-bottom: 20px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
-        /* ตกแต่งปุ่มลบให้ดูซอฟต์ขึ้น */
         .btn-remove { padding: 0.375rem 0.5rem; }
     </style>
 </head>
@@ -65,7 +64,6 @@
                     <!-- ================= ยามื้อเช้า ================= -->
                     <div class="meal-section">
                         <h5 class="fw-bold text-success mb-3">🌅 ยามื้อเช้า</h5>
-                        <!-- พื้นที่สำหรับใส่แถวรายชื่อยาแบบไดนามิก -->
                         <div id="morningMedContainer"></div>
                         
                         <button type="button" class="btn btn-sm btn-outline-primary mb-3" onclick="addMedRow('morning')">
@@ -137,7 +135,6 @@
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec"; 
         
-        // ตัวแปรเก็บรายชื่อยาแบบ Global เพื่อใช้เวลาสร้างแถวใหม่
         let globalMedicineList = [];
 
         // ---------------------------------------------------
@@ -147,20 +144,37 @@
             const container = document.getElementById(mealType + 'MedContainer');
             const rowId = 'row-' + Date.now() + Math.floor(Math.random() * 1000);
             
-            // สร้างตัวเลือกยาจากข้อมูลที่โหลดมา
+            // กำหนดตัวอักษรสำหรับเช็คมื้ออาหาร (B=เช้า, L=กลางวัน, D=เย็น)
+            let mealCode = mealType === 'morning' ? 'B' : (mealType === 'lunch' ? 'L' : 'D');
+            
             let optionsHtml = '<option value="">-- เลือกยา --</option>';
-            globalMedicineList.forEach(med => {
-                optionsHtml += `<option value="${med}">${med}</option>`;
+            
+            // กรองเฉพาะยาที่ตรงกับมื้ออาหารนี้
+            const filteredMeds = globalMedicineList.filter(med => {
+                // เผื่อกรณีโค้ดยังดึงข้อมูลเก่ามาเป็น String
+                if (typeof med === 'string') return true; 
+                return med.meal && med.meal.includes(mealCode);
             });
 
-            // สร้างโครงสร้าง HTML สำหรับ 1 แถว (ชื่อยา + จำนวน + ปุ่มลบ)
+            filteredMeds.forEach(med => {
+                if (typeof med === 'string') {
+                    optionsHtml += `<option value="${med}">${med}</option>`;
+                } else {
+                    // สร้างข้อความบอกสถานะก่อน/หลังอาหาร
+                    let statusText = med.status === 'before' ? '[ก่อนอาหาร]' : (med.status === 'after' ? '[หลังอาหาร]' : '');
+                    // ดึงค่าโดสและส่งเป็น data attribute ไปด้วย
+                    optionsHtml += `<option value="${med.name}" data-dose="${med.pills}">${med.name} ${statusText}</option>`;
+                }
+            });
+
+            // เพิ่ม onchange="updateDose(this)" เพื่อให้เติมจำนวนยาอัตโนมัติ
             const rowHtml = `
                 <div class="row mb-2 align-items-center med-row" id="${rowId}">
                     <div class="col-7 pe-1">
-                        <select class="form-select med-select">${optionsHtml}</select>
+                        <select class="form-select med-select" onchange="updateDose(this)">${optionsHtml}</select>
                     </div>
                     <div class="col-3 px-1">
-                        <input type="number" class="form-control dose-input" placeholder="จำนวน" min="0.5" step="0.5">
+                        <input type="number" class="form-control dose-input" placeholder="จำนวน" min="0.25" step="0.25">
                     </div>
                     <div class="col-2 ps-1">
                         <button type="button" class="btn btn-outline-danger w-100 btn-remove" onclick="document.getElementById('${rowId}').remove()">ลบ</button>
@@ -170,7 +184,19 @@
             container.insertAdjacentHTML('beforeend', rowHtml);
         }
 
-        // ฟังก์ชันดึงข้อมูลยาแต่ละมื้อ (ส่งกลับเป็น Array ของ Object { name, dose })
+        // ฟังก์ชันใหม่: ดึงจำนวนโดส (pills) มาใส่ในช่องจำนวนอัตโนมัติ
+        function updateDose(selectElement) {
+            const selectedOption = selectElement.options[selectElement.selectedIndex];
+            const doseValue = selectedOption.getAttribute('data-dose');
+            const doseInput = selectElement.closest('.med-row').querySelector('.dose-input');
+            
+            if (doseValue) {
+                doseInput.value = doseValue;
+            } else {
+                doseInput.value = "";
+            }
+        }
+
         function extractMealData(mealType) {
             const container = document.getElementById(mealType + 'MedContainer');
             const rows = container.querySelectorAll('.med-row');
@@ -196,7 +222,6 @@
                 const response = await fetch(SCRIPT_URL + "?action=getMedicineList");
                 globalMedicineList = await response.json(); 
                 
-                // เมื่อได้รายชื่อยามาแล้ว ให้สร้างแถวเริ่มต้นให้แต่ละมื้อ 1 แถว
                 addMedRow('morning');
                 addMedRow('lunch');
                 addMedRow('dinner');
