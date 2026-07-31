@@ -636,7 +636,7 @@
             myModal.show();
         }
         
-        // แก้ไขฟังก์ชันคำนวณให้ดึงจาก data-carb ของปุ่มแทน
+        // แก้ไขฟังก์ชันคำนวณให้ดึงจาก data-carb ของปุ่มแทน และแสดงผล คงเหลือ/เกิน
         function updatePlanning() {
             let grandTotal = 0;
             const meals = ['m1', 'm2', 'm3'];
@@ -654,15 +654,23 @@
                         });
                     }
                 });
-        
+
                 document.getElementById(`${m}_total`).innerText = mealSum.toFixed(1);
                 grandTotal += mealSum;
             });
-        
+
             const remain = currentTargetCarb - grandTotal;
             const remEl = document.getElementById('plan-rem');
-            remEl.innerText = remain.toFixed(1);
-            remEl.className = remain < 0 ? 'over-limit' : '';
+            
+            if (remain < 0) {
+                // กรณีคาร์บเกินกำหนด
+                remEl.innerText = `เกิน ${Math.abs(remain).toFixed(1)}`;
+                remEl.className = 'over-limit';
+            } else {
+                // กรณีคาร์บยังคงเหลือ
+                remEl.innerText = `คงเหลือ ${remain.toFixed(1)}`;
+                remEl.className = '';
+            }
         }
 
         function updateGenderUI() {
