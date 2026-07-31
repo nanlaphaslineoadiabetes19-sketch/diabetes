@@ -28,13 +28,17 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        /* ปรับแต่งสไตล์ปุ่มถังขยะแดง */
+        /* ปรับแต่งสไตล์ปุ่มถังขยะแดง ให้ล็อกขนาดจัตุรัส ไม่ยืดหด */
         .btn-remove { 
+            width: 38px;
+            height: 38px;
+            min-width: 38px;
+            flex-shrink: 0;
             border-radius: 10px;
-            display: flex;
+            display: inline-flex;
             align-items: center;
             justify-content: center;
-            height: 38px;
+            padding: 0;
         }
     </style>
 </head>
@@ -152,12 +156,10 @@
             const container = document.getElementById(mealType + 'MedContainer');
             const rowId = 'row-' + Date.now() + Math.floor(Math.random() * 1000);
             
-            // กำหนดตัวอักษรสำหรับเช็คมื้ออาหาร (B=เช้า, L=กลางวัน, D=เย็น)
             let mealCode = mealType === 'morning' ? 'B' : (mealType === 'lunch' ? 'L' : 'D');
             
             let optionsHtml = '<option value="">-- เลือกยา --</option>';
             
-            // กรองเฉพาะยาที่ตรงกับมื้ออาหารนี้
             const filteredMeds = globalMedicineList.filter(med => {
                 if (typeof med === 'string') return true; 
                 return med.meal && med.meal.includes(mealCode);
@@ -173,27 +175,24 @@
             });
 
             const rowHtml = `
-                <div class="row mb-2 align-items-center med-row" id="${rowId}">
-                    <div class="col-7 pe-1">
+                <div class="d-flex align-items-center gap-2 mb-2 med-row" id="${rowId}">
+                    <div class="flex-grow-1">
                         <select class="form-select med-select" onchange="updateDose(this)">${optionsHtml}</select>
                     </div>
-                    <div class="col-3 px-1">
+                    <div style="width: 85px; flex-shrink: 0;">
                         <input type="number" class="form-control dose-input" placeholder="จำนวน" min="0.25" step="0.25">
                     </div>
-                    <div class="col-2 ps-1">
-                        <button type="button" class="btn btn-danger w-100 btn-remove" onclick="document.getElementById('${rowId}').remove()" title="ลบ">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
-                                <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
-                            </svg>
-                        </button>
-                    </div>
+                    <button type="button" class="btn btn-danger btn-remove" onclick="document.getElementById('${rowId}').remove()" title="ลบ">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
+                            <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                            <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                        </svg>
+                    </button>
                 </div>
             `;
             container.insertAdjacentHTML('beforeend', rowHtml);
         }
 
-        // ฟังก์ชันใหม่: ดึงจำนวนโดส (pills) มาใส่ในช่องจำนวนอัตโนมัติ
         function updateDose(selectElement) {
             const selectedOption = selectElement.options[selectElement.selectedIndex];
             const doseValue = selectedOption.getAttribute('data-dose');
@@ -336,7 +335,7 @@
                 dinner_med_1: dinnerList[0]?.name || "",
                 dinner_med_1_dose: dinnerList[0]?.dose || "",
                 dinner_med_2: dinnerList[1]?.name || "",
-                dinner_med_2_dose: dinnerList[2]?.dose || "",
+                dinner_med_2_dose: dinnerList[1]?.dose || "",
                 dinner_med_3: dinnerList[2]?.name || "",
                 dinner_med_3_dose: dinnerList[2]?.dose || "",
                 dinner_med_4: dinnerList[3]?.name || "",
