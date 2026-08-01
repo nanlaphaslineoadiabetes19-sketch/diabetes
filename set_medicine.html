@@ -228,14 +228,25 @@
         async function loadMedicineList() {
             try {
                 const response = await fetch(SCRIPT_URL + "?action=getMedicineList");
-                globalMedicineList = await response.json(); 
-                console.log("ข้อมูลยาที่โหลดมา:", globalMedicineList); // <-- เช็กใน Console
-        
+                const jsonResult = await response.json(); 
+                
+                // ตรวจสอบและแปลงให้เป็น Array เสมอ ป้องกันจอพัง
+                if (Array.isArray(jsonResult)) {
+                    globalMedicineList = jsonResult;
+                } else if (jsonResult.list && Array.isArray(jsonResult.list)) {
+                    globalMedicineList = jsonResult.list;
+                } else {
+                    globalMedicineList = [];
+                }
+                
+                console.log("ข้อมูลยาที่แปลงแล้ว:", globalMedicineList);
+                
                 addMedRow('morning');
                 addMedRow('lunch');
                 addMedRow('dinner');
             } catch (error) {
                 console.error("โหลดรายการยาไม่สำเร็จ", error);
+                globalMedicineList = [];
             }
         }
 
