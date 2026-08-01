@@ -229,7 +229,8 @@
             try {
                 const response = await fetch(SCRIPT_URL + "?action=getMedicineList");
                 globalMedicineList = await response.json(); 
-                
+                console.log("ข้อมูลยาที่โหลดมา:", globalMedicineList); // <-- เช็กใน Console
+        
                 addMedRow('morning');
                 addMedRow('lunch');
                 addMedRow('dinner');
