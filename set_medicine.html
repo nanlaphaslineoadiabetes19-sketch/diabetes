@@ -243,11 +243,13 @@
         
             Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
         
+            // ปรับการส่ง Data ให้ Apps Script อ่านเป็น Parameter ได้ทันที
+            const urlEncodedData = new URLSearchParams(payload).toString();
+
             fetch(SCRIPT_URL, {
                 method: "POST",
-                redirect: "follow",
-                headers: { "Content-Type": "text/plain;charset=utf-8" },
-                body: JSON.stringify(payload)
+                headers: { "Content-Type": "application/x-www-form-urlencoded" },
+                body: urlEncodedData
             })
             .then(response => response.json())
             .then(data => {
