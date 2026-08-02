@@ -179,8 +179,13 @@
                     <div class="flex-grow-1">
                         <select class="form-select med-select" onchange="updateDose(this)">${optionsHtml}</select>
                     </div>
-                    <div style="width: 75px; flex-shrink: 0;">
-                        <input type="number" class="form-control dose-input px-1 text-center" placeholder="จำนวน" min="0.25" step="0.25">
+                    <!-- ช่องสำหรับ กิน/มื้อ (Dose) -->
+                    <div style="width: 75px; flex-shrink: 0;" title="จำนวนเม็ดที่กินต่อมื้อ">
+                        <input type="number" class="form-control dose-input px-1 text-center" placeholder="กิน/มื้อ" min="0.25" step="0.25">
+                    </div>
+                    <!-- ช่องสำหรับ สต็อกที่จ่าย (Stock) ที่เพิ่มมาใหม่ -->
+                    <div style="width: 85px; flex-shrink: 0;" title="จำนวนยาที่จ่ายให้ผู้ป่วย(เม็ด)">
+                        <input type="number" class="form-control stock-input px-1 text-center" placeholder="สต็อก" min="0" step="1">
                     </div>
                     <button type="button" class="btn btn-danger btn-remove" onclick="document.getElementById('${rowId}').remove()" title="ลบ">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
@@ -209,16 +214,15 @@
             const container = document.getElementById(mealType + 'MedContainer');
             const rows = container.querySelectorAll('.med-row');
             let medList = [];
-        
             rows.forEach(row => {
                 const medName = row.querySelector('.med-select').value;
                 const dose = parseFloat(row.querySelector('.dose-input').value) || 0;
+                const stock = parseFloat(row.querySelector('.stock-input').value) || 0; // ดึงค่าสต็อก
                 
                 if (medName && dose > 0) {
-                    medList.push({ name: medName, dose: dose });
+                    medList.push({ name: medName, dose: dose, stock: stock }); // ส่งค่า stock กลับไปด้วย
                 }
             });
-        
             return medList;
         }
 
@@ -316,44 +320,29 @@
                 line_name: document.getElementById("line_name").value,
                 
                 // ยามื้อเช้า
-                morning_med_1: morningList[0]?.name || "",
-                morning_med_1_dose: morningList[0]?.dose || "",
-                morning_med_2: morningList[1]?.name || "",
-                morning_med_2_dose: morningList[1]?.dose || "",
-                morning_med_3: morningList[2]?.name || "",
-                morning_med_3_dose: morningList[2]?.dose || "",
-                morning_med_4: morningList[3]?.name || "",
-                morning_med_4_dose: morningList[3]?.dose || "",
-                morning_med_5: morningList[4]?.name || "",
-                morning_med_5_dose: morningList[4]?.dose || "",
+                morning_med_1: morningList[0]?.name || "", morning_med_1_dose: morningList[0]?.dose || "", morning_med_1_stock: morningList[0]?.stock || "",
+                morning_med_2: morningList[1]?.name || "", morning_med_2_dose: morningList[1]?.dose || "", morning_med_2_stock: morningList[1]?.stock || "",
+                morning_med_3: morningList[2]?.name || "", morning_med_3_dose: morningList[2]?.dose || "", morning_med_3_stock: morningList[2]?.stock || "",
+                morning_med_4: morningList[3]?.name || "", morning_med_4_dose: morningList[3]?.dose || "", morning_med_4_stock: morningList[3]?.stock || "",
+                morning_med_5: morningList[4]?.name || "", morning_med_5_dose: morningList[4]?.dose || "", morning_med_5_stock: morningList[4]?.stock || "",
                 morning_before_time: document.getElementById("timeMorningBefore").value,
                 morning_after_time: document.getElementById("timeMorningAfter").value,
                 
                 // ยามื้อกลางวัน
-                lunch_med_1: lunchList[0]?.name || "",
-                lunch_med_1_dose: lunchList[0]?.dose || "",
-                lunch_med_2: lunchList[1]?.name || "",
-                lunch_med_2_dose: lunchList[1]?.dose || "",
-                lunch_med_3: lunchList[2]?.name || "",
-                lunch_med_3_dose: lunchList[2]?.dose || "",
-                lunch_med_4: lunchList[3]?.name || "",
-                lunch_med_4_dose: lunchList[3]?.dose || "",
-                lunch_med_5: lunchList[4]?.name || "",
-                lunch_med_5_dose: lunchList[4]?.dose || "",
+                lunch_med_1: lunchList[0]?.name || "", lunch_med_1_dose: lunchList[0]?.dose || "", lunch_med_1_stock: lunchList[0]?.stock || "",
+                lunch_med_2: lunchList[1]?.name || "", lunch_med_2_dose: lunchList[1]?.dose || "", lunch_med_2_stock: lunchList[1]?.stock || "",
+                lunch_med_3: lunchList[2]?.name || "", lunch_med_3_dose: lunchList[2]?.dose || "", lunch_med_3_stock: lunchList[2]?.stock || "",
+                lunch_med_4: lunchList[3]?.name || "", lunch_med_4_dose: lunchList[3]?.dose || "", lunch_med_4_stock: lunchList[3]?.stock || "",
+                lunch_med_5: lunchList[4]?.name || "", lunch_med_5_dose: lunchList[4]?.dose || "", lunch_med_5_stock: lunchList[4]?.stock || "",
                 lunch_before_time: document.getElementById("timeLunchBefore").value,
                 lunch_after_time: document.getElementById("timeLunchAfter").value,
                 
                 // ยามื้อเย็น
-                dinner_med_1: dinnerList[0]?.name || "",
-                dinner_med_1_dose: dinnerList[0]?.dose || "",
-                dinner_med_2: dinnerList[1]?.name || "",
-                dinner_med_2_dose: dinnerList[1]?.dose || "",
-                dinner_med_3: dinnerList[2]?.name || "",
-                dinner_med_3_dose: dinnerList[2]?.dose || "",
-                dinner_med_4: dinnerList[3]?.name || "",
-                dinner_med_4_dose: dinnerList[3]?.dose || "",
-                dinner_med_5: dinnerList[4]?.name || "",
-                dinner_med_5_dose: dinnerList[4]?.dose || "",
+                dinner_med_1: dinnerList[0]?.name || "", dinner_med_1_dose: dinnerList[0]?.dose || "", dinner_med_1_stock: dinnerList[0]?.stock || "",
+                dinner_med_2: dinnerList[1]?.name || "", dinner_med_2_dose: dinnerList[1]?.dose || "", dinner_med_2_stock: dinnerList[1]?.stock || "",
+                dinner_med_3: dinnerList[2]?.name || "", dinner_med_3_dose: dinnerList[2]?.dose || "", dinner_med_3_stock: dinnerList[2]?.stock || "",
+                dinner_med_4: dinnerList[3]?.name || "", dinner_med_4_dose: dinnerList[3]?.dose || "", dinner_med_4_stock: dinnerList[3]?.stock || "",
+                dinner_med_5: dinnerList[4]?.name || "", dinner_med_5_dose: dinnerList[4]?.dose || "", dinner_med_5_stock: dinnerList[4]?.stock || "",
                 dinner_before_time: document.getElementById("timeDinnerBefore").value,
                 dinner_after_time: document.getElementById("timeDinnerAfter").value
             };
