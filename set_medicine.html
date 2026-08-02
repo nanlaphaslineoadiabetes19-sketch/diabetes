@@ -158,7 +158,7 @@
             
             let mealCode = mealType === 'morning' ? 'B' : (mealType === 'lunch' ? 'L' : 'D');
             
-            let optionsHtml = '<option value="">-- เลือกยา --</option>';
+            let optionsHtml = '<option value="">เลือกยา</option>';
             
             const filteredMeds = globalMedicineList.filter(med => {
                 if (typeof med === 'string') return true; 
