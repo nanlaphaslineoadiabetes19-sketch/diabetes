@@ -11,6 +11,7 @@
     
     <style>
         body { background-color: #f4f7f6; font-family: 'Sarabun', sans-serif; }
+        .nav-bar-fixed { position: fixed; top: 15px; left: 15px; z-index: 999; }
         .card { border: none; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
         .card-header { background: linear-gradient(135deg, #0d6efd, #0dcaf0); color: white; border-radius: 15px 15px 0 0 !important; }
         .form-label { font-weight: 600; color: #495057; }
@@ -27,6 +28,7 @@
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
+        .btn-back { padding: 10px 22px; background: rgba(255, 255, 255, 0.8); color: #555; border: 1px solid #ddd; border-radius: 50px; cursor: pointer; font-size: 15px; font-weight: 700; box-shadow: 0 4px 15px rgba(0,0,0,0.1); backdrop-filter: blur(8px); }
         .btn-remove { 
             width: 38px; height: 38px; min-width: 38px; flex-shrink: 0; border-radius: 10px;
             display: inline-flex; align-items: center; justify-content: center; padding: 0;
@@ -34,6 +36,9 @@
     </style>
 </head>
 <body class="p-1 p-sm-3 p-md-4">
+    <div class="nav-bar-fixed">
+        <button class="btn-back" onclick="goBackMain()">⬅ ย้อนกลับ</button>
+    </div>
 
     <div class="container px-1 px-sm-3" style="max-width: 800px;">
         <div class="card">
@@ -271,6 +276,11 @@
         }
 
         window.onload = function() { loadPatients(); loadMedicineList(); };
+
+        function goBackMain() {
+            window.location.href = 'https://liff.line.me/2009966517-pPEyRumg';
+        }
+        
     </script>
 </body>
 </html>
