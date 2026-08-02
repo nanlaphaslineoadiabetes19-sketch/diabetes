@@ -255,7 +255,7 @@
                 const response = await fetch(SCRIPT_URL + "?action=getPatients");
                 const patients = await response.json();
                 const select = document.getElementById("patientSelect");
-                select.innerHTML = '<option value="">-- กรุณาเลือกคนไข้ --</option>';
+                select.innerHTML = '<option value="">-- กรุณาเลือกผู้ป่วย --</option>';
                 patients.forEach(p => {
                     let option = document.createElement("option");
                     option.value = p.line_id;
