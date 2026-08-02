@@ -7,7 +7,6 @@
     
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-    
     <link href="https://fonts.googleapis.com/css2?family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     
     <style>
@@ -22,23 +21,15 @@
         .meal-section {
             border: 1px solid #dee2e6;
             border-radius: 12px;
-            padding: 15px 10px; /* ลด Padding ขอบข้างในมื้ออาหารลง เพื่อเพิ่มพื้นที่การทำงาน */
+            padding: 15px 15px; 
             background-color: #ffffff;
             margin-bottom: 20px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.05);
         }
 
-        /* ปรับแต่งสไตล์ปุ่มถังขยะแดง ให้ล็อกขนาดจัตุรัส ไม่ยืดหด */
         .btn-remove { 
-            width: 38px;
-            height: 38px;
-            min-width: 38px;
-            flex-shrink: 0;
-            border-radius: 10px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0;
+            width: 38px; height: 38px; min-width: 38px; flex-shrink: 0; border-radius: 10px;
+            display: inline-flex; align-items: center; justify-content: center; padding: 0;
         }
     </style>
 </head>
@@ -63,12 +54,10 @@
                         <input type="hidden" id="line_name">
                     </div>
 
-                    <!-- 2. รายการยาคงเหลือ -->
+                    <!-- 2. รายการยาคงเหลือ (ใช้เพื่อดูข้อมูลเฉยๆ ตามที่คุณต้องการเก็บไว้) -->
                     <div class="stock-box mb-4" id="stockBox">
-                        <h6 id="stockHeader">📦 รายการยาคงเหลือ (เม็ด)</h6>
-                        <div id="stockContent" class="row">
-                            <!-- ข้อมูลยาจะถูกดึงมาแสดงที่นี่ -->
-                        </div>
+                        <h6 id="stockHeader">📦 ปริมาณยาที่ต้องทานต่อวัน (เม็ด)</h6>
+                        <div id="stockContent" class="row"></div>
                     </div>
 
                     <h5 class="fw-bold mb-3 text-primary mt-4">📝 รายการยาที่สั่งจ่าย</h5>
@@ -77,67 +66,31 @@
                     <div class="meal-section">
                         <h5 class="fw-bold text-success mb-3">🌅 ยามื้อเช้า</h5>
                         <div id="morningMedContainer"></div>
-                        
-                        <button type="button" class="btn btn-sm btn-outline-primary mb-3" onclick="addMedRow('morning')">
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="addMedRow('morning')">
                             + เพิ่มชนิดยา
                         </button>
-
-                        <div class="row g-2">
-                            <div class="col-6">
-                                <label class="form-label text-primary">ก่อนอาหาร</label>
-                                <input type="time" class="form-control" id="timeMorningBefore">
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label text-warning">หลังอาหาร</label>
-                                <input type="time" class="form-control" id="timeMorningAfter">
-                            </div>
-                        </div>
                     </div>
                     
                     <!-- ================= ยามื้อกลางวัน ================= -->
                     <div class="meal-section">
                         <h5 class="fw-bold text-success mb-3">☀️ ยามื้อกลางวัน</h5>
                         <div id="lunchMedContainer"></div>
-                        
-                        <button type="button" class="btn btn-sm btn-outline-primary mb-3" onclick="addMedRow('lunch')">
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="addMedRow('lunch')">
                             + เพิ่มชนิดยา
                         </button>
-
-                        <div class="row g-2">
-                            <div class="col-6">
-                                <label class="form-label text-primary">ก่อนอาหาร</label>
-                                <input type="time" class="form-control" id="timeLunchBefore">
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label text-warning">หลังอาหาร</label>
-                                <input type="time" class="form-control" id="timeLunchAfter">
-                            </div>
-                        </div>
                     </div>
                     
                     <!-- ================= ยามื้อเย็น ================= -->
                     <div class="meal-section">
                         <h5 class="fw-bold text-success mb-3">🌙 ยามื้อเย็น</h5>
                         <div id="dinnerMedContainer"></div>
-                        
-                        <button type="button" class="btn btn-sm btn-outline-primary mb-3" onclick="addMedRow('dinner')">
+                        <button type="button" class="btn btn-sm btn-outline-primary" onclick="addMedRow('dinner')">
                             + เพิ่มชนิดยา
                         </button>
-
-                        <div class="row g-2">
-                            <div class="col-6">
-                                <label class="form-label text-primary">ก่อนอาหาร</label>
-                                <input type="time" class="form-control" id="timeDinnerBefore">
-                            </div>
-                            <div class="col-6">
-                                <label class="form-label text-warning">หลังอาหาร</label>
-                                <input type="time" class="form-control" id="timeDinnerAfter">
-                            </div>
-                        </div>
                     </div>
                     
                     <button type="submit" class="btn btn-primary btn-lg w-100 shadow-sm mt-3" style="border-radius: 10px; font-weight: 600; letter-spacing: 1px;">
-                        💾 บันทึก
+                        💾 บันทึกข้อมูล
                     </button>
                 </form>
             </div>
@@ -146,18 +99,12 @@
 
     <script>
         const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwLuqh2ivMXanbpRRbFfhMeOElAFgyrWBkFOthPZzCTjiI0gWdy7rDXTiuYlpj2Lzyb/exec"; 
-        
         let globalMedicineList = [];
 
-        // ---------------------------------------------------
-        // 1. ระบบจัดการรายการยาแบบไดนามิก (เพิ่ม/ลบ แถว)
-        // ---------------------------------------------------
         function addMedRow(mealType) {
             const container = document.getElementById(mealType + 'MedContainer');
             const rowId = 'row-' + Date.now() + Math.floor(Math.random() * 1000);
-            
             let mealCode = mealType === 'morning' ? 'B' : (mealType === 'lunch' ? 'L' : 'D');
-            
             let optionsHtml = '<option value="">เลือกยา</option>';
             
             const filteredMeds = globalMedicineList.filter(med => {
@@ -179,13 +126,8 @@
                     <div class="flex-grow-1">
                         <select class="form-select med-select" onchange="updateDose(this)">${optionsHtml}</select>
                     </div>
-                    <!-- ช่องสำหรับ กิน/มื้อ (Dose) -->
-                    <div style="width: 75px; flex-shrink: 0;" title="จำนวนเม็ดที่กินต่อมื้อ">
+                    <div style="width: 80px; flex-shrink: 0;" title="จำนวนเม็ด">
                         <input type="number" class="form-control dose-input px-1 text-center" placeholder="กิน/มื้อ" min="0.25" step="0.25">
-                    </div>
-                    <!-- ช่องสำหรับ สต็อกที่จ่าย (Stock) ที่เพิ่มมาใหม่ -->
-                    <div style="width: 85px; flex-shrink: 0;" title="จำนวนยาที่จ่ายให้ผู้ป่วย(เม็ด)">
-                        <input type="number" class="form-control stock-input px-1 text-center" placeholder="สต็อก" min="0" step="1">
                     </div>
                     <button type="button" class="btn btn-danger btn-remove" onclick="document.getElementById('${rowId}').remove()" title="ลบ">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="currentColor" viewBox="0 0 16 16">
@@ -202,12 +144,7 @@
             const selectedOption = selectElement.options[selectElement.selectedIndex];
             const doseValue = selectedOption.getAttribute('data-dose');
             const doseInput = selectElement.closest('.med-row').querySelector('.dose-input');
-            
-            if (doseValue) {
-                doseInput.value = doseValue;
-            } else {
-                doseInput.value = "";
-            }
+            doseInput.value = doseValue ? doseValue : "";
         }
 
         function extractMealData(mealType) {
@@ -216,42 +153,24 @@
             let medList = [];
             rows.forEach(row => {
                 const medName = row.querySelector('.med-select').value;
-                const dose = parseFloat(row.querySelector('.dose-input').value) || 0;
-                const stock = parseFloat(row.querySelector('.stock-input').value) || 0; // ดึงค่าสต็อก
+                const pills = parseFloat(row.querySelector('.dose-input').value) || 0;
                 
-                if (medName && dose > 0) {
-                    medList.push({ name: medName, dose: dose, stock: stock }); // ส่งค่า stock กลับไปด้วย
+                if (medName && pills > 0) {
+                    medList.push({ name: medName, pills: pills });
                 }
             });
             return medList;
         }
 
-        // ---------------------------------------------------
-        // 2. การโหลดข้อมูลเริ่มต้น
-        // ---------------------------------------------------
         async function loadMedicineList() {
             try {
                 const response = await fetch(SCRIPT_URL + "?action=getMedicineList");
                 const jsonResult = await response.json(); 
+                if (Array.isArray(jsonResult)) { globalMedicineList = jsonResult; }
+                else if (jsonResult.list && Array.isArray(jsonResult.list)) { globalMedicineList = jsonResult.list; }
                 
-                // ตรวจสอบและแปลงให้เป็น Array เสมอ ป้องกันจอพัง
-                if (Array.isArray(jsonResult)) {
-                    globalMedicineList = jsonResult;
-                } else if (jsonResult.list && Array.isArray(jsonResult.list)) {
-                    globalMedicineList = jsonResult.list;
-                } else {
-                    globalMedicineList = [];
-                }
-                
-                console.log("ข้อมูลยาที่แปลงแล้ว:", globalMedicineList);
-                
-                addMedRow('morning');
-                addMedRow('lunch');
-                addMedRow('dinner');
-            } catch (error) {
-                console.error("โหลดรายการยาไม่สำเร็จ", error);
-                globalMedicineList = [];
-            }
+                addMedRow('morning'); addMedRow('lunch'); addMedRow('dinner');
+            } catch (error) { console.error("โหลดรายการยาไม่สำเร็จ", error); }
         }
 
         async function loadPatients() {
@@ -259,57 +178,38 @@
                 const response = await fetch(SCRIPT_URL + "?action=getPatients");
                 const patients = await response.json();
                 const select = document.getElementById("patientSelect");
-                select.innerHTML = '<option value="">-- กรุณาเลือกผู้ป่วย --</option>';
-                patients.forEach(p => {
-                    let option = document.createElement("option");
-                    option.value = p.line_id;
-                    option.text = p.line_name;
-                    select.appendChild(option);
-                });
-            } catch (error) {
-                document.getElementById("patientSelect").innerHTML = '<option value="">-- โหลดรายชื่อล้มเหลว กรุณารีเฟรช --</option>';
-            }
+                patients.forEach(p => select.appendChild(new Option(p.line_name, p.line_id)));
+            } catch (error) { console.error(error); }
         }
 
-        // ---------------------------------------------------
-        // 3. Event Listeners และการบันทึก
-        // ---------------------------------------------------
         document.getElementById("patientSelect").addEventListener("change", async function() {
             const opt = this.options[this.selectedIndex];
             document.getElementById("line_name").value = opt.value ? opt.text : "";
-            
             const lineId = opt.value;
             const stockBox = document.getElementById("stockBox");
-            const stockContent = document.getElementById("stockContent");
-
+            
             if (lineId) {
                 stockBox.style.display = "block";
-                stockContent.innerHTML = "<div class='col-12 text-muted'>กำลังโหลดข้อมูลยาคงเหลือ...</div>";
+                document.getElementById("stockContent").innerHTML = "<div class='col-12 text-muted'>กำลังโหลดข้อมูล...</div>";
                 try {
                     const response = await fetch(SCRIPT_URL + "?action=getMedStock&line_id=" + lineId);
                     const result = await response.json();
-                    
-                    document.getElementById("stockHeader").innerText = "📦 รายการยาคงเหลือ (" + result.totalSum + " เม็ด)";
+                    document.getElementById("stockHeader").innerText = "📦 ปริมาณยาที่ต้องทานต่อวัน (" + (result.totalSum || 0) + " เม็ด)";
                     if(result.list && result.list.length > 0) {
                         let html = "";
                         result.list.forEach((item, index) => {
-                            html += `<div class="col-12 col-md-6 mb-2 text-secondary" style="font-size:0.95rem;">${index+1}. ${item.med_name} <span class="float-end fw-bold text-dark">${item.total_pills} เม็ด</span></div>`;
+                            html += `<div class="col-12 col-md-6 mb-2 text-secondary" style="font-size:0.95rem;">${index+1}. ${item.med_name} <span class="float-end fw-bold text-dark">${item.total_pills} เม็ด/วัน</span></div>`;
                         });
-                        stockContent.innerHTML = html;
+                        document.getElementById("stockContent").innerHTML = html;
                     } else {
-                        stockContent.innerHTML = "<div class='col-12 text-danger'>ไม่พบข้อมูลยาคงเหลือ</div>";
+                        document.getElementById("stockContent").innerHTML = "<div class='col-12 text-danger'>ไม่พบข้อมูลปริมาณยา</div>";
                     }
-                } catch (error) {
-                    stockContent.innerHTML = "<div class='col-12 text-danger'>เชื่อมต่อ Server ล้มเหลว</div>";
-                }
-            } else {
-                stockBox.style.display = "none";
-            }
+                } catch (error) {}
+            } else { stockBox.style.display = "none"; }
         });
 
         function saveMedicine(event) {
             event.preventDefault();
-            
             const morningList = extractMealData('morning');
             const lunchList = extractMealData('lunch');
             const dinnerList = extractMealData('dinner');
@@ -320,31 +220,25 @@
                 line_name: document.getElementById("line_name").value,
                 
                 // ยามื้อเช้า
-                morning_med_1: morningList[0]?.name || "", morning_med_1_dose: morningList[0]?.dose || "", morning_med_1_stock: morningList[0]?.stock || "",
-                morning_med_2: morningList[1]?.name || "", morning_med_2_dose: morningList[1]?.dose || "", morning_med_2_stock: morningList[1]?.stock || "",
-                morning_med_3: morningList[2]?.name || "", morning_med_3_dose: morningList[2]?.dose || "", morning_med_3_stock: morningList[2]?.stock || "",
-                morning_med_4: morningList[3]?.name || "", morning_med_4_dose: morningList[3]?.dose || "", morning_med_4_stock: morningList[3]?.stock || "",
-                morning_med_5: morningList[4]?.name || "", morning_med_5_dose: morningList[4]?.dose || "", morning_med_5_stock: morningList[4]?.stock || "",
-                morning_before_time: document.getElementById("timeMorningBefore").value,
-                morning_after_time: document.getElementById("timeMorningAfter").value,
+                morning_med_1: morningList[0]?.name || "", morning_med_1_pills: morningList[0]?.pills || "",
+                morning_med_2: morningList[1]?.name || "", morning_med_2_pills: morningList[1]?.pills || "",
+                morning_med_3: morningList[2]?.name || "", morning_med_3_pills: morningList[2]?.pills || "",
+                morning_med_4: morningList[3]?.name || "", morning_med_4_pills: morningList[3]?.pills || "",
+                morning_med_5: morningList[4]?.name || "", morning_med_5_pills: morningList[4]?.pills || "",
                 
                 // ยามื้อกลางวัน
-                lunch_med_1: lunchList[0]?.name || "", lunch_med_1_dose: lunchList[0]?.dose || "", lunch_med_1_stock: lunchList[0]?.stock || "",
-                lunch_med_2: lunchList[1]?.name || "", lunch_med_2_dose: lunchList[1]?.dose || "", lunch_med_2_stock: lunchList[1]?.stock || "",
-                lunch_med_3: lunchList[2]?.name || "", lunch_med_3_dose: lunchList[2]?.dose || "", lunch_med_3_stock: lunchList[2]?.stock || "",
-                lunch_med_4: lunchList[3]?.name || "", lunch_med_4_dose: lunchList[3]?.dose || "", lunch_med_4_stock: lunchList[3]?.stock || "",
-                lunch_med_5: lunchList[4]?.name || "", lunch_med_5_dose: lunchList[4]?.dose || "", lunch_med_5_stock: lunchList[4]?.stock || "",
-                lunch_before_time: document.getElementById("timeLunchBefore").value,
-                lunch_after_time: document.getElementById("timeLunchAfter").value,
+                lunch_med_1: lunchList[0]?.name || "", lunch_med_1_pills: lunchList[0]?.pills || "",
+                lunch_med_2: lunchList[1]?.name || "", lunch_med_2_pills: lunchList[1]?.pills || "",
+                lunch_med_3: lunchList[2]?.name || "", lunch_med_3_pills: lunchList[2]?.pills || "",
+                lunch_med_4: lunchList[3]?.name || "", lunch_med_4_pills: lunchList[3]?.pills || "",
+                lunch_med_5: lunchList[4]?.name || "", lunch_med_5_pills: lunchList[4]?.pills || "",
                 
                 // ยามื้อเย็น
-                dinner_med_1: dinnerList[0]?.name || "", dinner_med_1_dose: dinnerList[0]?.dose || "", dinner_med_1_stock: dinnerList[0]?.stock || "",
-                dinner_med_2: dinnerList[1]?.name || "", dinner_med_2_dose: dinnerList[1]?.dose || "", dinner_med_2_stock: dinnerList[1]?.stock || "",
-                dinner_med_3: dinnerList[2]?.name || "", dinner_med_3_dose: dinnerList[2]?.dose || "", dinner_med_3_stock: dinnerList[2]?.stock || "",
-                dinner_med_4: dinnerList[3]?.name || "", dinner_med_4_dose: dinnerList[3]?.dose || "", dinner_med_4_stock: dinnerList[3]?.stock || "",
-                dinner_med_5: dinnerList[4]?.name || "", dinner_med_5_dose: dinnerList[4]?.dose || "", dinner_med_5_stock: dinnerList[4]?.stock || "",
-                dinner_before_time: document.getElementById("timeDinnerBefore").value,
-                dinner_after_time: document.getElementById("timeDinnerAfter").value
+                dinner_med_1: dinnerList[0]?.name || "", dinner_med_1_pills: dinnerList[0]?.pills || "",
+                dinner_med_2: dinnerList[1]?.name || "", dinner_med_2_pills: dinnerList[1]?.pills || "",
+                dinner_med_3: dinnerList[2]?.name || "", dinner_med_3_pills: dinnerList[2]?.pills || "",
+                dinner_med_4: dinnerList[3]?.name || "", dinner_med_4_pills: dinnerList[3]?.pills || "",
+                dinner_med_5: dinnerList[4]?.name || "", dinner_med_5_pills: dinnerList[4]?.pills || ""
             };
         
             Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
@@ -358,27 +252,18 @@
             .then(response => response.json())
             .then(data => {
                 if(data.status === "success") {
-                    Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ!', text: 'ตั้งค่ารอบทานยาเรียบร้อยแล้ว', timer: 2000, showConfirmButton: false });
-                    
+                    Swal.fire({ icon: 'success', title: 'บันทึกสำเร็จ!', timer: 2000, showConfirmButton: false });
                     document.getElementById("medicineForm").reset();
                     document.getElementById("stockBox").style.display = "none";
                     document.getElementById("morningMedContainer").innerHTML = "";
                     document.getElementById("lunchMedContainer").innerHTML = "";
                     document.getElementById("dinnerMedContainer").innerHTML = "";
                     addMedRow('morning'); addMedRow('lunch'); addMedRow('dinner');
-                } else {
-                    Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: data.message });
-                }
-            })
-            .catch(error => {
-                Swal.fire({ icon: 'error', title: 'การเชื่อมต่อขัดข้อง', text: 'กรุณาตรวจสอบอินเทอร์เน็ต' });
-            });
+                } else { Swal.fire({ icon: 'error', title: 'เกิดข้อผิดพลาด', text: data.message }); }
+            }).catch(error => { Swal.fire({ icon: 'error', title: 'การเชื่อมต่อขัดข้อง' }); });
         }
 
-        window.onload = function() { 
-            loadPatients();      
-            loadMedicineList();  
-        };
+        window.onload = function() { loadPatients(); loadMedicineList(); };
     </script>
 </body>
 </html>
