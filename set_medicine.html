@@ -151,12 +151,18 @@
             const container = document.getElementById(mealType + 'MedContainer');
             const rows = container.querySelectorAll('.med-row');
             let medList = [];
+            
             rows.forEach(row => {
                 const medName = row.querySelector('.med-select').value;
-                const pills = parseFloat(row.querySelector('.dose-input').value) || 0;
+                const pillsInput = row.querySelector('.dose-input').value;
+                // แปลงเป็นจำนวนเต็ม หรือปล่อยว่างถ้าไม่ได้กรอก
+                const pills = pillsInput !== "" ? parseInt(pillsInput, 10) || 0 : "";
                 
-                if (medName && pills > 0) {
+                // เก็บทุกแถวที่มีการเลือกชื่อยา (ไม่ตัดทิ้งแม้จำนวนเม็ดจะเป็น 0 หรือว่าง เพื่อรักษาตำแหน่ง Index)
+                if (medName) {
                     medList.push({ name: medName, pills: pills });
+                } else {
+                    medList.push({ name: "", pills: "" });
                 }
             });
             return medList;
@@ -215,30 +221,30 @@
             const dinnerList = extractMealData('dinner');
         
             const payload = {
-                action: "saveMedicineDaily",
+                action: "saveMedicineData", // ใช้ชื่อแอคชั่นให้ตรงกับฟังก์ชันใน Apps Script
                 line_id: document.getElementById("patientSelect").value,
                 line_name: document.getElementById("line_name").value,
                 
-                // ยามื้อเช้า
-                morning_med_1: morningList[0]?.name || "", morning_med_1_pills: morningList[0]?.pills || "",
-                morning_med_2: morningList[1]?.name || "", morning_med_2_pills: morningList[1]?.pills || "",
-                morning_med_3: morningList[2]?.name || "", morning_med_3_pills: morningList[2]?.pills || "",
-                morning_med_4: morningList[3]?.name || "", morning_med_4_pills: morningList[3]?.pills || "",
-                morning_med_5: morningList[4]?.name || "", morning_med_5_pills: morningList[4]?.pills || "",
+                // ยามื้อเช้า (เรียงล็อก Index 1 ถึง 5 เป๊ะๆ 100%)
+                morning_med_1: morningList[0]?.name || "", morning_med_1_pills: morningList[0]?.pills !== undefined ? morningList[0]?.pills : "",
+                morning_med_2: morningList[1]?.name || "", morning_med_2_pills: morningList[1]?.pills !== undefined ? morningList[1]?.pills : "",
+                morning_med_3: morningList[2]?.name || "", morning_med_3_pills: morningList[2]?.pills !== undefined ? morningList[2]?.pills : "",
+                morning_med_4: morningList[3]?.name || "", morning_med_4_pills: morningList[3]?.pills !== undefined ? morningList[3]?.pills : "",
+                morning_med_5: morningList[4]?.name || "", morning_med_5_pills: morningList[4]?.pills !== undefined ? morningList[4]?.pills : "",
                 
                 // ยามื้อกลางวัน
-                lunch_med_1: lunchList[0]?.name || "", lunch_med_1_pills: lunchList[0]?.pills || "",
-                lunch_med_2: lunchList[1]?.name || "", lunch_med_2_pills: lunchList[1]?.pills || "",
-                lunch_med_3: lunchList[2]?.name || "", lunch_med_3_pills: lunchList[2]?.pills || "",
-                lunch_med_4: lunchList[3]?.name || "", lunch_med_4_pills: lunchList[3]?.pills || "",
-                lunch_med_5: lunchList[4]?.name || "", lunch_med_5_pills: lunchList[4]?.pills || "",
+                lunch_med_1: lunchList[0]?.name || "", lunch_med_1_pills: lunchList[0]?.pills !== undefined ? lunchList[0]?.pills : "",
+                lunch_med_2: lunchList[1]?.name || "", lunch_med_2_pills: lunchList[1]?.pills !== undefined ? lunchList[1]?.pills : "",
+                lunch_med_3: lunchList[2]?.name || "", lunch_med_3_pills: lunchList[2]?.pills !== undefined ? lunchList[2]?.pills : "",
+                lunch_med_4: lunchList[3]?.name || "", lunch_med_4_pills: lunchList[3]?.pills !== undefined ? lunchList[3]?.pills : "",
+                lunch_med_5: lunchList[4]?.name || "", lunch_med_5_pills: lunchList[4]?.pills !== undefined ? lunchList[4]?.pills : "",
                 
                 // ยามื้อเย็น
-                dinner_med_1: dinnerList[0]?.name || "", dinner_med_1_pills: dinnerList[0]?.pills || "",
-                dinner_med_2: dinnerList[1]?.name || "", dinner_med_2_pills: dinnerList[1]?.pills || "",
-                dinner_med_3: dinnerList[2]?.name || "", dinner_med_3_pills: dinnerList[2]?.pills || "",
-                dinner_med_4: dinnerList[3]?.name || "", dinner_med_4_pills: dinnerList[3]?.pills || "",
-                dinner_med_5: dinnerList[4]?.name || "", dinner_med_5_pills: dinnerList[4]?.pills || ""
+                dinner_med_1: dinnerList[0]?.name || "", dinner_med_1_pills: dinnerList[0]?.pills !== undefined ? dinnerList[0]?.pills : "",
+                dinner_med_2: dinnerList[1]?.name || "", dinner_med_2_pills: dinnerList[1]?.pills !== undefined ? dinnerList[1]?.pills : "",
+                dinner_med_3: dinnerList[2]?.name || "", dinner_med_3_pills: dinnerList[2]?.pills !== undefined ? dinnerList[2]?.pills : "",
+                dinner_med_4: dinnerList[3]?.name || "", dinner_med_4_pills: dinnerList[3]?.pills !== undefined ? dinnerList[3]?.pills : "",
+                dinner_med_5: dinnerList[4]?.name || "", dinner_med_5_pills: dinnerList[4]?.pills !== undefined ? dinnerList[4]?.pills : ""
             };
         
             Swal.fire({ title: 'กำลังบันทึกข้อมูล...', allowOutsideClick: false, didOpen: () => { Swal.showLoading() } });
