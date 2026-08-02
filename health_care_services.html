@@ -138,7 +138,7 @@
             <!-- เพิ่ม Input Hidden ไว้เก็บค่า ID -->
             <input type="hidden" id="selected-patient-id">
 
-            <label class="form-label" style="font-size: 0.9em; color: #6c757d; margin-top: 10px;">📅 เลือกวันที่และเวลานัดหมาย:</label>
+            <label class="form-label" style="font-size: 0.9em; color: #6c757d; margin-top: 10px;">🗓️ เลือกวันที่และเวลานัดหมาย:</label>
             <input type="datetime-local" id="app-date" class="form-control mb-3">
             
             <button class="btn btn-primary w-100" onclick="saveAppointments()">ลงวันนัดหมาย</button>
@@ -147,7 +147,7 @@
         <!-- ส่วนของปฏิทิน -->
         <div class="card p-0 calendar-container">
             <!-- ใส่ class พิเศษเพื่อดึงไปไว้ด้านบน -->
-            <h4 class="calendar-title-top">📅 🗓️ <img src="https://icon-icons.com/th/icon/calendar/34471"> ปฏิทินนัดหมาย</h4>
+            <h4 class="calendar-title-top">🗓️ ปฏิทินนัดหมาย</h4>
             <div id="calendar"></div>
         </div>
     </div>
@@ -283,7 +283,7 @@
                         Swal.fire({
                             title: ``, // ใช้ตัวแปรที่ปรับรูปแบบแล้ว
                             html: `
-                                <h5 style="font-size: 18px; font-weight: bold; margin-bottom: 15px;">📅 นัดหมายวันที่ ${formattedDate}</h5>
+                                <h5 style="font-size: 18px; font-weight: bold; margin-bottom: 15px;">🗓️ นัดหมายวันที่ ${formattedDate}</h5>
                                 ${listHtml}
                                 <hr>
                                 <button class="btn btn-primary w-100" onclick="showAddForm('${clickedDate}')">+ เพิ่มนัดหมายใหม่</button>
@@ -303,7 +303,7 @@
             Swal.fire({
                 title: '',
                 html: `
-                <h5 style="font-size: 18px; font-weight: bold; margin-bottom: 15px;">📅 เพิ่มการนัดหมาย</h5>
+                <h5 style="font-size: 18px; font-weight: bold; margin-bottom: 15px;">🗓️ เพิ่มการนัดหมาย</h5>
                     <div class="mb-3 text-start">
                         <label class="form-label fw-bold">เลือกผู้ป่วย:</label>
                         <!-- ปรับให้ div นี้กดได้โดยตรง เพื่อเรียก renderPatientList แทนการมีปุ่มแยก -->
