@@ -34,8 +34,10 @@
         }
         
         .container-main {
-            width: 100%; 
-            max-width: 550px; 
+       /*     width: 100%; 
+            max-width: 550px;  */
+            width: 100% !important; 
+            max-width: 100% !important; /* ขยายให้เต็มความกว้างจอ */
             margin: 0 auto;
             background: white; 
             min-height: 100vh;
@@ -43,12 +45,21 @@
             display: flex; 
             flex-direction: column;
             overflow-x: hidden;
-            padding: 10px;
+            padding: 4px !important; /* ลดช่องว่างรอบขอบจอให้น้อยที่สุด */
         }
         
-        @media (max-width: 576px) {
+     /*   @media (max-width: 576px) {
             .container-main { max-width: 100%; }
             .form-section { padding: 20px 15px; }
+        }  */
+
+        /* ยกเลิกการจำกัดความกว้าง 550px ในหน้าจอทั่วไป เพื่อให้ชิดขอบซ้ายขวา */
+        @media (min-width: 576px) {
+            .container-main {
+                max-width: 100% !important;
+                margin: 0 !important;
+                border-radius: 0 !important;
+            }
         }
         
         @media (min-width: 576px) {
@@ -117,7 +128,7 @@
             max-width: 100% !important; 
             background: white; 
             border: 1px solid #2e7d32; 
-            table-layout: fixed; 
+            table-layout: fixed !important; /* บังคับใช้สัดส่วนตาม width ของ th เป๊ะๆ */
             word-wrap: break-word; 
         }
         
@@ -154,11 +165,29 @@
         .meal-table tbody tr:nth-child(3n) {
             border-bottom: 1px solid var(--primary-green) !important; 
         }
-        
-        /* กำหนดขนาดคอลัมน์ตาราง */
+
+        /* กำหนดขนาดคอลัมน์ตาราง 
         .meal-table th:nth-child(1), .meal-table td:nth-child(1) { width: 60px; }
         .meal-table th:nth-child(3), .meal-table td:nth-child(3) { width: 60px; text-align: center; }
         .meal-table th:nth-child(2), .meal-table td:nth-child(2) { width: auto; }
+        */
+
+        /* กำหนดสัดส่วน 10% - 80% - 10% ที่แท้จริง */
+        .meal-table th:nth-child(1), 
+        .meal-table td:nth-child(1) { 
+            width: 12% !important; /* ช่อง "มื้อ" (ปรับใกล้เคียง 10%) */
+        }
+        
+        .meal-table th:nth-child(3), 
+        .meal-table td:nth-child(3) { 
+            width: 12% !important; /* ช่อง "คาร์บ" (ปรับใกล้เคียง 10%) */
+            text-align: center; 
+        }
+        
+        .meal-table th:nth-child(2), 
+        .meal-table td:nth-child(2) { 
+            width: 76% !important; /* ช่อง "รายการอาหาร" (ประมาณ 80% ให้พื้นที่กว้างสะใจ) */
+        }
         
         /* ป้ายกำกับหมวดหมู่ (อาหารหลัก, อาหารว่าง, เครื่องดื่ม) */
         .cat-label { 
