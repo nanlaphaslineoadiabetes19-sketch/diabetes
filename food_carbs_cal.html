@@ -270,6 +270,19 @@
         .cat-label {
             font-size: 0.85rem !important;
         }
+
+        /* ปรับปุ่มบวก (+) และปุ่มถังขยะ ให้มีขนาดเล็กลงและเข้ากับช่องตาราง */
+        .btn-outline-success, .btn-danger {
+            padding: 2px 6px !important;
+            font-size: 0.75rem !important;
+            line-height: 1 !important;
+            border-radius: 4px !important;
+        }
+        
+        /* ปรับขนาดไอคอนด้านในปุ่มให้เล็กลงตามสัดส่วน */
+        .btn-outline-success i, .btn-danger i {
+            font-size: 0.75rem !important;
+        }
         
     </style>
     
@@ -338,9 +351,9 @@
                 <table class="meal-table">
                     <thead>
                         <tr>
-                            <th width="15%">มื้อ</th>
-                            <th width="70%">รายการอาหาร</th>
-                            <th width="15%">คาร์บ</th>
+                            <th width="10%">มื้อ</th>
+                            <th width="80%">รายการอาหาร</th>
+                            <th width="10%">คาร์บ</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -595,7 +608,7 @@
             // สร้างปุ่มกดที่ทำหน้าที่แทน Select เดิม
             const modalBtn = document.createElement('button');
             modalBtn.className = "btn meal-modal-btn flex-grow-1 dynamic-meal-input";
-            modalBtn.innerText = `-- แตะเพื่อเลือก${categoryName} --`;
+            modalBtn.innerText = `-- เลือก${categoryName} --`;
             modalBtn.setAttribute("data-carb", "0"); // เก็บค่าคาร์บไว้คำนวณ
             modalBtn.type = "button";
             
