@@ -283,17 +283,31 @@
             font-size: 0.75rem !important; 
         }
 
-        /* 1. เพิ่มพื้นที่ว่างด้านบนของ Modal ให้หัวข้อมีระยะห่างสวยงาม (ตามลูกศรแดงด้านบน) */
+        /* 1. เพิ่มพื้นที่ว่างด้านบนของ Modal ให้หัวข้อมีระยะห่างสวยงาม */
         #foodSelectorModal .modal-header {
-            padding-top: 25px !important;   /* เพิ่มระยะห่างจากขอบบน */
-            padding-bottom: 15px !important;
+            padding-top: 60px !important;   /* เพิ่มระยะห่างจากขอบบน */
+            padding-bottom: 20px !important;
+        }
+
+        /* 2. ลดขนาดฟอนต์หัวข้อ "กรุณาเลือกอาหาร..." */
+        #foodSelectorModal .modal-title {
+            font-size: 1.1rem !important; /* ปรับลดขนาดลงให้พอดี */
+            line-height: 1.2 !important;
         }
         
-        /* 2. เพิ่มขนาดความสูงและพื้นที่ว่างด้านบน-ล่างของปุ่มรายการอาหาร (ตามลูกศรแดงด้านล่าง) */
+        /* 3. เพิ่มขนาดความสูงและพื้นที่ว่างด้านบน-ล่างของปุ่มรายการอาหาร */
         .food-option-btn {
             padding-top: 14px !important;   /* เพิ่มพื้นที่ด้านบนของกล่องปุ่ม */
             padding-bottom: 14px !important; /* เพิ่มพื้นที่ด้านล่างของกล่องปุ่ม */
             margin-bottom: 12px !important; /* เพิ่มระยะห่างระหว่างปุ่มแต่ละแถวให้ดูโปร่งขึ้น */
+            font-size: 0.95rem !important; /* เพิ่มขนาดจาก 0.75rem ให้ใหญ่ขึ้นอ่านง่าย */
+            font-weight: 600 !important;
+            padding: 18px 15px !important; /* ขยาย Padding เล็กน้อยให้ดูโปร่ง */
+        }
+
+        /* 4. ปรับขนาดป้าย "1 คาร์บ" ในปุ่มให้สมดุลกับชื่ออาหารที่ใหญ่ขึ้น */
+        .food-option-btn span {
+            font-size: 0.85rem !important;
         }
         
     </style>
@@ -309,7 +323,7 @@
         <div class="hero-banner"><br><h1>นับคาร์บ</h1></div>
 
         <div class="form-section">
-            <div class="section-header"><h2>ใส่ข้อมูลเพื่อคำนวณคาร์บที่เหมาะสมในแต่ละวัน</h2></div>
+            <div class="section-header"><h3>ใส่ข้อมูลเพื่อคำนวณคาร์บที่เหมาะสมในแต่ละวัน</h3></div>
             
             <form id="healthForm">
                 <div class="d-flex align-items-center gap-3 mb-3">
@@ -354,7 +368,7 @@
             </div>
 
             <div id="planning" class="planning-section">
-                <h2 class="planning-title">วางแผนการรับประทานอาหาร</h2>
+                <h2 class="planning-title" font-weight: bold;>วางแผนการรับประทานอาหาร</h2>
                 <div class="carb-remaining-box">
                     <span style="font-size: 1rem; color: #666;">เป้าหมาย: <strong id="plan-target">0</strong> คาร์บ</span> | 
                     <span style="font-size: 1.3rem; font-weight: bold;"><span id="plan-rem">0</span> คาร์บ</span>
