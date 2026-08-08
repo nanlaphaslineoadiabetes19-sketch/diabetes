@@ -265,7 +265,6 @@
             padding: 6px 8px !important;
             font-size: 0.8rem !important; /* ลดขนาดตัวอักษรลงให้อยู่ในขนาดที่พอดีและอ่านง่าย */
         }
-        
         /* ปรับขนาดตัวอักษรของป้ายหัวข้อหมวดหมู่ (อาหารหลัก, อาหารว่าง, เครื่องดื่ม) ให้รับกัน */
         .cat-label {
             font-size: 0.85rem !important;
@@ -278,10 +277,29 @@
             line-height: 1 !important;
             border-radius: 4px !important;
         }
-        
         /* ปรับขนาดไอคอนด้านในปุ่มให้เล็กลงตามสัดส่วน */
         .btn-outline-success i, .btn-danger i {
             font-size: 0.75rem !important;
+        }
+
+        /* 1. จุดสถานะ BMI (น้ำหนักเกิน / ปกติ ฯลฯ) */
+        #r-bmi-status {
+            font-size: 1rem !important; /* ลดจาก 1.4rem เหลือ 1rem */
+        }
+        
+        /* 2. จุดคาร์บที่แนะนำต่อวัน */
+        .highlight-res {
+            font-size: 0.9rem !important; /* ปรับขนาดข้อความคาร์บต่อวันให้เล็กลงพอดีบรรทัด */
+        }
+        
+        /* 3. หัวข้อ "วางแผนการรับประทานอาหาร" */
+        .planning-title {
+            font-size: 1.2rem !important; /* ปรับขนาดหัวข้อให้กะทัดรัดขึ้น */
+        }
+        
+        /* 4. ส่วนแสดงผลเป้าหมายและคาร์บคงเหลือ/เกิน */
+        .carb-remaining-box span:last-child {
+            font-size: 1rem !important; /* ลดจาก 1.3rem เหลือ 1rem เพื่อไม่ให้เบียดกันจนล้น */
         }
         
     </style>
