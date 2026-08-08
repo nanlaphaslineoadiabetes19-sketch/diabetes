@@ -256,13 +256,19 @@
             align-items: center;
         }
 
-        /* ปรับให้ปุ่มเลือกอาหารสามารถตัดคำและขึ้นบรรทัดใหม่ได้อย่างสวยงาม */
+        /* ปรับแต่งปุ่มรายการอาหารที่เลือกแล้วให้ตัวหนังสือเล็กลงและจัดวางสวยงาม */
         .dynamic-meal-input {
             white-space: normal !important; 
             word-break: break-word !important; 
-            line-height: 1.4 !important; 
+            line-height: 1.3 !important; 
             height: auto !important; 
-            padding: 8px !important;
+            padding: 6px 8px !important;
+            font-size: 0.8rem !important; /* ลดขนาดตัวอักษรลงให้อยู่ในขนาดที่พอดีและอ่านง่าย */
+        }
+        
+        /* ปรับขนาดตัวอักษรของป้ายหัวข้อหมวดหมู่ (อาหารหลัก, อาหารว่าง, เครื่องดื่ม) ให้รับกัน */
+        .cat-label {
+            font-size: 0.85rem !important;
         }
         
     </style>
