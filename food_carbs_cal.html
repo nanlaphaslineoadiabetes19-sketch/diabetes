@@ -47,18 +47,24 @@
             overflow-x: hidden;
             padding: 4px !important; /* ลดช่องว่างรอบขอบจอให้น้อยที่สุด */
         }
-        
-     /*   @media (max-width: 576px) {
-            .container-main { max-width: 100%; }
-            .form-section { padding: 20px 15px; }
-        }  */
 
-        /* ยกเลิกการจำกัดความกว้าง 550px ในหน้าจอทั่วไป เพื่อให้ชิดขอบซ้ายขวา */
+        .form-section { 
+            padding: 20px 4px !important; /* ลดจาก 25px เหลือ 4px จะชิดขอบเกือบ 100% */
+        }
+        
+        @media (max-width: 576px) {
+            .container-main { max-width: 100% !important; }
+            .form-section { padding: 20px 4px !important; }
+        }  
+
         @media (min-width: 576px) {
             .container-main {
                 max-width: 100% !important;
                 margin: 0 !important;
                 border-radius: 0 !important;
+            }
+            .form-section {
+                padding: 30px 4px !important; /* ควบคุมให้ชิดขอบจอใหญ่ด้วยเช่นกัน */
             }
         }
         
