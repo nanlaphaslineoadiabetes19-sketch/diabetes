@@ -117,7 +117,12 @@
         .res-data { font-weight: 700; font-size: 1.1rem; color: var(--primary-green); }
         
         /* ปรับขนาดส่วนผลลัพธ์ */
-        .highlight-res { color: var(--primary-orange); font-size: 0.9rem !important; font-weight: 700; }
+        .highlight-res { 
+            color: var(--primary-orange); 
+            font-size: 1.1rem !important; /* ปรับขนาดฟอนต์ให้ใหญ่ขึ้นเท่าที่ต้องการ */
+            font-weight: 700; 
+            white-space: nowrap; /* เพิ่มบรรทัดนี้ เพื่อกันไม่ให้คำว่า 'คาร์บ/วัน' ตกบรรทัด */
+        }
         #r-bmi-status { font-size: 1rem !important; }
         
         .planning-section { margin-top: 35px; border-top: 2px solid #eee; padding-top: 25px; display: none; }
@@ -178,21 +183,21 @@
         .meal-table th:nth-child(2), .meal-table td:nth-child(2) { width: auto; }
         */
 
-        /* กำหนดสัดส่วน 10% - 80% - 10% ที่แท้จริง */
+        /* กำหนดสัดส่วน 15% - 70% - 15% ที่แท้จริง */
         .meal-table th:nth-child(1), 
         .meal-table td:nth-child(1) { 
-            width: 12% !important; /* ช่อง "มื้อ" (ปรับใกล้เคียง 10%) */
+            width: 15% !important; /* ช่อง "มื้อ" (ปรับใกล้เคียง 10%) */
         }
         
         .meal-table th:nth-child(3), 
         .meal-table td:nth-child(3) { 
-            width: 12% !important; /* ช่อง "คาร์บ" (ปรับใกล้เคียง 10%) */
+            width: 15% !important; /* ช่อง "คาร์บ" (ปรับใกล้เคียง 10%) */
             text-align: center; 
         }
         
         .meal-table th:nth-child(2), 
         .meal-table td:nth-child(2) { 
-            width: 76% !important; /* ช่อง "รายการอาหาร" (ประมาณ 80% ให้พื้นที่กว้างสะใจ) */
+            width: 70% !important; /* ช่อง "รายการอาหาร" (ประมาณ 80% ให้พื้นที่กว้างสะใจ) */
         }
         
         /* ป้ายกำกับหมวดหมู่ (อาหารหลัก, อาหารว่าง, เครื่องดื่ม) */
@@ -256,8 +261,10 @@
         #foodSelectorModal .modal-title { font-size: 1.5rem; font-weight: 700; }
         .food-option-btn {
             width: 100%;
+            padding-top: 14px !important;   /* เพิ่มพื้นที่ด้านบนของกล่องปุ่ม */
             padding: 18px;
-            margin-bottom: 10px;
+            padding-bottom: 14px !important; /* เพิ่มพื้นที่ด้านล่างของกล่องปุ่ม */
+            margin-bottom: 10px; !important; /* ระยะห่างระหว่างปุ่มแต่ละแถวให้ดูโปร่งขึ้น */
             font-size: 0.75rem !important;
             font-weight: 700 !important;
             border-radius: 15px;
@@ -274,6 +281,19 @@
             height: auto !important; 
             padding: 4px 6px !important;
             font-size: 0.75rem !important; 
+        }
+
+        /* 1. เพิ่มพื้นที่ว่างด้านบนของ Modal ให้หัวข้อมีระยะห่างสวยงาม (ตามลูกศรแดงด้านบน) */
+        #foodSelectorModal .modal-header {
+            padding-top: 25px !important;   /* เพิ่มระยะห่างจากขอบบน */
+            padding-bottom: 15px !important;
+        }
+        
+        /* 2. เพิ่มขนาดความสูงและพื้นที่ว่างด้านบน-ล่างของปุ่มรายการอาหาร (ตามลูกศรแดงด้านล่าง) */
+        .food-option-btn {
+            padding-top: 14px !important;   /* เพิ่มพื้นที่ด้านบนของกล่องปุ่ม */
+            padding-bottom: 14px !important; /* เพิ่มพื้นที่ด้านล่างของกล่องปุ่ม */
+            margin-bottom: 12px !important; /* เพิ่มระยะห่างระหว่างปุ่มแต่ละแถวให้ดูโปร่งขึ้น */
         }
         
     </style>
@@ -330,7 +350,7 @@
                 <div class="res-card"><span class="res-title">ดัชนีมวลกาย (BMI):</span><div class="text-end"><span class="res-data" id="r-bmi">-</span><br><span id="r-bmi-status" style="font-size: 1.4rem; font-weight: bold; color: var(--primary-orange);"></span></div></div>
                 <div class="res-card"><span class="res-title">รอบเอว:</span><span class="res-data" id="r-waist">-</span></div>
                 <div class="res-card"><span class="res-title">พลังงาน (kcal/วัน):</span><span class="res-data" id="r-tdee">-</span></div>
-                <div class="res-card border-0"><span class="res-title fw-bold">คาร์บที่แนะนำต่อวัน:</span><span class="highlight-res"><span id="r-carb-u">-</span> คาร์บต่อวัน</span></div>
+                <div class="res-card border-0"><span class="res-title fw-bold">คาร์บที่แนะนำ/วัน:</span><span class="highlight-res"><span id="r-carb-u">-</span> คาร์บ/วัน</span></div>
             </div>
 
             <div id="planning" class="planning-section">
@@ -343,9 +363,9 @@
                 <table class="meal-table">
                     <thead>
                         <tr>
-                            <th width="10%">มื้อ</th>
-                            <th width="80%">รายการอาหาร</th>
-                            <th width="10%">คาร์บ</th>
+                            <th width="15%">มื้อ</th>
+                            <th width="70%">รายการอาหาร</th>
+                            <th width="15%">คาร์บ</th>
                         </tr>
                     </thead>
                     <tbody>
