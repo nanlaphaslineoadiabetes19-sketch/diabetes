@@ -15,7 +15,7 @@
             --text-dark: #2c3e50;
             --card-shadow: 0 15px 35px rgba(0,0,0,0.1);
         }
-
+        
         body {
             margin: 0; padding: 0;
             background-color: #f4f7f6;
@@ -23,7 +23,7 @@
             color: var(--text-dark);
             min-height: 100vh;
         }
-
+        
         .nav-bar { position: fixed; top: 15px; left: 15px; z-index: 9999; }
         .btn-back {
             padding: 10px 22px; background-color: rgba(255, 255, 255, 0.9); color: #444;
@@ -32,14 +32,7 @@
             gap: 10px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); backdrop-filter: blur(10px);
             transition: 0.3s; text-decoration: none;
         }
-
-        /* ปรับขนาดปุ่มบวก (+) และปุ่มถังขยะ */
-        .btn-outline-success, .btn-outline-danger {
-            padding: 8px 12px !important;
-            font-size: 1.1rem !important;
-            border-width: 2px;
-        }
-
+        
         .container-main {
             width: 100%; 
             max-width: 550px; 
@@ -49,47 +42,41 @@
             box-shadow: var(--card-shadow); 
             display: flex; 
             flex-direction: column;
-            overflow-x: hidden; /* ห้ามแก้: ป้องกันจอขยับซ้ายขวา */
-            padding: 10px; /* เว้นระยะจากขอบจอเล็กน้อย */
+            overflow-x: hidden;
+            padding: 10px;
         }
-
-        /* เพิ่ม Media Query สำหรับหน้าจอขนาดเล็กมาก */
+        
         @media (max-width: 576px) {
-            .container-main {
-                max-width: 100%; /* เต็มจอในมือถือ */
-            }
-            .form-section {
-                padding: 20px 15px; /* ลด Padding ลงเล็กน้อย */
-            }
+            .container-main { max-width: 100%; }
+            .form-section { padding: 20px 15px; }
         }
-
-        /* เมื่อหมุนจอแนวนอน หรือจอใหญ่ขึ้น */
+        
         @media (min-width: 576px) {
             .container-main {
-                max-width: 600px; /* ขยายให้กว้างขึ้นเล็กน้อยเมื่อวางแนวนอน */
+                max-width: 600px;
                 margin: 20px auto;
                 min-height: auto;
                 border-radius: 20px;
             }
         }
-
+        
         .hero-banner {
             background: linear-gradient(135deg, #27ae60 0%, #1e8449 100%);
             color: white; text-align: center; padding: 40px 20px; border-radius: 0 0 40px 40px;
         }
-
+        
         .hero-banner h1 { font-family: 'Sarabun', sans-serif; font-weight: 600; font-size: 1.8rem; margin: 0; }
         .form-section { padding: 30px 25px; }
         .section-header h2 { font-family: 'Sarabun', sans-serif; font-size: 1.2rem; color: var(--primary-orange); font-weight: 600; text-align: center; margin-bottom: 5px; }
-
+        
         .glass-input {
             border: 2px solid #f0f0f0; border-radius: 12px; padding: 12px;
             font-size: 1.2rem; font-weight: 600; text-align: center;
             transition: 0.3s; color: var(--primary-green);
         }
-
+        
         .form-label { font-weight: 700; font-size: 0.85rem; color: #555; margin-bottom: 5px; display: block; }
-
+        
         .gender-selector { display: flex; gap: 10px; margin-bottom: 25px; align-items: center; }
         .gender-box {
             flex: 1; border: 2px solid #eee; border-radius: 12px; padding: 10px;
@@ -97,102 +84,106 @@
         }
         .gender-box.active { border-color: var(--primary-orange); background: #fff5e6; color: var(--primary-orange); font-weight: 700; }
         input[type="radio"] { display: none; }
-
+        
         .btn-calculate {
             background: var(--primary-orange); color: white; border: none; border-radius: 15px;
             padding: 18px; font-weight: 700; width: 100%; font-size: 1.2rem; margin-top: 25px;
             box-shadow: 0 8px 20px rgba(230, 126, 34, 0.3); transition: 0.3s; font-family: 'Sarabun', sans-serif;
         }
-
+        
         .result-section {
             background: var(--bg-cream); border-radius: 20px; padding: 25px; margin-top: 30px;
             border: 2px dashed var(--primary-green); display: none;
         }
-
+        
         .res-card { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(0,0,0,0.05); }
         .res-data { font-weight: 700; font-size: 1.1rem; color: var(--primary-green); }
-        .highlight-res { color: var(--primary-orange); font-size: 1.4rem; font-weight: 700; }
-
-        /* --- CSS ส่วนตารางวางแผน (3 แถวต่อมื้อ) --- */
+        
+        /* ปรับขนาดส่วนผลลัพธ์ */
+        .highlight-res { color: var(--primary-orange); font-size: 0.9rem !important; font-weight: 700; }
+        #r-bmi-status { font-size: 1rem !important; }
+        
         .planning-section { margin-top: 35px; border-top: 2px solid #eee; padding-top: 25px; display: none; }
-        .planning-title { font-family: 'Sarabun', sans-serif; font-size: 1.3rem; text-align: center; color: var(--text-dark); margin-bottom: 15px; }
+        .planning-title { font-family: 'Sarabun', sans-serif; font-size: 1rem !important; text-align: center; color: var(--text-dark); margin-bottom: 15px; }
         .carb-remaining-box { background: white; border: 2px solid var(--primary-orange); border-radius: 15px; padding: 12px; text-align: center; margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-
-        .custom-alert {
-            font-size: 24px; /* ปรับขนาดได้ตามใจ */
-            font-weight: bold;
-            color: red;
-        }
+        .carb-remaining-box span:last-child { font-size: 1rem !important; }
         
-        /* ปรับปรุงตารางให้ยืดหยุ่น (Responsive Table) */
+        .custom-alert { font-size: 24px; font-weight: bold; color: red; }
+        
+        /* --- ตารางวางแผนอาหาร (รวมและเคลียร์ส่วนซ้ำซ้อนแล้ว) --- */
         .meal-table { 
-            border-collapse: collapse; /* ทำให้เส้นขอบไม่ซ้อนกัน */
-            width: 100% !important;    /* ให้ตารางกว้างพอดีหน้าจอ ไม่เกินขอบ */
-            max-width: 100%;           /* ป้องกันตารางล้น */
             border-collapse: collapse; 
+            width: 100% !important; 
+            max-width: 100% !important; 
             background: white; 
-            border: 1px solid #2e7d32; /* กำหนดเส้นขอบนอกสุดให้หนาเท่ากัน */
-            table-layout: fixed; /* เปลี่ยนเป็น fixed เพื่อคุมความกว้างให้เป๊ะ */
-            word-wrap: break-word; /* ป้องกันเนื้อหาดันตาราง */
-        }
-
-        /* กำหนดเส้นขอบให้ช่องภายใน (th และ td) */
-        th, td {
-            border: 1px solid #2e7d32; /* เส้นขอบด้านในให้บางลงนิดหน่อยหรือเท่ากันตามชอบ */
-            padding: 8px;
+            border: 1px solid #2e7d32; 
+            table-layout: fixed; 
+            word-wrap: break-word; 
         }
         
-        /* 1. ปรับหัวตารางให้ใหญ่และชัด */
-        .meal-table th { 
-            background: #2e7d32 !important; /* เปลี่ยนเป็นรหัสสีเขียวเดียวกับเส้นกรอบ */
-            padding: 8px 3px; 
-            font-size: 1rem !important; /* ขยายขนาดตัวหนังสือ */
-            font-weight: 500; /* เพิ่มความหนาตัวอักษร */
-            color: #ffffff !important; /* ตัวหนังสือเป็นสีขาว */
-            border: 1px solid #2e7d32; /* เส้นขอบหัวตารางชัดๆ */ 
-            text-align: center; 
-            white-space: nowrap; /* ห้ามแก้: ป้องกัน คาร์บ ตกบรรทัด */
-            word-break: break-word; 
-        }
-
-        /* 2. ปรับเส้นกรอบมื้ออาหารให้หนาและแบ่งโซนชัดเจน */
-        .meal-table td { 
-            padding: 10px 5px; 
-            font-size: 1.1rem; 
-            border: 1px solid #2e7d32; /* เส้นขอบปกติ */
+        .meal-table th, .meal-table td {
+            border: 1px solid #2e7d32; 
             vertical-align: middle; 
             word-break: break-word; 
         }
-
-        /* เน้นเส้นแบ่งระหว่างมื้อ (เช้า-กลางวัน, กลางวัน-เย็น) */
+        
+        .meal-table th { 
+            background: #2e7d32 !important; 
+            padding: 8px 3px; 
+            font-size: 0.85rem !important; 
+            font-weight: 500; 
+            color: #ffffff !important; 
+            text-align: center; 
+            white-space: nowrap; 
+        }
+        
+        .meal-table td { 
+            padding: 10px 5px; 
+            font-size: 1.1rem; 
+        }
+        
+        .meal-table td.text-center.fw-bold {
+            font-size: 0.85rem !important;
+            padding: 4px !important;
+        }
+        
         .meal-table tr td[rowspan="3"] {
             border-left: 1px solid var(--primary-green) !important; 
-            font-size: 1.2rem;
         }
-
-        /* เพิ่มความหนาเส้นคั่นระหว่างมื้ออาหารให้มองเห็นง่าย */
+        
         .meal-table tbody tr:nth-child(3n) {
             border-bottom: 1px solid var(--primary-green) !important; 
         }
         
-        /* กำหนดขนาดแต่ละคอลัมน์ให้ชัดเจน */
-        .meal-table th:nth-child(1), 
-        .meal-table td:nth-child(1) { 
-            width: 60px; /* ช่อง "มื้อ" */
+        /* กำหนดขนาดคอลัมน์ตาราง */
+        .meal-table th:nth-child(1), .meal-table td:nth-child(1) { width: 60px; }
+        .meal-table th:nth-child(3), .meal-table td:nth-child(3) { width: 60px; text-align: center; }
+        .meal-table th:nth-child(2), .meal-table td:nth-child(2) { width: auto; }
+        
+        /* ป้ายกำกับหมวดหมู่ (อาหารหลัก, อาหารว่าง, เครื่องดื่ม) */
+        .cat-label { 
+            font-size: 0.75rem !important; 
+            font-weight: 800; 
+            color: #495057; 
+            background: #f8f9fa; 
+            padding: 2px 8px;
+            border-radius: 5px;
+            display: inline-block; 
+            margin-bottom: 8px; 
         }
         
-        .meal-table th:nth-child(3), 
-        .meal-table td:nth-child(3) { 
-            width: 60px; /* ช่อง "คาร์บ" */
-            text-align: center;
+        /* ปุ่มบวกและปุ่มถังขยะ */
+        .btn-outline-success, .btn-danger {
+            padding: 2px 6px !important;
+            font-size: 0.75rem !important;
+            line-height: 1 !important;
+            border-radius: 4px !important;
         }
         
-        .meal-table th:nth-child(2), 
-        .meal-table td:nth-child(2) { 
-            width: auto; 
+        .btn-outline-success i, .btn-danger i {
+            font-size: 0.75rem !important;
         }
         
-        /* CSS ใหม่สำหรับปุ่มกดเลือกอาหาร (วิธีที่ 1) */
         .meal-modal-btn {
             width: 100%;
             text-align: left;
@@ -212,42 +203,27 @@
             color: var(--primary-green) !important;
             font-weight: 700;
         }
-
+        
         .carb-display { font-weight: bold; color: var(--primary-orange); display: block; text-align: center; font-size: 1rem; }
         .over-limit { color: #e74c3c !important; }
         
-        .cat-label { 
-            font-size: 1.2rem; 
-            font-weight: 800; 
-            color: #495057; 
-            background: #f8f9fa; 
-            padding: 2px 8px;
-            border-radius: 5px;
-            display: inline-block; 
-            margin-bottom: 8px; 
-        }
-
         .list-group-item-action:hover {
             background-color: #f8f9fa;
-            color: #8B4513; /* สีน้ำตาลตามธีมของคุณ */
+            color: #8B4513; 
             border-color: #8B4513 !important;
         }
         
-        .list-group-item b {
-            font-size: 1.1rem;
-            display: block;
-        }
-
+        .list-group-item b { font-size: 1.1rem; display: block; }
+        
         footer { padding: 40px 20px; text-align: center; margin-top: auto; }
         .copyright { font-size: 12px; color: #bdc3c7; line-height: 1.6; }
         
-        /* ปรับแต่ง Modal ให้สวยงามและตัวหนังสือใหญ่ */
         #foodSelectorModal .modal-title { font-size: 1.5rem; font-weight: 700; }
         .food-option-btn {
             width: 100%;
             padding: 18px;
             margin-bottom: 10px;
-            font-size: 1.3rem !important;
+            font-size: 0.75rem !important;
             font-weight: 700 !important;
             border-radius: 15px;
             text-align: left;
@@ -255,51 +231,14 @@
             justify-content: space-between;
             align-items: center;
         }
-
-        /* ปรับแต่งปุ่มรายการอาหารที่เลือกแล้วให้ตัวหนังสือเล็กลงและจัดวางสวยงาม */
+        
         .dynamic-meal-input {
             white-space: normal !important; 
             word-break: break-word !important; 
             line-height: 1.3 !important; 
             height: auto !important; 
-            padding: 6px 8px !important;
-            font-size: 0.8rem !important; /* ลดขนาดตัวอักษรลงให้อยู่ในขนาดที่พอดีและอ่านง่าย */
-        }
-        /* ปรับขนาดตัวอักษรของป้ายหัวข้อหมวดหมู่ (อาหารหลัก, อาหารว่าง, เครื่องดื่ม) ให้รับกัน */
-        .cat-label {
-            font-size: 0.85rem !important;
-        }
-
-        /* ปรับปุ่มบวก (+) และปุ่มถังขยะ ให้มีขนาดเล็กลงและเข้ากับช่องตาราง */
-        .btn-outline-success, .btn-danger {
-            padding: 2px 6px !important;
-            font-size: 0.75rem !important;
-            line-height: 1 !important;
-            border-radius: 4px !important;
-        }
-        /* ปรับขนาดไอคอนด้านในปุ่มให้เล็กลงตามสัดส่วน */
-        .btn-outline-success i, .btn-danger i {
-            font-size: 0.75rem !important;
-        }
-
-        /* 1. จุดสถานะ BMI (น้ำหนักเกิน / ปกติ ฯลฯ) */
-        #r-bmi-status {
-            font-size: 1rem !important; /* ลดจาก 1.4rem เหลือ 1rem */
-        }
-        
-        /* 2. จุดคาร์บที่แนะนำต่อวัน */
-        .highlight-res {
-            font-size: 0.9rem !important; /* ปรับขนาดข้อความคาร์บต่อวันให้เล็กลงพอดีบรรทัด */
-        }
-        
-        /* 3. หัวข้อ "วางแผนการรับประทานอาหาร" */
-        .planning-title {
-            font-size: 1.2rem !important; /* ปรับขนาดหัวข้อให้กะทัดรัดขึ้น */
-        }
-        
-        /* 4. ส่วนแสดงผลเป้าหมายและคาร์บคงเหลือ/เกิน */
-        .carb-remaining-box span:last-child {
-            font-size: 1rem !important; /* ลดจาก 1.3rem เหลือ 1rem เพื่อไม่ให้เบียดกันจนล้น */
+            padding: 4px 6px !important;
+            font-size: 0.75rem !important; 
         }
         
     </style>
