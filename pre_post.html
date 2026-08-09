@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>สรุปเปรียบเทียบผลการประเมินพฤติกรรม</title>
+    <title>สรุปเปรียบเทียบผลการประเมินพฤติกรรมการจัดการตนเองของผู้ป่วย</title>
     <!-- Tailwind CSS สำหรับดีไซน์ระดับมืออาชีพ -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Sarabun Fonts -->
@@ -30,8 +30,7 @@
             <div class="flex items-center gap-3">
                 <i class="fa-solid fa-chart-line text-3xl"></i>
                 <div>
-                    <h1 class="text-xl md:text-2xl font-bold">ระบบเปรียบเทียบผลการประเมินพฤติกรรม</h1>
-                    <p class="text-xs text-green-100 opacity-90">การจัดการตนเองของผู้ป่วยโรคเบาหวาน</p>
+                    <h1 class="text-xl md:text-2xl font-bold">ระบบเปรียบเทียบผลการประเมินพฤติกรรมการจัดการตนเองของผู้ป่วย</h1>
                 </div>
             </div>
             <button onclick="goBack()" class="bg-white text-emerald-800 hover:bg-green-50 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow">
@@ -46,11 +45,11 @@
         <!-- Selection Card -->
         <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-6">
             <label for="patientSelect" class="block text-gray-700 font-medium text-lg mb-2">
-                <i class="fa-solid fa-user-magnifying-glass theme-green mr-2"></i> เลือกรายชื่อคนไข้เพื่อดูผลการประเมิน
+                <i class="fa-solid fa-user-magnifying-glass theme-green mr-2"></i> เลือกรายชื่อผู้ป่วยเพื่อดูผลการประเมิน
             </label>
             <div class="relative">
                 <select id="patientSelect" onchange="handlePatientChange(this.value)" class="w-full bg-gray-50 border border-gray-300 text-gray-900 rounded-xl focus:ring-emerald-500 focus:border-emerald-500 block p-3.5 pl-4 text-base appearance-none shadow-sm cursor-pointer transition">
-                    <option value="" selected disabled>-- กรุณาเลือกรายชื่อคนไข้ --</option>
+                    <option value="" selected disabled>-- กรุณาเลือกรายชื่อผู้ป่วย --</option>
                 </select>
                 <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-gray-500">
                     <i class="fa-solid fa-chevron-down"></i>
@@ -64,7 +63,7 @@
             <!-- Patient Profile Card -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="bg-gradient-to-r from-emerald-800 to-emerald-700 px-6 py-4 text-white font-medium flex items-center justify-between">
-                    <span class="text-lg"><i class="fa-solid fa-id-card mr-2"></i>ข้อมูลส่วนตัวคนไข้</span>
+                    <span class="text-lg"><i class="fa-solid fa-id-card mr-2"></i>ข้อมูลส่วนตัวผู้ป่วย</span>
                     <span id="lblLastUpdate" class="text-xs text-emerald-100 bg-emerald-900/40 px-3 py-1 rounded-full"></span>
                 </div>
                 <div class="p-6 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 text-sm text-gray-600">
@@ -84,38 +83,29 @@
                 <!-- ก่อนเรียน (ดึงจาก posttest) -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between border-t-4 border-red-500">
                     <div>
-                        <span class="text-xs font-bold text-red-600 uppercase bg-red-50 px-2.5 py-1 rounded-full tracking-wider">ผลการประเมินชุดที่ 1</span>
-                        <h3 class="text-xl font-bold text-gray-800 mt-2">ผลการประเมินพฤติกรรมก่อนตรวจ</h3>
+                        <span class="text-xs font-bold text-red-600 uppercase bg-red-50 px-2.5 py-1 rounded-full tracking-wider">ผลการประเมินชุดที่ 1 (ก่อนเข้าร่วมโปรแกรม)</span>
+                        <h3 class="text-xl font-bold text-gray-800 mt-2">ค่าเฉลี่ยคะแนนพฤติกรรมการจัดการตนเองโดยรวม(คะแนนเต็ม 4 คะแนน)</h3>
                     </div>
                     <div class="my-6 text-center">
-                        <p class="text-gray-500 text-sm">ค่าเฉลี่ยคะแนนการจัดการตนเองโดยรวม</p>
                         <div class="text-5xl font-extrabold text-red-600 my-2" id="preTotalAvg">0.00</div>
                         <div class="inline-block bg-red-50 text-red-700 font-semibold px-4 py-1.5 rounded-xl text-md border border-red-200" id="preTotalLevel">
-                            ระดับ -
+                            อยู่ในระดับ -
                         </div>
-                    </div>
-                    <div class="bg-gray-50 rounded-xl p-3 text-xs text-gray-500 flex justify-between items-center">
-                        <span>สัดส่วนน้ำหนัก/ส่วนสูง</span>
-                        <span class="font-medium text-gray-800" id="preBmi">-</span>
                     </div>
                 </div>
 
                 <!-- หลังเรียน (ดึงจาก pretest) -->
                 <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex flex-col justify-between border-t-4 border-emerald-600">
                     <div>
-                        <span class="text-xs font-bold text-emerald-600 uppercase bg-emerald-50 px-2.5 py-1 rounded-full tracking-wider">ผลการประเมินชุดที่ 2</span>
-                        <h3 class="text-xl font-bold text-gray-800 mt-2">ผลการประเมินพฤติกรรมหลังตรวจ</h3>
+                        <span class="text-xs font-bold text-emerald-600 uppercase bg-emerald-50 px-2.5 py-1 rounded-full tracking-wider">ผลการประเมินชุดที่ 2 (หลังเข้าร่วมโปรแกรม)</span>
+                        <h3 class="text-xl font-bold text-gray-800 mt-2">ค่าเฉลี่ยคะแนนพฤติกรรมการจัดการตนเองโดยรวม(คะแนนเต็ม 4 คะแนน)</h3>
                     </div>
                     <div class="my-6 text-center">
                         <p class="text-gray-500 text-sm">ค่าเฉลี่ยคะแนนการจัดการตนเองโดยรวม</p>
                         <div class="text-5xl font-extrabold text-emerald-600 my-2" id="postTotalAvg">0.00</div>
                         <div class="inline-block bg-emerald-50 text-emerald-700 font-semibold px-4 py-1.5 rounded-xl text-md border border-emerald-200" id="postTotalLevel">
-                            ระดับ -
+                            อยู่ในระดับ -
                         </div>
-                    </div>
-                    <div class="bg-gray-50 rounded-xl p-3 text-xs text-gray-500 flex justify-between items-center">
-                        <span>ทิศทางการเปลี่ยนแปลง</span>
-                        <span class="font-bold flex items-center gap-1" id="scoreDirection">-</span>
                     </div>
                 </div>
             </div>
@@ -123,16 +113,15 @@
             <!-- Detailed Section Breakdown Table -->
             <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div class="px-6 py-4 bg-gray-50 border-b border-gray-100 flex items-center justify-between">
-                    <h3 class="font-bold text-gray-800 text-lg"><i class="fa-solid fa-list-check theme-green mr-2"></i>เปรียบเทียบคะแนนรายด้าน (คะแนนเต็ม 4.00)</h3>
+                    <h3 class="font-bold text-gray-800 text-lg"><i class="fa-solid fa-list-check theme-green mr-2"></i>เปรียบเทียบคะแนนพฤติกรรมการจัดการตนเองของผู้ป่วยรายด้าน(คะแนนเต็ม 4 คะแนน)</h3>
                 </div>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left border-collapse">
                         <thead>
                             <tr class="bg-gray-100/70 text-gray-700 text-sm font-semibold border-b border-gray-200">
                                 <th class="p-4 pl-6">พฤติกรรมการจัดการตนเองรายด้าน</th>
-                                <th class="p-4 text-center w-32">ก่อนตรวจ</th>
-                                <th class="p-4 text-center w-32">หลังตรวจ</th>
-                                <th class="p-4 text-center w-32">ผลต่าง</th>
+                                <th class="p-4 text-center w-32">ก่อนเข้าร่วมโปรแกรม</th>
+                                <th class="p-4 text-center w-32">หลังเข้าร่วมโปรแกรม</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-100 text-sm text-gray-600" id="resultsTableBody">
@@ -236,7 +225,7 @@
         function populateDropdown() {
             const select = document.getElementById('patientSelect');
             
-            // เรียงรายชื่อคนไข้ตามตัวอักษร
+            // เรียงรายชื่อผู้ป่วยตามตัวอักษร
             const sortedKeys = Object.keys(allPatientsData).sort((a, b) => 
                 allPatientsData[a].name.localeCompare(b.name, 'th')
             );
@@ -258,7 +247,7 @@
             const pre = patient.preRaw;  // ข้อมูลจากชีท posttest
             const post = patient.postRaw; // ข้อมูลจากชีท pretest
 
-            // --- 1. แสดงโปรไฟล์คนไข้ (ดึงส่วนตัวจากฝั่งที่มีชัวร์ๆ คือ pre/ชีท posttest) ---
+            // --- 1. แสดงโปรไฟล์ผู้ป่วย (ดึงส่วนตัวจากฝั่งที่มีชัวร์ๆ คือ pre/ชีท posttest) ---
             if (pre) {
                 document.getElementById('pName').textContent = pre.line_name || '-';
                 document.getElementById('pAge').textContent = `${pre.sex || '-'} / ${pre.age_year || 0} ปี ${pre.age_month || 0} เดือน`;
@@ -345,7 +334,6 @@
                             <div class="text-[11px] text-emerald-600 font-medium">(ระดับ${getLevel(rPost)})</div>
                         ` : '<span class="text-gray-400">-</span>'}
                     </td>
-                    <td class="p-4 ${diffClass}">${diffText}</td>
                 `;
                 tbody.appendChild(tr);
             }
