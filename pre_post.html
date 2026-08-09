@@ -94,7 +94,7 @@
                     <div class="my-6 text-center">
                         <div class="text-5xl font-extrabold text-red-600 my-2" id="preTotalAvg">0.00</div>
                         <div class="inline-block bg-red-50 text-red-700 font-semibold px-4 py-1.5 rounded-xl text-md border border-red-200" id="preTotalLevel">
-                            อยู่ในระดับ -
+                            ระดับ -
                         </div>
                     </div>
                 </div>
@@ -109,7 +109,7 @@
                         <p class="text-gray-500 text-sm">ค่าเฉลี่ยคะแนนการจัดการตนเองโดยรวม</p>
                         <div class="text-5xl font-extrabold text-emerald-600 my-2" id="postTotalAvg">0.00</div>
                         <div class="inline-block bg-emerald-50 text-emerald-700 font-semibold px-4 py-1.5 rounded-xl text-md border border-emerald-200" id="postTotalLevel">
-                            อยู่ในระดับ -
+                            ระดับ -
                         </div>
                     </div>
                 </div>
@@ -315,12 +315,12 @@
                     </td>
                     <td class="p-4 text-center">
                         <span class="text-gray-700 font-medium">${rPre.toFixed(2)}</span>
-                        <div class="text-[11px] text-red-500 font-medium">(ระดับ${getLevel(rPre)})</div>
+                        <div class="text-[11px] text-red-500 font-medium">(อยู่ในระดับ${getLevel(rPre)})</div>
                     </td>
                     <td class="p-4 text-center">
                         ${rPost !== null ? `
                             <span class="text-gray-700 font-medium">${rPost.toFixed(2)}</span>
-                            <div class="text-[11px] text-emerald-600 font-medium">(ระดับ${getLevel(rPost)})</div>
+                            <div class="text-[11px] text-emerald-600 font-medium">(อยู่ในระดับ${getLevel(rPost)})</div>
                         ` : '<span class="text-gray-400">-</span>'}
                     </td>
                 `;
