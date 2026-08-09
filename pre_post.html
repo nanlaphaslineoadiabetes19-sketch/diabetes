@@ -262,7 +262,7 @@
                 document.getElementById('pIncome').textContent = pre.income || '-';
                 document.getElementById('pDisease').textContent = pre.disease === 'มี' ? `มี (${pre.disease_detail || '-'})` : (pre.disease || 'ไม่มี');
                 document.getElementById('pSmoking').textContent = pre.smoking === 'สูบ' ? `สูบ (${pre.smoking_detail || '-'})` : (pre.smoking || 'ไม่สูบ');
-                document.getElementById('preBmi').textContent = (pre.weight && pre.height) ? `น้ำหนัก ${pre.weight} กก. ส่วนสูง ${pre.height} ซม.` : '-';
+           //     document.getElementById('preBmi').textContent = (pre.weight && pre.height) ? `น้ำหนัก ${pre.weight} กก. ส่วนสูง ${pre.height} ซม.` : '-';
                 document.getElementById('lblLastUpdate').innerHTML = `<i class="fa-regular fa-clock mr-1"></i> อัปเดตล่าสุด: ${pre.update || '-'}`;
             }
 
