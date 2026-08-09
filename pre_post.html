@@ -20,9 +20,17 @@
         .theme-green { color: #2e7d32; }
         .bg-theme-green { background-color: #2e7d32; }
         .border-theme-green { border-color: #2e7d32; }
+
+        .nav-bar-fixed { position: fixed; top: 15px; left: 15px; z-index: 999; }
+        .btn-back { padding: 10px 22px; background: rgba(255, 255, 255, 0.8); color: #555; border: 1px solid #ddd; border-radius: 50px; cursor: pointer; font-size: 15px; font-weight: 700; box-shadow: 0 4px 15px rgba(0,0,0,0.1); backdrop-filter: blur(8px); }
+
     </style>
 </head>
 <body class="bg-gray-50 min-h-screen pb-12">
+    <div class="nav-bar-fixed">
+        <button class="btn-back" onclick="goBackMain()">⬅ ย้อนกลับ</button>
+    </div>
+    <br><br>
 
     <!-- Header Section -->
     <div class="bg-theme-green text-white shadow-md py-6 px-4 mb-6">
@@ -33,9 +41,6 @@
                     <h1 class="text-xl md:text-2xl font-bold">ระบบเปรียบเทียบผลการประเมินพฤติกรรมการจัดการตนเองของผู้ป่วย</h1>
                 </div>
             </div>
-            <button onclick="goBack()" class="bg-white text-emerald-800 hover:bg-green-50 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2 shadow">
-                <i class="fa-solid fa-arrow-left"></i> กลับหน้าหลัก
-            </button>
         </div>
     </div>
 
@@ -271,25 +276,9 @@
             if (post) {
                 document.getElementById('postTotalAvg').textContent = postAvg.toFixed(2);
                 document.getElementById('postTotalLevel').textContent = `ระดับ ${getLevel(postAvg)}`;
-                
-                // ทิศทางการพัฒนา
-                const diffTotal = postAvg - preAvg;
-                const dirEl = document.getElementById('scoreDirection');
-                if (diffTotal > 0) {
-                    dirEl.className = "font-bold text-emerald-600 flex items-center gap-1 text-sm";
-                    dirEl.innerHTML = `<i class="fa-solid fa-circle-arrow-up text-base"></i> พัฒนาขึ้น (+${diffTotal.toFixed(2)})`;
-                } else if (diffTotal < 0) {
-                    dirEl.className = "font-bold text-red-500 flex items-center gap-1 text-sm";
-                    dirEl.innerHTML = `<i class="fa-solid fa-circle-arrow-down text-base"></i> ลดลง (${diffTotal.toFixed(2)})`;
-                } else {
-                    dirEl.className = "font-bold text-gray-500 flex items-center gap-1 text-sm";
-                    dirEl.innerHTML = `<i class="fa-solid fa-circle-minus text-base"></i> คงเดิม`;
-                }
             } else {
                 document.getElementById('postTotalAvg').textContent = "ไม่มีข้อมูล";
                 document.getElementById('postTotalLevel').textContent = "ระดับ -";
-                document.getElementById('scoreDirection').className = "text-gray-400 text-sm";
-                document.getElementById('scoreDirection').textContent = "รอการประเมินรอบหลังตรวจ";
             }
 
             // --- 3. เรนเดอร์ตารางเปรียบเทียบผลรายด้าน 6 ด้าน ---
@@ -348,11 +337,10 @@
             return "ควรปรับปรุง";
         }
 
-        function goBack() {
-            var currentPath = window.location.pathname;
-            var directoryPath = currentPath.substring(0, currentPath.lastIndexOf('/'));
-            location.href = directoryPath + '/nurse.html';
+        function goBackMain() {
+            window.location.href = 'https://liff.line.me/2009966517-pPEyRumg';
         }
+
     </script>
 </body>
 </html>
