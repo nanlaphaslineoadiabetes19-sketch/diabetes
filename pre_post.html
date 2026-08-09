@@ -271,11 +271,11 @@
             const postAvg = post ? parseFloat(post.total_results || 0) : 0;
 
             document.getElementById('preTotalAvg').textContent = preAvg.toFixed(2);
-            document.getElementById('preTotalLevel').textContent = `ระดับ ${getLevel(preAvg)}`;
+            document.getElementById('preTotalLevel').textContent = `อยู่ในระดับ ${getLevel(preAvg)}`;
 
             if (post) {
                 document.getElementById('postTotalAvg').textContent = postAvg.toFixed(2);
-                document.getElementById('postTotalLevel').textContent = `ระดับ ${getLevel(postAvg)}`;
+                document.getElementById('postTotalLevel').textContent = `อยู่ในระดับ ${getLevel(postAvg)}`;
             } else {
                 document.getElementById('postTotalAvg').textContent = "ไม่มีข้อมูล";
                 document.getElementById('postTotalLevel').textContent = "ระดับ -";
@@ -315,12 +315,12 @@
                     </td>
                     <td class="p-4 text-center">
                         <span class="text-gray-700 font-medium">${rPre.toFixed(2)}</span>
-                        <div class="text-[11px] text-red-500 font-medium">(อยู่ในระดับ${getLevel(rPre)})</div>
+                        <div class="text-[11px] text-red-500 font-medium">(ระดับ${getLevel(rPre)})</div>
                     </td>
                     <td class="p-4 text-center">
                         ${rPost !== null ? `
                             <span class="text-gray-700 font-medium">${rPost.toFixed(2)}</span>
-                            <div class="text-[11px] text-emerald-600 font-medium">(อยู่ในระดับ${getLevel(rPost)})</div>
+                            <div class="text-[11px] text-emerald-600 font-medium">(ระดับ${getLevel(rPost)})</div>
                         ` : '<span class="text-gray-400">-</span>'}
                     </td>
                 `;
