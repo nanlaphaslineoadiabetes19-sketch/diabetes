@@ -259,20 +259,6 @@
         .copyright { font-size: 12px; color: #bdc3c7; line-height: 1.6; }
         
         #foodSelectorModal .modal-title { font-size: 1.5rem; font-weight: 700; }
-        .food-option-btn {
-            width: 100%;
-            padding-top: 14px !important;   /* เพิ่มพื้นที่ด้านบนของกล่องปุ่ม */
-            padding: 18px;
-            padding-bottom: 14px !important; /* เพิ่มพื้นที่ด้านล่างของกล่องปุ่ม */
-            margin-bottom: 10px; !important; /* ระยะห่างระหว่างปุ่มแต่ละแถวให้ดูโปร่งขึ้น */
-            font-size: 0.75rem !important;
-            font-weight: 700 !important;
-            border-radius: 15px;
-            text-align: left;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
         
         .dynamic-meal-input {
             white-space: normal !important; 
@@ -295,19 +281,29 @@
             line-height: 1.2 !important;
         }
         
-        /* 3. เพิ่มขนาดความสูงและพื้นที่ว่างด้านบน-ล่างของปุ่มรายการอาหาร */
+        /* คลาสหลักสำหรับปุ่มเลือกรายการอาหาร */
         .food-option-btn {
-            padding-top: 14px !important;   /* เพิ่มพื้นที่ด้านบนของกล่องปุ่ม */
-            padding-bottom: 14px !important; /* เพิ่มพื้นที่ด้านล่างของกล่องปุ่ม */
-            margin-bottom: 12px !important; /* เพิ่มระยะห่างระหว่างปุ่มแต่ละแถวให้ดูโปร่งขึ้น */
-            font-size: 0.95rem !important; /* เพิ่มขนาดจาก 0.75rem ให้ใหญ่ขึ้นอ่านง่าย */
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-radius: 15px;
+            text-align: left;
+            
+            /* ระยะห่างและความสูง (ใช้ค่าล่าสุด) */
+            padding: 18px 15px !important;
+            padding-top: 14px !important;
+            padding-bottom: 14px !important;
+            margin-bottom: 12px !important;
+            
+            /* ขนาดตัวอักษรและความหนา (ใช้ค่าล่าสุด) */
+            font-size: 1.1rem !important;
             font-weight: 600 !important;
-            padding: 18px 15px !important; /* ขยาย Padding เล็กน้อยให้ดูโปร่ง */
         }
-
-        /* 4. ปรับขนาดป้าย "1 คาร์บ" ในปุ่มให้สมดุลกับชื่ออาหารที่ใหญ่ขึ้น */
+        
+        /* ปรับขนาดป้าย "คาร์บ" ด้านในปุ่ม */
         .food-option-btn span {
-            font-size: 0.85rem !important;
+            font-size: 1rem !important;
         }
         
     </style>
@@ -670,7 +666,7 @@
                 foodDataCache[categoryName].forEach(item => {
                     const btn = document.createElement('button');
                     btn.className = "btn btn-outline-success food-option-btn";
-                    btn.innerHTML = `<span class="text-3xl font-semibold">${item.n}</span> <span class="badge bg-success">${item.c} คาร์บ</span>`;
+                    btn.innerHTML = `<span>${item.n}</span> <span class="badge bg-success">${item.c} คาร์บ</span>`;
                     
                     btn.onclick = function() {
                         // เมื่อเลือก: อัพเดทปุ่มที่เคยกด และปิด Modal
